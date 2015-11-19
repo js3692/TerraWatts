@@ -2,11 +2,11 @@
 var mongoose = require('mongoose');
 
 var schema = new mongoose.Schema({
-	rank: { 
+	rank: {
 		type: Number,
 		required: true
 	},
-	capacity: { 
+	capacity: {
 		type: Number,
 		required: true
 	},
@@ -15,7 +15,7 @@ var schema = new mongoose.Schema({
 		required: true,
 		enum: ["coal", "oil", "trash", "nuke", "hybrid", "green"]
 	},
-	numResources: { 
+	numResources: {
 		type: Number,
 		default: 0
 	}

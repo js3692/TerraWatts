@@ -1,4 +1,11 @@
 <section id="home">
-    <fullstack-logo></fullstack-logo>
-    <rando-greeting></rando-greeting>
+	<p ng-hide="loggedIn">Login to create, join, or watch a game</p>
+	<div ng-show="loggedIn">
+		<button ng-click="newGame()">New Game</button>
+		<h4>Join a Game</h4>
+		<div ng-repeat="grid in joinable">
+			<a ng-click="joinGame(grid._id)">{{grid._id}}</a>
+			<p>Available slots: {{6 - grid.users.length}}</p>
+		</div>
+	</div>
 </section>
