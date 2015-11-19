@@ -6,7 +6,7 @@ module.exports = function(){
             this.plants = [];
             this.money = 50;
 
-            // check if player is allowed to pick color;
+            // check if player is allowed to pick color.
             var colorIdx = colors.indexOf(color);
             if(colorIdx === -1 ) throw new Error('Color taken.');
             colors.splice(colorIdx, 1);
