@@ -9,13 +9,13 @@ router.post('/', function (req, res, next) {
 		res.json(newUser);
 	})
 	.then(null, next);
-})
+});
 
 router.get('/:userId', function (req, res, next) {
 	User.findById(req.params.userId)
 	.then(function (user) {
 		res.json(user);
 	}, next);
-})
+});
 
 module.exports = router;

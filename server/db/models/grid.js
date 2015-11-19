@@ -13,34 +13,35 @@ var schema = new mongoose.Schema({
 		type: Boolean,
 		default: false
 	}
-})
+});
 
-schema.methods.addUser = function(userId) {
-	if(this.game) return;
-	var alreadyIn = false;
-	if(this.users.length === 6) return;
-	this.users.forEach(function(user) {
-		if(userId.equals(user._id)) alreadyIn = true;
-	})
-	if(alreadyIn) return;
+schema.methods.addUser = function (userId) {
+	if (this.game) throw new Error('The Game already exists');
+
+	if (this.users.length === 6) throw new Error('The Game is already full');
+
+	this.users.forEach(function (user) {
+		if(userId.equals(user._id)) throw new Error('This user is already in the room');
+	});
+
 	this.users.push(userId);
 	return this.save();
-}
+};
 
 schema.statics.getJoinable = function() {
 	return this.find({})
-	.then(function (grids) {
-		return grids.filter(function (grid) {
-			return !grid.game && !grid.complete;
-		})
-	})
-}
+		.then(function (grids) {
+			return grids.filter(function (grid) {
+				return !grid.game && !grid.complete;
+			});
+		});
+};
 
-schema.pre('save', function(next) {
-	this.users.forEach(function(user) {
+schema.pre('save', function (next) {
+	// this.users.forEach(function(user) {
 
-	})
+	// });
 	next();
-})
+});
 
 mongoose.model('Grid', schema);
