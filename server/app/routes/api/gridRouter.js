@@ -1,5 +1,8 @@
 var router = require('express').Router();
 var mongoose = require('mongoose');
+var Firebase = require("firebase");
+
+var fbRef = new Firebase("https://glowing-torch-8958.firebaseio.com/");
 
 var Grid = mongoose.model('Grid');
 
@@ -18,12 +21,17 @@ router.get('/:gridId', function (req, res, next) {
 })
 
 router.post('/', function (req, res, next) {
+	var g;
 	Grid.create({})
 	.then(function (grid) {
-		grid.addUser(req.user);
-		return grid.save()
+		g = grid;
+		return grid.addUser(req.user);
 	})
 	.then(function (grid) {
+		return g.populate("users").execPopulate()
+	})
+	.then(function(grid) {
+		fbRef.push(grid.toObject());
 		res.json(grid);
 	}, next)
 })

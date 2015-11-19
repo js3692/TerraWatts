@@ -5,10 +5,10 @@ var schema = new mongoose.Schema({
 		type: Object,
 		default: null
 	},
-	users: {
-		type: [mongoose.Schema.Types.ObjectId],
+	users: [{
+		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
-	},
+	}],
 	complete: {
 		type: Boolean,
 		default: false
@@ -24,7 +24,7 @@ schema.methods.addUser = function(userId) {
 	})
 	if(alreadyIn) return;
 	this.users.push(userId);
-	return this.users;
+	return this.save();
 }
 
 schema.statics.getJoinable = function() {
@@ -35,5 +35,12 @@ schema.statics.getJoinable = function() {
 		})
 	})
 }
+
+schema.pre('save', function(next) {
+	this.users.forEach(function(user) {
+
+	})
+	next();
+})
 
 mongoose.model('Grid', schema);
