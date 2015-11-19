@@ -14,8 +14,10 @@ var db = mongoose.connect(DATABASE_URI).connection;
 require('./models');
 
 var startDbPromise = new Promise(function (resolve, reject) {
-    db.on('open', resolve);
-    db.on('error', reject);
+  db.on('open', function () {
+  	resolve(db);
+  });
+  db.on('error', reject);
 });
 
 console.log(chalk.yellow('Opening connection to MongoDB . . .'));
