@@ -20,7 +20,7 @@ schema.methods.addUser = function(userId) {
 	var alreadyIn = false;
 	if(this.users.length === 6) return;
 	this.users.forEach(function(user) {
-		if(userId.equals(user._id)) alreadyIn = true;
+		if(userId.equals(user)) alreadyIn = true;
 	})
 	if(alreadyIn) return;
 	this.users.push(userId);
