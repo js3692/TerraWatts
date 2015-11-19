@@ -20,10 +20,8 @@ schema.methods.addUser = function (userId) {
 
 	if (this.users.length === 6) throw new Error('The Game is already full');
 
-	this.users.forEach(function (user) {
-		if(userId.equals(user._id)) throw new Error('This user is already in the room');
-	});
-
+	if (this.users.indexOf(userId) > -1) throw new Error('This user is already in the room');
+	
 	this.users.push(userId);
 	return this.save();
 };
