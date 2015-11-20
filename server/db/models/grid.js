@@ -1,4 +1,7 @@
 var mongoose = require('mongoose');
+var firebaseHelper = require('../../firebase');
+var _ = require('lodash');
+mongoose.Promise = require('bluebird');
 
 var schema = new mongoose.Schema({
 	game: {
@@ -15,17 +18,22 @@ var schema = new mongoose.Schema({
 	},
     key: {
         type: String
+    }, 
+    history: {
+        type: []
     }
 });
 
-schema.methods.addUser = function (userId) {
-	if (this.game) throw new Error('The Game already exists');
+schema.methods.addUser = function (user) {
+    
+    if (this.game) throw new Error('The Game already exists');
 
-	if (this.users.length === 6) throw new Error('The Game is already full');
+    if (this.users.length === 6) throw new Error('The Game is already full');
 
-	if (this.users.indexOf(userId) > -1) throw new Error('This user is already in the room');
+    if (this.users.indexOf(user._id) > -1) return Promise.resolve(this.game);
+
 	
-	this.users.push(userId);
+	this.users.push(user);
 	return this.save();
 };
 
@@ -47,9 +55,22 @@ schema.statics.getJoinable = function() {
 };
 
 schema.pre('save', function (next) {
-	// this.users.forEach(function(user) {
-
-	// });
+    
+    /* 
+        Pushes grid (minus grid history) into grid.
+    */
+    
+    var gridSnapshot = _.omit(this.toObject(), 'history');
+    if(this.game) this.history.push(gridSnapshot);
+    
+    /* 
+        finds connection within connections hash
+        then updates firebase game object.
+    */
+    
+    var firebasePath = firebaseHelper.getConnection(this.key);
+    if(firebasePath) firebasePath.set(gridSnapshot);
+    
 	next();
 });
 

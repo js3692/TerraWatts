@@ -1,7 +1,7 @@
 var router = require('express').Router();
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-var firebaseHelper = require("../firebase");
+var firebaseHelper = require("../../../firebase");
 
 var fbRef = firebaseHelper.base();
 
@@ -53,10 +53,9 @@ router.get('/:gridId', function (req, res, next) {
 
 router.post('/:gridId/join', function (req, res, next) {
 	req.grid.addUser(req.user)
-	   .then(function (grid) {
+        .then(function (grid) {
             res.json(grid);
-	   })
-	   .catch(next);
+        }).catch(next);
 });
 
 router.post('/:gridId/leave', function (req, res, next) {
