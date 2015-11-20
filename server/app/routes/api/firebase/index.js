@@ -1,6 +1,6 @@
 var Firebase = require('firebase');
 var gridHash = {};
-var baseUrl = 'https://glowing-torch-8958.firebaseio.com/';
+var baseUrl = "https://amber-torch-6713.firebaseio.com/";
 
 module.exports = {
     base: function() {
