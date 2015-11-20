@@ -7,6 +7,8 @@ var fbRef = firebaseHelper.base();
 
 var Grid = mongoose.model('Grid');
 
+// Current URL: 'api/grid'
+
 router.post('/', function (req, res, next) {
 	Grid.create({})
 	.then(function (grid) {

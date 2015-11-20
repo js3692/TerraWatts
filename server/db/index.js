@@ -15,7 +15,7 @@ require('./models');
 
 var startDbPromise = new Promise(function (resolve, reject) {
   db.on('open', function () {
-  	resolve(db);
+		resolve(db);
   });
   db.on('error', reject);
 });

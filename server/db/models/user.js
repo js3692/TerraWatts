@@ -4,16 +4,16 @@ var mongoose = require('mongoose');
 var _ = require('lodash');
 
 var schema = new mongoose.Schema({
+    username: {
+        type: String,
+        unique: true
+    },
     email: {
         type: String,
         unique: true
     },
     password: {
         type: String
-    },
-    username: {
-        type: String,
-        unique: true
     },
     salt: {
         type: String

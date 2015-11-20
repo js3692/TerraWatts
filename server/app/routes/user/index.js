@@ -3,6 +3,8 @@ var mongoose = require('mongoose');
 
 var User = mongoose.model('User');
 
+// Current URL: 'api/user'
+
 router.post('/', function (req, res, next) {
 	User.create(req.body)
 	.then(function (newUser) {
