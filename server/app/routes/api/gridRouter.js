@@ -1,9 +1,9 @@
 var router = require('express').Router();
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-var Firebase = require("firebase");
+var firebaseHelper = require("./firebase");
 
-var fbRef = new Firebase("https://glowing-torch-8958.firebaseio.com/");
+var fbRef = firebaseHelper.base();
 
 var Grid = mongoose.model('Grid');
 
@@ -16,9 +16,15 @@ router.post('/', function (req, res, next) {
 		return grid.populate("users");
 	})
 	.then(function(grid) {
-		fbRef.push(grid.toObject());
-		res.sendStatus(201);
+        
+        // this is the id of the array element in firebase.
+		grid.key = fbRef.push(grid.toObject()).key();
+        firebaseHelper.setConnection(grid.key);
+        return grid.save();
 	})
+    .then(function(grid){
+        res.sendStatus(201);
+    })
 	.catch(next);
 });
 
