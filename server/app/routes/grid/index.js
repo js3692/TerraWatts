@@ -18,14 +18,14 @@ router.post('/', function (req, res, next) {
 		return grid.populate("users");
 	})
 	.then(function(grid) {
-        
+
         // grid.key is the id of the array element in firebase.
 		grid.key = fbRef.push(grid.toObject()).key();
         firebaseHelper.setConnection(grid.key);
         return grid.save();
 	})
     .then(function(grid){
-        res.sendStatus(201);
+        res.status(201).send(grid);
     })
 	.catch(next);
 });
@@ -57,6 +57,15 @@ router.post('/:gridId/join', function (req, res, next) {
             res.json(grid);
         }).catch(next);
 });
+
+router.post('/:gridId/leave', function (req, res, next) {
+	console.log("in router leave post")
+	req.grid.removeUser(req.user)
+		.then(function (grid) {
+			res.json(grid);
+		})
+		.catch(next);
+})
 
  router.put('/:gridId/start', function(req, res, next) {
      
