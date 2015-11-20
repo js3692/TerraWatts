@@ -4,7 +4,7 @@ var chalk = require('chalk');
 var connectToDb = require('../server/db');
 
 var seedUsers = require('./user');
-// var seedPlants = require('./plant');
+var seedPlants = require('./plant');
 var seedCities = require('./city');
 var seedConnections = require('./connection');
 
@@ -15,12 +15,12 @@ connectToDb.then(function (db) {
   console.log(chalk.magenta('Database dropped'));
   return seedUsers();
 })
-// .then (function () {
-//   console.log(chalk.grey('Users created'));
-//   return seedPlants();
-// })
 .then (function () {
   console.log(chalk.grey('Users created'));
+  return seedPlants();
+})
+.then (function () {
+  console.log(chalk.grey('Plants created'));
   return seedCities();
 })
 .then (function () {
