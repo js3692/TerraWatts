@@ -19,7 +19,12 @@ var schema = new mongoose.Schema({
   players: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  }]
+  }],
+  region: {
+    type: Number,
+    required: true,
+    enum: [0,1,2,3,4,5]
+  }
 });
 
 schema.pre('save', function (next) {
