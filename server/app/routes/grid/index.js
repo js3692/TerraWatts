@@ -1,7 +1,7 @@
 var router = require('express').Router();
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-var firebaseHelper = require("./firebase");
+var firebaseHelper = require("../firebase");
 
 var fbRef = firebaseHelper.base();
 
@@ -19,7 +19,7 @@ router.post('/', function (req, res, next) {
 	})
 	.then(function(grid) {
         
-        // this is the id of the array element in firebase.
+        // grid.key is the id of the array element in firebase.
 		grid.key = fbRef.push(grid.toObject()).key();
         firebaseHelper.setConnection(grid.key);
         return grid.save();
@@ -48,7 +48,7 @@ router.param('gridId', function(req, res, next, gridId){
 })
 
 router.get('/:gridId', function (req, res, next) {
-	if(req.grid) res.sendStatus(200);
+	if(req.grid) res.status(200).json(req.grid);
 });
 
 router.post('/:gridId/join', function (req, res, next) {

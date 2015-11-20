@@ -15,9 +15,11 @@ app.config(function ($stateProvider) {
 })
 
 app.controller('gridCtrl', function ($scope, theGrid, thePlayer, GridFactory) {
+    console.log('theGrid', theGrid);
 	$scope.grid = theGrid;
 	$scope.me = thePlayer;
 	$scope.startGame = function() {
+        
 		GridFactory.start($scope.grid._id)
 	}
 })
