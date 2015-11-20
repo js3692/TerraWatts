@@ -5,3 +5,4 @@ require('./user');
 require('./grid');
 require('./city');
 require('./connection');
+require('./plant');
