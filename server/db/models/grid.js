@@ -12,7 +12,10 @@ var schema = new mongoose.Schema({
 	complete: {
 		type: Boolean,
 		default: false
-	}
+	},
+    key: {
+        type: String
+    }
 });
 
 schema.methods.addUser = function (userId) {
