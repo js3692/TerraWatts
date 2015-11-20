@@ -40,6 +40,7 @@ app.factory('GridFactory', function ($http) {
 	GridFactory.getJoinableGames = function() {
 		return $http.get('/api/grid/canjoin')
 		.then(function(response) {
+            console.log(response.data);
 			return response.data;
 		})
 	}

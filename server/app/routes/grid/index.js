@@ -33,6 +33,7 @@ router.post('/', function (req, res, next) {
 router.get('/canjoin', function (req, res, next) {
 	Grid.getJoinable()
 	.then(function (joinableGrids) {
+        console.log('these are the joinable grids', joinableGrids);
 		res.json(joinableGrids);
 	})
 	.catch(next);
