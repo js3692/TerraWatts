@@ -30,7 +30,7 @@ schema.methods.addUser = function (user) {
 
     if (this.users.length === 6) throw new Error('The Game is already full');
 
-    if (this.users.indexOf(user._id) > -1) return Promise.resolve(this.game);
+    if (this.users.indexOf(user._id) > -1) return Promise.resolve(this);
 
 	
 	this.users.push(user);
