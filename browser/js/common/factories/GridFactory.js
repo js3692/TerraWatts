@@ -4,6 +4,7 @@ app.factory('GridFactory', function ($http) {
 	GridFactory.newGame = function() {
 		return $http.post('/api/grid')
 		.then(function (response) {
+			console.log("response.data", response.data)
 			return response.data;
 		})
 	}

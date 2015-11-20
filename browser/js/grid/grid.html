@@ -1,5 +1,6 @@
 <div ng-hide="grid.game">
 	<button ng-click="startGame()">Start Game</button>
+	<button ng-click="leaveGame()">Leave Game</button>
 	<h6>Players:</h6>
-	<p ng-repeat="user in grid.users">{{user.username}}</p>
+	<p ng-repeat="user in grid.users">{{user}}</p>
 </div>

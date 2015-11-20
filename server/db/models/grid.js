@@ -29,6 +29,14 @@ schema.methods.addUser = function (userId) {
 	return this.save();
 };
 
+schema.methods.removeUser = function (userId) {
+	var userIndex = this.users.indexOf(userId);
+	console.log("before splice", this)
+	this.users.splice(userIndex,1);
+	console.log("after splice", this)
+	return this.save();
+}
+
 schema.statics.getJoinable = function() {
 	return this.find({})
 		.then(function (grids) {
