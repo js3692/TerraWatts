@@ -18,6 +18,9 @@ var schema = new mongoose.Schema({
 	},
     key: {
         type: String
+    }, 
+    history: {
+        type: []
     }
 });
 
@@ -46,12 +49,19 @@ schema.statics.getJoinable = function() {
 schema.pre('save', function (next) {
     
     /* 
+        Pushes grid (minus grid history) into grid.
+    */
+    
+    var gridSnapshot = _.omit(this.toObject(), 'history');
+    if(this.game) this.history.push(gridSnapshot);
+    
+    /* 
         finds connection within connections hash
         then updates firebase game object.
     */
     
     var firebasePath = firebaseHelper.getConnection(this.key);
-    if(firebasePath) firebasePath.set(this.toObject());
+    if(firebasePath) firebasePath.set(gridSnapshot);
     
 	next();
 });
