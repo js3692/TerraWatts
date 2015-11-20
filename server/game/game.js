@@ -1,9 +1,9 @@
 var restockRatesMaster = require('./restock.js');
 var plants = require('./testNewGame')[0];
 var players = require('./testNewGame')[1];
-var resourceRound = require('./game/resourceRound');
+var resourceRound = require('./resourceRound');
 
-function Game(players, plants, cities, connections) {
+function Game (players, plants, cities, connections) {
 	this.players = shuffle(players);
 	if(this.players.length < 2 || this.players.length > 6) {
 		throw new Error('not a valid number of players');

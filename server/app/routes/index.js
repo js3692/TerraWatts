@@ -2,8 +2,11 @@
 var router = require('express').Router();
 module.exports = router;
 
+// Current URL: '/api'
+
 router.use('/members', require('./members'));
-router.use('/api', require('./api'))
+router.use('/user', require('./user'));
+router.use('/grid', require('./grid'));
 
 // Make sure this is after all of
 // the registered routes!

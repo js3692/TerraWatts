@@ -49,11 +49,6 @@ var seedPlants = function() {
 	];
 
 	return Plant.createAsync(plants);
-}
+};
 
-var Plant = (rank, capacity, resourceType, numResources) {
-	this.rank = rank;
-	this.capacity = capacity;
-	this.resourceType = resourceType;
-	this.numResources = numResources;
-}
+module.exports = seedPlants;
