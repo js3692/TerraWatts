@@ -1,9 +1,4 @@
 var _ = require('lodash');
-var mongoose = require('mongoose');
-var Promise = require('bluebird');
-require('../db');
-var City = mongoose.model('City');
-var Connection = mongoose.model('Connection');
 
 function totalConnectionCost(citiesToAdd, network, cities, connections) {
 	var orders = permutations(citiesToAdd);
@@ -115,15 +110,3 @@ function permutations(arr) {
 	}
 	return perms;
 }
-
-// the test:
-
-// var regions = [0,3]
-// Promise.all([City.findByRegions(regions), Connection.findByRegions(regions)])
-// .then(function (data) {
-// 	var cities = data[0];
-// 	var connections = data[1];
-// 	var network = [cities[0], cities[1]];
-// 	var citiesToAdd = [cities[3], cities[4]];
-// 	console.log(totalConnectionCost(citiesToAdd, network, cities, connections));
-// });
