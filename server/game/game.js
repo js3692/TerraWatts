@@ -1,7 +1,13 @@
 var restockRatesMaster = require('./restock.js');
-var plants = require('./testNewGame')[0];
+var regions = require('./regions.js')
+var mongoose = require('mongoose');
+// var connectToDb = require('../db');
+var City = mongoose.model('City');
+var Plant = mongoose.model('Plant');
+var Connection = mongoose.model('Connection');
+// var plants = require('./testNewGame')[0];
 var players = require('./testNewGame')[1];
-var resourceRound = require('./resourceRound');
+// var resourceRound = require('./resourceRound');
 
 function Game (players, plants, cities, connections) {
 	this.players = shuffle(players);
@@ -10,24 +16,34 @@ function Game (players, plants, cities, connections) {
 	}
 	this.turnOrder = shuffle(this.players);
 
-	this.cities = cities;
-	this.connections = connections;
 	this.turn = 0;
 	this.phase = 1;
 
+	var regionsInPlay = regions.randomize(this.turnOrder.length);
+	this.cities = cities.filter(function (city) {
+		return regionsInPlay.indexOf(city.region) > -1;
+	});
+
+	this.connections = connections.filter(function (connection) {
+		return connection.cities.every(function (city) {
+			return regionsInPlay.indexOf(city.region) > -1;		
+		})
+	});
+
 	this.resourceMarket = {coal: 24, oil: 15, trash: 6, nuke: 2};
+	this.resourceBank = {coal: 0, oil: 9, trash: 18, nuke: 10};
 	this.restockRates = restockRatesMaster[this.players.length][this.phase];
 
 	this.plantMarket = plants.splice(0, 8);
-	thirteen = plants.splice(2, 1);
+	var thirteen = plants.splice(2, 1);
 	plants = removePlants(shuffle(plants), this.players.length);
 
 	this.plantDeck = thirteen.concat(plants);
 	this.discardedPlants = [];
 	this.phase3Plants = [];
     
-    this.currentState = new resourceRound(this);
-    this.turn;
+    // this.currentState = new resourceRound(this);
+    // this.turn;
     
 }
 
@@ -56,8 +72,17 @@ function removePlants(shuffledPlants, numPlayers) {
 	return shuffledPlants;
 }
 
-//game = new Game(players, plants, [], []);
-// console.log(game);
-// console.log('player0: ' + game.players[0])
-// console.log('amount in plant deck:' + game.plantDeck.length)
+// var plants, cities, connections;
+// Plant.find()
+// .then(function (_plants) {
+// 	plants = _plants;
+// 	return City.find()
+// })
+// .then(function (_cities) {
+// 	cities = _cities;
+// 	return Connection.find().populate('cities')
+// })
+// .then(function (_connections) {
+// 	connections = _connections;
+// })
 
