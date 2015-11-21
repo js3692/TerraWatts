@@ -42,4 +42,8 @@ schema.pre('save', function (next) {
   });
 });
 
+schema.statics.findByRegions = function (regions) {
+  return this.find({region: {$in: regions}})
+}
+
 mongoose.model('City', schema);
