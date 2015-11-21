@@ -1,0 +1,23 @@
+{
+  "name": "Grid",
+  "description": "Capstone project",
+  "main": "server/start.js",
+  "authors": [
+    "Jungho Son <js3692@users.noreply.github.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/js3692/Grid",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "firebase": "~2.3.2",
+    "angularfire": "~1.1.3"
+  }
+}
