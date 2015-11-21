@@ -21,7 +21,6 @@ router.post('/', function (req, res, next) {
 
         // grid.key is the id of the array element in firebase.
 		grid.key = fbRef.push(grid.toObject()).key();
-        firebaseHelper.setConnection(grid.key);
         return grid.save();
 	})
     .then(function(grid){
@@ -33,7 +32,6 @@ router.post('/', function (req, res, next) {
 router.get('/canjoin', function (req, res, next) {
 	Grid.getJoinable()
 	.then(function (joinableGrids) {
-        console.log('these are the joinable grids', joinableGrids);
 		res.json(joinableGrids);
 	})
 	.catch(next);
@@ -60,7 +58,6 @@ router.post('/:gridId/join', function (req, res, next) {
 });
 
 router.post('/:gridId/leave', function (req, res, next) {
-	console.log("in router leave post")
 	req.grid.removeUser(req.user)
 		.then(function (grid) {
 			res.json(grid);

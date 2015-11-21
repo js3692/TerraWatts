@@ -68,8 +68,9 @@ schema.pre('save', function (next) {
         then updates firebase game object.
     */
     
-    var firebasePath = firebaseHelper.getConnection(this.key);
-    if(firebasePath) firebasePath.set(gridSnapshot);
+    firebaseHelper
+        .getConnection(this.key)
+        .set(gridSnapshot);
     
 	next();
 });
