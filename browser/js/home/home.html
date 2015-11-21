@@ -1,11 +1,20 @@
 <section id="home">
-	<p ng-hide="loggedIn">Login to create, join, or watch a game</p>
-	<div ng-show="loggedIn">
-		<button ng-click="newGame()">New Game</button>
-		<h4>Join a Game</h4>
-		<div ng-repeat="grid in joinable">
-			<a ng-click="joinGame(grid._id)">{{grid._id}}</a>
-			<p>Available slots: {{6 - grid.users.length}}</p>
-		</div>
-	</div>
+  <p ng-hide="loggedIn">Login to create, join, or watch a game</p>
+    <div class="container" ng-show="loggedIn">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="row">
+            <h2>Games <button class="pull-right btn new-game-btn btn-default btn-lg" ng-click="newGame()">Create a new game</button></h2>
+            
+          </div>
+          <div class="row">
+              <div ng-repeat="grid in joinableGames">
+                <div class="panel-body">
+                  {{grid._id}}<button ng-click="joinGame(grid._id)"class="btn btn-default pull-right"> Join <span class="badge">{{6 - grid.users.length}}</span></button> 
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+  </div>
 </section>

@@ -11,30 +11,45 @@ app.config(function ($stateProvider) {
     });
 });
 
-app.controller('homeCtrl', function ($scope, joinableGames, GridFactory, $state, AuthService, AUTH_EVENTS) {
-	$scope.loggedIn = false;
-	AuthService.getLoggedInUser()
+app.controller('homeCtrl', function ($scope, joinableGames, GridFactory, $state, AuthService, AUTH_EVENTS, $uibModal) {
+	
+    $scope.loggedIn = false;
+	
+    AuthService.getLoggedInUser()
 	.then(function(user) {
 		if(user) $scope.loggedIn = true;
 	})
+    
 	$scope.$on(AUTH_EVENTS.logoutSuccess, function() {
 		$scope.loggedIn = false;
 	})
 
-	$scope.joinable = joinableGames;
+	$scope.joinableGames = joinableGames;
 
 	$scope.newGame = function() {
 		GridFactory.newGame()
-		.then(function() {
-			$state.go('grid');
-		})
+		.then(openModal)
 	}
 
 	$scope.joinGame = function(gridId) {
 		GridFactory.joinGame(gridId)
-		.then(function() {
-			$state.go('grid');
-		})
+		.then(openModal)
 	}
-	
+    
+    function openModal() {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'js/grid/grid.html',
+            controller: 'GridCtrl',
+            size: 'sm',
+            resolve: {
+                theGrid: function ($stateParams, GridFactory) {
+                    return GridFactory.getCachedGrid();
+                },
+                thePlayer: function(AuthService) {
+                    return AuthService.getLoggedInUser();
+                }
+            }
+        });
+    }
 })

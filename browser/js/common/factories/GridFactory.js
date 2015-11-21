@@ -31,7 +31,7 @@ app.factory('GridFactory', function ($http) {
 
 	GridFactory.start = function(gridId) {
 		return $http.put(baseUrl + gridId + '/start')
-		.then(toData)
+		.then(toData);
 	}
 
 	GridFactory.fetchOne = function(gridId) {
@@ -45,7 +45,7 @@ app.factory('GridFactory', function ($http) {
 	}
     
     GridFactory.getCachedGrid = function(id){
-        if(id || !cachedGrid) return GridFactory.joinGame(id);
+        if(id && !cachedGrid) return GridFactory.fetchOne(id);
         return cachedGrid;
     }
     

@@ -24,29 +24,27 @@ var schema = new mongoose.Schema({
     }
 });
 
-schema.methods.addUser = function (user) {
+schema.methods.addUser = function (newUser) {
     
     if (this.game) throw new Error('The Game already exists');
 
     if (this.users.length === 6) throw new Error('The Game is already full');
 
-    if (this.users.indexOf(user._id) > -1) return Promise.resolve(this);
+    if (this.users.some(user => user._id.equals(newUser._id))) return Promise.resolve(this);
 
-	
-	this.users.push(user);
+	this.users.push(newUser);
 	return this.save();
 };
 
 schema.methods.removeUser = function (userId) {
 	var userIndex = this.users.indexOf(userId);
-	console.log("before splice", this)
 	this.users.splice(userIndex,1);
-	console.log("after splice", this)
 	return this.save();
-}
+}   
 
 schema.statics.getJoinable = function() {
 	return this.find({})
+        .populate('users')
 		.then(function (grids) {
 			return grids.filter(function (grid) {
 				return !grid.game && !grid.complete;
