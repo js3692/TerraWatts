@@ -13,7 +13,7 @@ module.exports = function(){
             this.color = color;
 
 
-            this.resources = {};
+            this.resources = {coal: 0, oil: 0, trash: 0, nuke: 0};
 
         }
     }
