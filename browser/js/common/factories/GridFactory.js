@@ -4,6 +4,7 @@ app.factory('GridFactory', function ($http) {
 	GridFactory.newGame = function() {
 		return $http.post('/api/grid')
 		.then(function (response) {
+			console.log("response.data", response.data)
 			return response.data;
 		})
 	}
@@ -39,6 +40,7 @@ app.factory('GridFactory', function ($http) {
 	GridFactory.getJoinableGames = function() {
 		return $http.get('/api/grid/canjoin')
 		.then(function(response) {
+            console.log(response.data);
 			return response.data;
 		})
 	}

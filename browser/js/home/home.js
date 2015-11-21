@@ -24,9 +24,9 @@ app.controller('homeCtrl', function ($scope, joinableGames, GridFactory, $state,
 	$scope.joinable = joinableGames;
 
 	$scope.newGame = function() {
-		console.log("in new game")
 		GridFactory.newGame()
 		.then(function(grid) {
+			console.log("in new game's then")
 			$state.go('grid', {gridId: grid._id})
 		})
 	}

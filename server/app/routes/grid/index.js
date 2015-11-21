@@ -1,7 +1,7 @@
 var router = require('express').Router();
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-var firebaseHelper = require("./firebase");
+var firebaseHelper = require("../../../firebase");
 
 var fbRef = firebaseHelper.base();
 
@@ -18,14 +18,14 @@ router.post('/', function (req, res, next) {
 		return grid.populate("users");
 	})
 	.then(function(grid) {
-        
-        // this is the id of the array element in firebase.
+
+        // grid.key is the id of the array element in firebase.
 		grid.key = fbRef.push(grid.toObject()).key();
         firebaseHelper.setConnection(grid.key);
         return grid.save();
 	})
     .then(function(grid){
-        res.sendStatus(201);
+        res.status(201).send(grid);
     })
 	.catch(next);
 });
@@ -33,6 +33,7 @@ router.post('/', function (req, res, next) {
 router.get('/canjoin', function (req, res, next) {
 	Grid.getJoinable()
 	.then(function (joinableGrids) {
+        console.log('these are the joinable grids', joinableGrids);
 		res.json(joinableGrids);
 	})
 	.catch(next);
@@ -48,16 +49,24 @@ router.param('gridId', function(req, res, next, gridId){
 })
 
 router.get('/:gridId', function (req, res, next) {
-	if(req.grid) res.sendStatus(200);
+	if(req.grid) res.status(200).json(req.grid);
 });
 
 router.post('/:gridId/join', function (req, res, next) {
 	req.grid.addUser(req.user)
-	   .then(function (grid) {
+        .then(function (grid) {
             res.json(grid);
-	   })
-	   .catch(next);
+        }).catch(next);
 });
+
+router.post('/:gridId/leave', function (req, res, next) {
+	console.log("in router leave post")
+	req.grid.removeUser(req.user)
+		.then(function (grid) {
+			res.json(grid);
+		})
+		.catch(next);
+})
 
  router.put('/:gridId/start', function(req, res, next) {
      

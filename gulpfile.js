@@ -16,6 +16,7 @@ var mocha = require('gulp-mocha');
 var karma = require('karma').server;
 var istanbul = require('gulp-istanbul');
 var notify = require('gulp-notify');
+var bower = require('gulp-bower');
 
 // Development tasks
 // --------------------------------------------------------------
@@ -118,14 +119,21 @@ gulp.task('buildJSProduction', function () {
 
 gulp.task('buildProduction', ['buildCSSProduction', 'buildJSProduction']);
 
+// Bower Installation
+// --------------------------------------------------------------
+gulp.task('bower', function() {
+  return bower()
+    .pipe(gulp.dest('bower_components/'));
+});
+
 // Composed tasks
 // --------------------------------------------------------------
 
 gulp.task('build', function () {
     if (process.env.NODE_ENV === 'production') {
-        runSeq(['buildJSProduction', 'buildCSSProduction']);
+        runSeq(['bower', 'buildJSProduction', 'buildCSSProduction']);
     } else {
-        runSeq(['buildJS', 'buildCSS']);
+        runSeq(['bower', 'buildJS', 'buildCSS']);
     }
 });
 

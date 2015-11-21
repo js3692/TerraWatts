@@ -39,4 +39,15 @@ function normalize (realDistance) {
   return Math.floor(realDistance / 100000) + Math.floor(Math.random() * 5);
 }
 
+schema.statics.findByRegions = function (regions) {
+  return this.find().populate('cities')
+  .then(function (connections) {
+    return connections.filter(function (connection) {
+      return connection.cities.every(function (city) {
+        return regions.indexOf(city.region) > -1;
+      })
+    })
+  })
+}
+
 mongoose.model('Connection', schema);
