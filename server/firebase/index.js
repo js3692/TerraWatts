@@ -10,6 +10,7 @@ module.exports = {
         gridHash[key] = new Firebase(baseUrl + key);
     },
     getConnection: function(key) {
+        if(!gridHash[key]) this.setConnection(key);
         return gridHash[key];
     }
 };

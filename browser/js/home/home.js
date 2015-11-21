@@ -25,16 +25,15 @@ app.controller('homeCtrl', function ($scope, joinableGames, GridFactory, $state,
 
 	$scope.newGame = function() {
 		GridFactory.newGame()
-		.then(function(grid) {
-			console.log("in new game's then")
-			$state.go('grid', {gridId: grid._id})
+		.then(function() {
+			$state.go('grid');
 		})
 	}
 
 	$scope.joinGame = function(gridId) {
 		GridFactory.joinGame(gridId)
-		.then(function (grid) {
-			$state.go('grid', {gridId: grid._id})
+		.then(function() {
+			$state.go('grid');
 		})
 	}
 	
