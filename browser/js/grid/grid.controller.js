@@ -1,4 +1,4 @@
-app.controller('GridCtrl', function ($scope, $state, theGrid, thePlayer, GridFactory) {
+app.controller('GridCtrl', function ($scope, $state, theGrid, thePlayer, GridFactory, $uibModalInstance) {
 
 	$scope.grid = theGrid;
 	$scope.me = thePlayer;
@@ -8,13 +8,14 @@ app.controller('GridCtrl', function ($scope, $state, theGrid, thePlayer, GridFac
             .start($scope.grid._id)
             .then(function(updatedGrid){
                 $state.go('game', { id: $scope.grid._id });
+                $uibModalInstance.dismiss('cancel');
             })
 	}
 
 	$scope.leaveGame = function() {
 		GridFactory.leaveGame($scope.grid._id)
 		.then(function () {
-			$state.go('home');
+			$uibModalInstance.dismiss('cancel');
 		})
 	}
 })

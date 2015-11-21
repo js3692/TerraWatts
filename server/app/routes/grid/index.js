@@ -15,17 +15,14 @@ router.post('/', function (req, res, next) {
 		return grid.addUser(req.user);
 	})
 	.then(function (grid) {
-		return grid.populate("users");
-	})
+		return Grid.populate(grid, "users");
+    })
 	.then(function(grid) {
-
+        res.status(201).send(grid);
         // grid.key is the id of the array element in firebase.
 		grid.key = fbRef.push(grid.toObject()).key();
         return grid.save();
 	})
-    .then(function(grid){
-        res.status(201).send(grid);
-    })
 	.catch(next);
 });
 
@@ -39,6 +36,7 @@ router.get('/canjoin', function (req, res, next) {
 
 router.param('gridId', function(req, res, next, gridId){
     Grid.findById(gridId)
+        .populate('users')
         .then(function(grid){
             req.grid = grid;
             next();

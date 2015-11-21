@@ -2,5 +2,8 @@
 	<button ng-click="startGame()">Start Game</button>
 	<button ng-click="leaveGame()">Leave Game</button>
 	<h6>Players:</h6>
-	<p ng-repeat="user in grid.users">{{user}}</p>
+    <ul>
+        <li ng-repeat="user in grid.users">{{ user.username }}</li>
+    </ul>
+	
 </div>
