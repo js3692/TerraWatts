@@ -1,10 +1,18 @@
 app.factory('FirebaseFactory', function($firebaseObject, GridFactory){
     var baseUrl = "https://amber-torch-6713.firebaseio.com/";
-   
+    var connection;
+    
     return {
+        setConnection: function(){
+            return GridFactory.getCachedGrid()
+                .then(function(grid){
+                    connection = new Firebase(baseUrl + grid.key);
+                    return connection;
+                });
+        },
         getConnection: function(){
-            var grid = GridFactory.getCachedGrid();
-            return new Firebase(baseUrl + grid.key);
+            if(!connection) return this.setConnection();
+            return connection;
         }
     };
 }); 

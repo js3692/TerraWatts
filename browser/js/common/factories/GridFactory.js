@@ -1,4 +1,4 @@
-app.factory('GridFactory', function ($http) {
+app.factory('GridFactory', function ($http, $q) {
 	var baseUrl = '/api/grid/';
     var GridFactory = {};
     var cachedGrid;
@@ -14,39 +14,39 @@ app.factory('GridFactory', function ($http) {
 
 	GridFactory.newGame = function() {
 		return $http.post(baseUrl)
-		.then(toData)
-        .then(updateCachedGrid);
+            .then(toData)
+            .then(updateCachedGrid);
 	}
 
 	GridFactory.joinGame = function(gridId) {
 		return $http.post(baseUrl + gridId + '/join')
-		.then(toData)
-        .then(updateCachedGrid);
+            .then(toData)
+            .then(updateCachedGrid);
 	}
 
 	GridFactory.leaveGame = function(gridId) {
 		return $http.post(baseUrl + gridId + '/leave')
-		.then(toData)
+		  .then(toData)
 	}
 
 	GridFactory.start = function(gridId) {
 		return $http.put(baseUrl + gridId + '/start')
-		.then(toData);
+		  .then(toData);
 	}
 
 	GridFactory.fetchOne = function(gridId) {
 		return $http.get(baseUrl + gridId)
-		.then(toData)
+		  .then(toData)
 	}
 
 	GridFactory.getJoinableGames = function() {
 		return $http.get(baseUrl + 'canjoin')
-		.then(toData)
+		  .then(toData)
 	}
     
     GridFactory.getCachedGrid = function(id){
         if(id && !cachedGrid) return GridFactory.fetchOne(id);
-        return cachedGrid;
+        return $q.resolve(cachedGrid);
     }
     
 	return GridFactory;

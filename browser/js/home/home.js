@@ -43,11 +43,11 @@ app.controller('homeCtrl', function ($scope, joinableGames, GridFactory, $state,
             controller: 'GridCtrl',
             size: 'sm',
             resolve: {
-                theGrid: function ($stateParams, GridFactory) {
-                    return GridFactory.getCachedGrid();
-                },
                 thePlayer: function(AuthService) {
                     return AuthService.getLoggedInUser();
+                },
+                firebaseConnection: function(FirebaseFactory){
+                    return FirebaseFactory.getConnection();
                 }
             }
         });
