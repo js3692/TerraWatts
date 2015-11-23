@@ -7,6 +7,9 @@ app.config(function($stateProvider){
 			grid: function (GridFactory) {
 				return GridFactory.getCachedGrid();
 			}
-		}
-	})
-}); 
+		},
+    data: {
+      authenticate: true
+    }
+	});
+});
