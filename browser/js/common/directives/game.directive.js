@@ -2,7 +2,7 @@ app.directive('game', function($parse) {
 	return {
 		restrict: 'E',
 		replace: true,
-		template: '<div id="gameMap"></div>',
+		template: '<div><div id="tooltip"><div id="gameMap"></div></div>',
 		controller: 'GameCtrl',
 		scope: {
 			data: '='
@@ -36,7 +36,17 @@ app.directive('game', function($parse) {
 							.attr('slot15', function(d){return d.slot15.player.color})
 							.attr('slot20', function(d){return d.slot20.player.color})
 							.on('mouseover', mouseOver)
-							.on('mouseout', mouseOut)
+							.on('mouseout', mouseOut);
+
+						var path = map.selectAll('g.connection')
+
+						path.enter().insert('svg:g')
+							.append('path')
+							.attr('class', 'connection')
+							.attr('distance', function(d) {return d.distance})
+							.attr('d', function(d) {
+								var path = "M" + d.cityNames[0].x + "," + d.cityNames[0].y + "L" + d.cityNames[1].x + "," + d.cityNames[1].y
+							});
 					}
 					
 				}

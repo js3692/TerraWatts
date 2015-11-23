@@ -7,4 +7,5 @@ app.controller('GameCtrl', function($scope, gridConnection){
     	{name: 'city3', x: 600, y: 600, slot10: 'player2', slot15: 'player1', slot20: null},
     	{name: 'city4', x: 800, y: 800, slot10: 'player3', slot15: 'player2', slot20: 'player1'}
     ];
+
 });
