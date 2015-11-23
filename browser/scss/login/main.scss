@@ -1,4 +1,25 @@
-#login-form {
-  width: 60%;
-  margin: 0 auto;
+#login-main {
+	color: #ddd;
+	background: #132330;
+	min-height: 100vh;
+	height: 100%;
+	width: 100%;
+	.login-container	{
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 100%;
+		h1 {
+			text-align: center;
+		}
+	}
+	#login-form {
+
+	}
+	.signup-message {
+		text-align: center;
+		a {
+			text-decoration: none;
+		}
+	}
 }

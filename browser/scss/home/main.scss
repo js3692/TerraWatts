@@ -1,6 +1,21 @@
 #home {
-  h2 {
-    text-align: left;
+	background: #132330;
+	color: #ddd;
+	background: #132330;
+	min-height: 100vh;
+	height: 100%;
+	width: 100%;
+	padding-top: 60px;
+  h1 {
+    text-align: center;
+  }
+  .top-menu {
+  	margin: auto;
+  	margin-top: 60px;
+  	margin-bottom: 30px;
+  }
+  tr td {
+  	vertical-align: middle;
   }
 }
 
