@@ -20,8 +20,8 @@ app.factory('GridFactory', function ($http, $q) {
 
 	GridFactory.joinGame = function(gridId) {
 		return $http.post(baseUrl + gridId + '/join')
-            .then(toData)
-            .then(updateCachedGrid);
+		.then(toData)
+		.then(updateCachedGrid);
 	}
 
 	GridFactory.leaveGame = function(gridId) {

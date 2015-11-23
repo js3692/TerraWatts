@@ -7,9 +7,13 @@ app.config(function ($stateProvider) {
         	joinableGamesFromServer: function (GridFactory) {
         		return GridFactory.getJoinableGames();
         	}
+        },
+        data: {
+          authenticate: true
         }
     });
 });
+
 
 app.controller('HomeCtrl', function ($scope, joinableGamesFromServer, GridFactory, $state, AuthService, AUTH_EVENTS, $uibModal, FirebaseFactory, $firebaseObject) {
     
@@ -24,39 +28,41 @@ app.controller('HomeCtrl', function ($scope, joinableGamesFromServer, GridFactor
 		GridFactory.newGame()
 		.then(openModal)
 	}
-
-	$scope.joinGame = function(gridId) {
-		GridFactory.joinGame(gridId)
-		.then(openModal)
-	}
-    
-    function openModal() {
-        var modalInstance = $uibModal.open({
-            animation: true,
-            templateUrl: 'js/grid/grid.html',
-            controller: 'GridCtrl',
-            size: 'sm',
-            resolve: {
-                thePlayer: function(AuthService) {
-                    return AuthService.getLoggedInUser();
-                },
-                firebaseConnection: function(FirebaseFactory){
-                    return FirebaseFactory.getConnection();
-                }
-            }
-        });
-    }
-    
+	
     $scope.loggedIn = false;
 	
     AuthService.getLoggedInUser()
-	.then(function(user) {
-		if(user) $scope.loggedIn = true;
-	})
-    
-	$scope.$on(AUTH_EVENTS.logoutSuccess, function() {
-		$scope.loggedIn = false;
-	})
+      .then(function(user) {
+        if(user) $scope.loggedIn = true;
+      });
+
+      $scope.$on(AUTH_EVENTS.logoutSuccess, function() {
+          $scope.loggedIn = false;
+    });
+
+    $scope.logout = function () {
+      AuthService.logout().then(function () {
+        $state.go('login');
+      });
+    };
 
 
-})
+	$scope.newGame = openGameSettings;
+
+	$scope.joinGame = function (gridId) {
+		GridFactory.joinGame(gridId)
+          .then(function () {
+            $state.go('grid', { id: gridId });
+          });
+	};
+
+    function openGameSettings() {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        templateUrl: 'js/settings/settings.html',
+        controller: 'SettingsCtrl',
+        size: 'lg'
+      });
+    }
+});
+

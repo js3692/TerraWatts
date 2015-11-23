@@ -12,6 +12,9 @@ app.config(function ($stateProvider) {
 			thePlayer: function(AuthService) {
 				return AuthService.getLoggedInUser();
 			}
-		}
-	})
-})
+		},
+    data: {
+      authenticate: true
+    }
+	});
+});

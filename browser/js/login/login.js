@@ -10,6 +10,10 @@ app.config(function ($stateProvider) {
 
 app.controller('LoginCtrl', function ($scope, AuthService, $state) {
 
+    AuthService.getLoggedInUser().then(function (user) {
+        if(user) $state.go('home');
+    });
+
     $scope.login = {};
     $scope.error = null;
 
