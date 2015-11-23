@@ -5,3 +5,4 @@ public
 .DS_Store
 coverage
 bower_components
+browser/lib
