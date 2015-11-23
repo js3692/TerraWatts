@@ -1,11 +1,10 @@
 app.config(function ($stateProvider) {
-
 	$stateProvider.state('signup', {
 		url: '/signup',
 		templateUrl: 'js/signup/signup.html',
 		controller: 'SignupCtrl'
 	})
-})
+});
 
 app.controller('SignupCtrl', function ($scope, AuthService, UserFactory, $state) {
 
@@ -17,13 +16,12 @@ app.controller('SignupCtrl', function ($scope, AuthService, UserFactory, $state)
 
 		UserFactory.createUser(loginInfo)
 		.then(function(user) {
-			if(user) return AuthService.login(loginInfo)
+			if(user) return AuthService.login(loginInfo);
 		})
 		.then(function() {
-			$state.go('home');
-		}).catch(function(err) {
-			console.log(err)
-			$scope.error = 'Invalid login credentials.'
+			$state.go('login');
+		}, function() {
+			$scope.error = 'Try another username and/or e-mail';
 		});
 
 	};

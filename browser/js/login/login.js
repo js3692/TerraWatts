@@ -3,16 +3,32 @@ app.config(function ($stateProvider) {
     $stateProvider.state('login', {
         url: '/',
         templateUrl: 'js/login/login.html',
-        controller: 'LoginCtrl'
+        controller: 'LoginCtrl',
+        resolve: {
+          userDoesExist: function (AuthService) {
+            return AuthService.getLoggedInUser();
+          }
+        }
     });
 
 });
 
-app.controller('LoginCtrl', function ($scope, AuthService, $state) {
+app.controller('LoginCtrl', function ($scope, userDoesExist, AuthService, $state, AUTH_EVENTS) {
 
-    AuthService.getLoggedInUser().then(function (user) {
-        if(user) $state.go('home');
+    $scope.loggedIn = false;
+
+    if(userDoesExist) {
+      $scope.loggedIn = true;
+      $scope.username = userDoesExist.username;
+    }
+
+    $scope.$on(AUTH_EVENTS.logoutSuccess, function() {
+      $scope.loggedIn = false;
     });
+
+    $scope.continue = function () {
+      $state.go('home');
+    };
 
     $scope.login = {};
     $scope.error = null;

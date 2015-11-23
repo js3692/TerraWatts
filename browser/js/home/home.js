@@ -4,9 +4,9 @@ app.config(function ($stateProvider) {
         templateUrl: 'js/home/home.html',
         controller: 'HomeCtrl',
         resolve: {
-        	joinableGamesFromServer: function (GridFactory) {
-        		return GridFactory.getJoinableGames();
-        	}
+          joinableGamesFromServer: function (GridFactory) {
+            return GridFactory.getJoinableGames();
+          }
         },
         data: {
           authenticate: true
@@ -14,35 +14,18 @@ app.config(function ($stateProvider) {
     });
 });
 
-
 app.controller('HomeCtrl', function ($scope, joinableGamesFromServer, GridFactory, $state, AuthService, AUTH_EVENTS, $uibModal, FirebaseFactory) {
     
     /* populates joinable game from backend, then uses live updates from firebase */
     $scope.games = FirebaseFactory.getBase();
     $scope.joinableGamesFromServer = joinableGamesFromServer;
 	$scope.getLiveJoinableGames = FirebaseFactory.getLiveJoinableGames.bind(null, $scope);
-    
-	$scope.newGame = function() {
-		GridFactory.newGame()
-		.then(openModal)
-	}
 	
-    $scope.loggedIn = false;
-	
-    AuthService.getLoggedInUser()
-      .then(function(user) {
-        if(user) $scope.loggedIn = true;
-      });
-
-      $scope.$on(AUTH_EVENTS.logoutSuccess, function() {
-          $scope.loggedIn = false;
+   $scope.logout = function () {
+    AuthService.logout().then(function () {
+      $state.go('login');
     });
-
-    $scope.logout = function () {
-      AuthService.logout().then(function () {
-        $state.go('login');
-      });
-    };
+   }
 
 	$scope.newGame = openGameSettings;
 
@@ -61,5 +44,5 @@ app.controller('HomeCtrl', function ($scope, joinableGamesFromServer, GridFactor
         size: 'lg'
       });
     }
+                                         
 });
-

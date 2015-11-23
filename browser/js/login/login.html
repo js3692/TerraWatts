@@ -2,16 +2,13 @@
   <div class="container login-container">
     <div class="row">
       <div class="col-sm-offset-4 col-sm-4">
-        <h1>Welcome</h1>
+        <h1>{{ loggedIn? "Welcome Back" : "Welcome" }}</h1>
         <hr>
-        <br>
-        <br>
+        <br ng-if="!loggedIn">
+        <br ng-if="!loggedIn">
       </div>
     </div>
-    <form id="login-form" class="form-horizontal" name="loginForm" ng-submit="loginForm.$valid && sendLogin(login)">
-      <alert type="danger" ng-show="error">
-          {{ error }}
-      </alert>
+    <form id="login-form" class="form-horizontal" name="loginForm" ng-submit="loginForm.$valid && sendLogin(login)" ng-if="!loggedIn">
       <div class="form-group">
         <label for="username" class="col-sm-offset-3 col-sm-2 control-label">Username</label>
         <div class="col-sm-3">
@@ -24,7 +21,12 @@
           <input type="password" ng-model="login.password" required class="form-control" id="login-password" placeholder="Password">
         </div>
       </div>
-      <br>
+      <div class="col-sm-offset-4 col-sm-4">
+        <uib-alert type="danger" ng-show="error">
+            {{ error }}
+        </uib-alert>
+      </div>
+      <br ng-if="!loggedIn">
       <div class="form-group">
         <div class="col-sm-offset-4 col-sm-4">
           <button type="submit" class="btn btn-primary btn-block">Log In</button>
@@ -32,11 +34,20 @@
       </div>
     </form>
     <br>
-    <div class="row">
+    <div class="row" ng-if="!loggedIn">
       <div class="col-sm-offset-4 col-sm-4 signup-message">
         <hr>
         <br>
-        New to Grid? <a ui-sref="signup">Sign up </a> now.
+        <h4>
+          New to Grid? <a ui-sref="signup">Sign up </a> now.
+        </h4>
+      </div>
+    </div>
+    <div class="row" ng-if="loggedIn">
+      <div class="col-sm-offset-4 col-sm-4">
+        <button class="btn btn-success btn-block btn-lg" ng-click="continue()">Continue as {{ username }}</button>
+        <br>
+        <hr>
       </div>
     </div>
   </div>
