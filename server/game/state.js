@@ -21,14 +21,14 @@ var State = function () {
    
 */
 
-State.prototype.validate = function() {
+State.prototype.validate = function(requested) {
     
     var validationAttempt = {};
     validationAttempt.sucess = true;
     
     this.validators.forEach(function(validator){
         try {
-            validator(this.game);
+            validator(this.game, requested);
         } catch(err) {
             if(!validationAttempt.errors) validationAttempt.errors = [];
             validationAttempt.errors.push(err.message);
