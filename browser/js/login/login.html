@@ -1,17 +1,43 @@
-<form id="login-form" name="loginForm" ng-submit="loginForm.$valid && sendLogin(login)">
-
-    <alert type="danger" ng-show="error">
-        {{ error }}
-    </alert>
-
-    <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" ng-model="login.username" required class="form-control" id="username" placeholder="Enter username">
+<div id="login-main">
+  <div class="container login-container">
+    <div class="row">
+      <div class="col-sm-offset-4 col-sm-4">
+        <h1>Welcome</h1>
+        <hr>
+        <br>
+        <br>
+      </div>
     </div>
-    <div class="form-group">
-        <label for="login-password">Password</label>
-        <input type="password" ng-model="login.password" required class="form-control" id="login-password" placeholder="Password">
+    <form id="login-form" class="form-horizontal" name="loginForm" ng-submit="loginForm.$valid && sendLogin(login)">
+      <alert type="danger" ng-show="error">
+          {{ error }}
+      </alert>
+      <div class="form-group">
+        <label for="username" class="col-sm-offset-3 col-sm-2 control-label">Username</label>
+        <div class="col-sm-3">
+          <input type="text" ng-model="login.username" required class="form-control" id="username" placeholder="Enter username">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="login-password" class="col-sm-offset-3 col-sm-2 control-label">Password</label>
+        <div class="col-sm-3">
+          <input type="password" ng-model="login.password" required class="form-control" id="login-password" placeholder="Password">
+        </div>
+      </div>
+      <br>
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-4">
+          <button type="submit" class="btn btn-primary btn-block">Log In</button>
+        </div>
+      </div>
+    </form>
+    <br>
+    <div class="row">
+      <div class="col-sm-offset-4 col-sm-4 signup-message">
+        <hr>
+        <br>
+        New to Grid? <a ui-sref="signup">Sign up </a> now.
+      </div>
     </div>
-    <button type="submit" class="btn btn-default">Submit</button>
-    <button class="btn btn-default" ui-sref="signup">Signup</button>
-</form>
+  </div>
+</div>
