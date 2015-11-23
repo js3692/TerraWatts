@@ -1,18 +1,20 @@
 var _ = require('lodash');
 
 function totalConnectionCost(citiesToAdd, network, cities, connections) {
-	var orders = permutations(citiesToAdd);
-	var minCost = Infinity;
-	orders.forEach(function (order) {
-		var cost = 0;
-		var networkCopy = network.slice();
-		order.forEach(function (dest) {
-			cost += cheapestDistanceTo(dest, networkCopy, cities, connections);
-			networkCopy.push(dest);
-		})
-		if (cost < minCost) minCost = cost;
-	})
-	return minCost;
+	var networkCopy = network.slice();
+	var citiesToAddCopy = citiesToAdd.slice();
+	var cost = 0;
+	while(citiesToAddCopy.length) {
+		var distances = citiesToAddCopy.map(function(city) {
+			return cheapestDistanceTo(city, networkCopy, cities, connections)
+		});
+		var cheapest = Math.min.apply(null, distances);
+		var cheapestIndex = distances.indexOf(cheapest);
+		cost += cheapest;
+		console.log('adding ' + citiesToAddCopy[cheapestIndex].name + ' for ' + cheapest);
+		networkCopy.push(citiesToAddCopy.splice(cheapestIndex,1)[0]);
+	}
+	return cost;
 }
 
 function cheapestDistanceTo(destination, network, cities, connections) {
@@ -96,17 +98,3 @@ function getNewCurrent(data) {
 	}
 }
 
-function permutations(arr) {
-	var perms = [];
-	if(arr.length === 1) {
-		perms.push(arr);
-	} else {
-		for (var i = 0, len = arr.length; i < len; i++) {
-			var arrWithout = arr.slice(0,i).concat(arr.slice(i+1));
-			permutations(arrWithout).forEach(function (perm) {
-				perms.push([arr[i]].concat(perm));
-			})
-		}
-	}
-	return perms;
-}
