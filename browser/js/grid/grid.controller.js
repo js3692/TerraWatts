@@ -1,23 +1,21 @@
-app.controller('GridCtrl', function ($scope, $state, thePlayer, GridFactory, $uibModalInstance, firebaseConnection, $firebaseObject) {
+app.controller('GridCtrl', function ($scope, $state, thePlayer, GridFactory, gridConnection) {
     
-    var syncObject = $firebaseObject(firebaseConnection);
-    syncObject.$bindTo($scope, "grid");
+    $scope.grid = gridConnection;
     
 	$scope.me = thePlayer;
     
 	$scope.startGame = function() {
 		GridFactory
-            .start($scope.grid._id)
+            .start($scope.grid.id)
             .then(function(updatedGrid){
-                $state.go('game', { id: $scope.grid._id });
-                $uibModalInstance.dismiss('cancel');
+                $state.go('game', { id: $scope.grid.id });
             })
 	}; 
 
 	$scope.leaveGame = function() {
-		GridFactory.leaveGame($scope.grid._id)
+		GridFactory.leaveGame($scope.grid.id)
 		.then(function() {
-			$uibModalInstance.dismiss('cancel');
+			$state.go('home');
 		})
 	};
 })

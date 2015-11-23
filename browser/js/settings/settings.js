@@ -1,9 +1,10 @@
 app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, GridFactory) {
+ 
   $scope.ok = function () {
     GridFactory.newGame()
-      .then(function () {
+      .then(function (grid) {
         $uibModalInstance.close();
-        $state.go('grid');
+        $state.go('grid', { id: grid.id, key: grid.key });
       });
   };
 

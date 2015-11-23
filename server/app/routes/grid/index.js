@@ -18,9 +18,9 @@ router.post('/', function (req, res, next) {
 		return Grid.populate(grid, "users");
     })
 	.then(function(grid) {
-        res.status(201).send(grid);
         // grid.key is the id of the array element in firebase.
 		grid.key = fbRef.push(grid.toObject()).key();
+        res.status(201).json(grid);
         return grid.save();
 	})
 	.catch(next);
