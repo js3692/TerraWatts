@@ -24,7 +24,7 @@ var schema = new mongoose.Schema({
     },
     availableColors: {
     	type: [String],
-    	default: ['red', 'green', 'yellow', 'purple', 'black', 'blue'];
+    	default: ['red', 'green', 'yellow', 'purple', 'black', 'blue']
     }
 });
 
