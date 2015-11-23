@@ -1,8 +1,8 @@
 app.config(function ($stateProvider) {
     $stateProvider.state('home', {
-        url: '/',
+        url: '/home',
         templateUrl: 'js/home/home.html',
-        controller: 'homeCtrl',
+        controller: 'HomeCtrl',
         resolve: {
         	joinableGames: function (GridFactory) {
         		return GridFactory.getJoinableGames();
@@ -11,7 +11,7 @@ app.config(function ($stateProvider) {
     });
 });
 
-app.controller('homeCtrl', function ($scope, joinableGames, GridFactory, $state, AuthService, AUTH_EVENTS, $uibModal) {
+app.controller('HomeCtrl', function ($scope, joinableGames, GridFactory, $state, AuthService, AUTH_EVENTS, $uibModal) {
 	
     $scope.loggedIn = false;
 	

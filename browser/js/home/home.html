@@ -1,20 +1,30 @@
 <section id="home">
-  <p ng-hide="loggedIn">Login to create, join, or watch a game</p>
-    <div class="container" ng-show="loggedIn">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="row">
-            <h2>Games <button class="pull-right btn new-game-btn btn-default btn-lg" ng-click="newGame()">Create a new game</button></h2>
-            
-          </div>
-          <div class="row">
-              <div ng-repeat="grid in joinableGames">
-                <div class="panel-body">
-                  {{grid._id}}<button ng-click="joinGame(grid._id)"class="btn btn-default pull-right"> Join <span class="badge">{{6 - grid.users.length}}</span></button> 
-                </div>
-              </div>
-          </div>
-        </div>
-      </div>
+  <div class="container" ng-show="loggedIn">
+    <h1>Welcome, welcome, welcome</h1>
+    <div class="row top-menu">
+      <button class="btn btn-warning btn-lg"><span class="glyphicon glyphicon-plus"></span>Create New</button>
+    </div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th style="text-align: center;">Room</th>
+          <th>Room Name</th>
+          <th style="text-align: center;">Players</th>
+          <th style="text-align: center;">Status</th>
+          <th style="text-align: center;">Join</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="grid in joinableGames">
+          <td style="text-align: center;">1</td>
+          <td>{{ grid._id }}</td>
+          <td style="text-align: center;">{{ 6 - grid.users.length }}</td>
+          <td style="text-align: center;">Waiting</td>
+          <td style="text-align: center;">
+            <button ng-click="joinGame(grid._id)" class="btn btn-success">Join</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </section>
