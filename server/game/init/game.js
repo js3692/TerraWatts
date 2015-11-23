@@ -1,34 +1,23 @@
 var restockRatesMaster = require('./restock.js');
-var regions = require('./regions.js')
+var regions = require('./regions.js');
+var Player = require('./player.js').createPlayer;
 var mongoose = require('mongoose');
-// var connectToDb = require('../db');
 var City = mongoose.model('City');
 var Plant = mongoose.model('Plant');
 var Connection = mongoose.model('Connection');
-// var plants = require('./testNewGame')[0];
-var players = require('./testNewGame')[1];
-// var resourceRound = require('./resourceRound');
+var Promise = require('bluebird');
 
 function Game (players, plants, cities, connections) {
-	this.players = shuffle(players);
-	if(this.players.length < 2 || this.players.length > 6) {
+	if(players.length < 2 || players.length > 6) {
 		throw new Error('not a valid number of players');
 	}
-	this.turnOrder = shuffle(this.players);
+	this.turnOrder = shuffle(players);
 
 	this.turn = 0;
 	this.phase = 1;
 
-	var regionsInPlay = regions.randomize(this.turnOrder.length);
-	this.cities = cities.filter(function (city) {
-		return regionsInPlay.indexOf(city.region) > -1;
-	});
-
-	this.connections = connections.filter(function (connection) {
-		return connection.cities.every(function (city) {
-			return regionsInPlay.indexOf(city.region) > -1;		
-		})
-	});
+	this.cities = cities;
+	this.connections = connections;
 
 	this.resourceMarket = {coal: 24, oil: 15, trash: 6, nuke: 2};
 	this.resourceBank = {coal: 0, oil: 9, trash: 18, nuke: 10};
@@ -42,9 +31,7 @@ function Game (players, plants, cities, connections) {
 	this.discardedPlants = [];
 	this.phase3Plants = [];
     
-    // this.currentState = new resourceRound(this);
-    // this.turn;
-    
+    // this.currentState = require('../plantState');
 }
 
 
@@ -72,17 +59,25 @@ function removePlants(shuffledPlants, numPlayers) {
 	return shuffledPlants;
 }
 
-// var plants, cities, connections;
-// Plant.find()
-// .then(function (_plants) {
-// 	plants = _plants;
-// 	return City.find()
-// })
-// .then(function (_cities) {
-// 	cities = _cities;
-// 	return Connection.find().populate('cities')
-// })
-// .then(function (_connections) {
-// 	connections = _connections;
-// })
+/* 
+takes in array of players from the front end, returns a promise for a game object
+players should come in as follows:
+	[{user: user1, color: color2}, {user: user2, color: color2}, etc.]
+*/
+module.exports = function startGame(players) {
+	var clockwiseOpts = [0,1,2,3,4,5].slice(0, players.length);
+	players = players.map(function(player) {
+		var clockwise = clockwiseOpts.splice(Math.random()*clockwiseOpts.length,1)[0];
+		return new Player(player.user, player.color, clockwise);
+	});
 
+	var regionsInPlay = regions.randomize(players.length);
+	var cityPromise = City.findByRegions(regionsInPlay);
+	var connectionPromise = Connection.findByRegions(regionsInPlay);
+	var plantPromise = Plant.find();
+	return Promise.all([cityPromise, connectionPromise, plantPromise])
+	.then(function(data) {
+		var cities = data[0], connections = data[1], plants = data[2];
+		return new Game(players, plants, cities, connections);
+	})
+}
