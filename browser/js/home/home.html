@@ -1,8 +1,9 @@
 <section id="home">
-  <div class="container" ng-show="loggedIn">
+  <div class="container">
     <h1>Welcome, welcome, welcome</h1>
     <div class="row top-menu">
-      <button class="btn btn-warning btn-lg"><span class="glyphicon glyphicon-plus"></span>Create New</button>
+      <button class="btn btn-warning btn-lg" ng-click="newGame()"><span class="glyphicon glyphicon-plus"></span> Create New</button>
+      <button class="btn btn-danger btn-lg" ng-click="logout()">Log out <span class="glyphicon glyphicon-share-alt"></span></button>
     </div>
     <table class="table table-hover">
       <thead>
