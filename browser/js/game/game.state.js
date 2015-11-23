@@ -1,11 +1,14 @@
 app.config(function($stateProvider){
 	$stateProvider.state('game', {
-		url: '/game/:id',
+		url: '/game/:id/:key',
 		controller: 'GameCtrl',
 		templateUrl: 'js/game/game.html',
 		resolve: {
-			grid: function (GridFactory) {
-				return GridFactory.getCachedGrid();
+            gridConnection: function ($stateParams, FirebaseFactory) {
+                return FirebaseFactory.getConnection($stateParams.key);
+            },
+            thePlayer: function(AuthService) {
+				return AuthService.getLoggedInUser();
 			}
 		},
     data: {

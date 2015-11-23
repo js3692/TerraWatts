@@ -1,13 +1,11 @@
 app.config(function ($stateProvider) {
 	$stateProvider.state('grid', {
-		url: '/grid/:id',
+		url: '/grid/:id/:key',
 		controller: 'GridCtrl',
 		templateUrl: 'js/grid/grid.html',
 		resolve: {
-			theGrid: function ($stateParams, GridFactory) {
-                var grid = GridFactory.getCachedGrid($stateParams.id);
-                $stateParams.id = grid._id;
-                return grid;
+			gridConnection: function ($stateParams, FirebaseFactory) {
+                return FirebaseFactory.getConnection($stateParams.key);
 			},
 			thePlayer: function(AuthService) {
 				return AuthService.getLoggedInUser();

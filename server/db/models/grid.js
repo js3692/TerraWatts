@@ -28,6 +28,9 @@ var schema = new mongoose.Schema({
     }
 });
 
+schema.set('toObject', { virtuals: true });
+schema.set('toJSON', { virtuals: true });
+
 schema.methods.addUser = function (newUser) {
     
     if (this.game) throw new Error('The Game already exists');
