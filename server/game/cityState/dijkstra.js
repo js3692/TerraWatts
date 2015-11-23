@@ -11,7 +11,6 @@ function totalConnectionCost(citiesToAdd, network, cities, connections) {
 		var cheapest = Math.min.apply(null, distances);
 		var cheapestIndex = distances.indexOf(cheapest);
 		cost += cheapest;
-		console.log('adding ' + citiesToAddCopy[cheapestIndex].name + ' for ' + cheapest);
 		networkCopy.push(citiesToAddCopy.splice(cheapestIndex,1)[0]);
 	}
 	return cost;
