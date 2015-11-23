@@ -1,21 +1,23 @@
-#login-main {
+#signup-main {
 	color: #ddd;
 	background: #132330;
 	min-height: 100vh;
 	height: 100%;
 	width: 100%;
-	.login-container	{
+	.signup-container	{
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
 		width: 100%;
 		h1 {
-			text-align: center;
+			margin-left: 1.5em;
 			font-weight: 300;
 		}
 	}
-	#login-form {
-
+	#signup-form {
+		label {
+			font-weight: 300;
+		}
 	}
 	.signup-message {
 		text-align: center;
