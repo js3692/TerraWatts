@@ -6,6 +6,7 @@ var firebaseHelper = require("../../../firebase");
 var fbRef = firebaseHelper.base();
 
 var Grid = mongoose.model('Grid');
+var User = mongoose.model('User');
 
 // Current URL: 'api/grid'
 
@@ -65,11 +66,31 @@ router.post('/:gridId/leave', function (req, res, next) {
 
  router.put('/:gridId/start', function(req, res, next) {
      
-    req.grid.game = {hey: 'I am a game'};
-    req.grid.save()
-        .then(function (grid) {
-            res.json(grid);
-        }, next);
+     require('../../../game/init')(req.body)
+        .then(function(newGame){
+            req.grid.game = newGame;
+            return req.grid.save();
+        })
+        .then(function(grid){
+            res.status(200).end();
+        })
+        .catch(next);
+ })
+ 
+ router.put('/:gridId/changeColor', function(req, res, next){
+     User.findById(req.body.userId)
+        .then(function(user){
+            user.color = req.body.color;
+            return user.save();
+        })
+        .then(function(){
+            return Grid.populate(req.grid, 'users')
+        })
+        .then(function(updatedGrid){
+            updatedGrid.save()
+            res.status(200).end() 
+        })
+        .catch(next);
  })
 
 module.exports = router;

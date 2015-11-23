@@ -1,7 +1,6 @@
-module.exports = function(){
+module.exports = function() {
     var colors = ['purple', 'yellow', 'green', 'blue', 'red', 'black'];
-    return {
-        createPlayer: function Player(user, color, clockwise){
+    return function Player(user, color, clockwise){
             this.user = user;
             this.plants = [];
             this.money = 50;
@@ -14,6 +13,5 @@ module.exports = function(){
 
             this.resources = {coal: 0, oil: 0, trash: 0, nuke: 0};
             this.clockwise = clockwise;
-        }
-    }
-};
+    };
+}

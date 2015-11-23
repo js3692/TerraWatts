@@ -18,6 +18,9 @@ var schema = new mongoose.Schema({
   }]
 });
 
+schema.set('toObject', { virtuals: true });
+schema.set('toJSON', { virtuals: true });
+
 schema.pre('save', function (next) {
   var self = this;
   City.find({ name: { $in: this.cityNames } })
@@ -40,7 +43,7 @@ function normalize (realDistance) {
 }
 
 schema.statics.findByRegions = function (regions) {
-  return this.find().populate('cities')
+  return this.find().populate('cities').lean().exec()
   .then(function (connections) {
     return connections.filter(function (connection) {
       return connection.cities.every(function (city) {

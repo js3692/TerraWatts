@@ -29,8 +29,14 @@ var schema = new mongoose.Schema({
     },
     google: {
         id: String
+    },
+    color: {
+        type: String
     }
 });
+
+schema.set('toObject', { virtuals: true });
+schema.set('toJSON', { virtuals: true });
 
 // method to remove sensitive information from user objects before sending them out
 schema.methods.sanitize = function () {
