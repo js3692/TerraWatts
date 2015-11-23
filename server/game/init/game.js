@@ -1,39 +1,4 @@
 var restockRatesMaster = require('./restock.js');
-var regions = require('./regions.js');
-var Player = require('./player.js').createPlayer;
-var mongoose = require('mongoose');
-var City = mongoose.model('City');
-var Plant = mongoose.model('Plant');
-var Connection = mongoose.model('Connection');
-var Promise = require('bluebird');
-
-function Game (players, plants, cities, connections) {
-	if(players.length < 2 || players.length > 6) {
-		throw new Error('not a valid number of players');
-	}
-	this.turnOrder = shuffle(players);
-
-	this.turn = 0;
-	this.phase = 1;
-
-	this.cities = cities;
-	this.connections = connections;
-
-	this.resourceMarket = {coal: 24, oil: 15, trash: 6, nuke: 2};
-	this.resourceBank = {coal: 0, oil: 9, trash: 18, nuke: 10};
-	this.restockRates = restockRatesMaster[this.players.length][this.phase];
-
-	this.plantMarket = plants.splice(0, 8);
-	var thirteen = plants.splice(2, 1);
-	plants = removePlants(shuffle(plants), this.players.length);
-
-	this.plantDeck = thirteen.concat(plants);
-	this.discardedPlants = [];
-	this.phase3Plants = [];
-    
-    // this.currentState = require('../plantState');
-}
-
 
 function shuffle(array) {
   var newArray = array.slice();
@@ -59,25 +24,29 @@ function removePlants(shuffledPlants, numPlayers) {
 	return shuffledPlants;
 }
 
-/* 
-takes in array of players from the front end, returns a promise for a game object
-players should come in as follows:
-	[{user: user1, color: color2}, {user: user2, color: color2}, etc.]
-*/
-module.exports = function startGame(players) {
-	var clockwiseOpts = [0,1,2,3,4,5].slice(0, players.length);
-	players = players.map(function(player) {
-		var clockwise = clockwiseOpts.splice(Math.random()*clockwiseOpts.length,1)[0];
-		return new Player(player.user, player.color, clockwise);
-	});
+module.exports = function Game (players, plants, cities, connections) {
+	if(players.length < 2 || players.length > 6) {
+		throw new Error('not a valid number of players');
+	}
+	this.turnOrder = shuffle(players);
 
-	var regionsInPlay = regions.randomize(players.length);
-	var cityPromise = City.findByRegions(regionsInPlay);
-	var connectionPromise = Connection.findByRegions(regionsInPlay);
-	var plantPromise = Plant.find();
-	return Promise.all([cityPromise, connectionPromise, plantPromise])
-	.then(function(data) {
-		var cities = data[0], connections = data[1], plants = data[2];
-		return new Game(players, plants, cities, connections);
-	})
+	this.turn = 0;
+	this.phase = 1;
+
+	this.cities = cities;
+	this.connections = connections;
+
+	this.resourceMarket = {coal: 24, oil: 15, trash: 6, nuke: 2};
+	this.resourceBank = {coal: 0, oil: 9, trash: 18, nuke: 10};
+	this.restockRates = restockRatesMaster[this.players.length][this.phase];
+
+	this.plantMarket = plants.splice(0, 8);
+	var thirteen = plants.splice(2, 1);
+	plants = removePlants(shuffle(plants), this.players.length);
+
+	this.plantDeck = thirteen.concat(plants);
+	this.discardedPlants = [];
+	this.phase3Plants = [];
+    
+    // this.currentState = require('../plantState');
 }
