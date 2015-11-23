@@ -14,18 +14,7 @@ app.config(function ($stateProvider) {
     });
 });
 
-app.controller('HomeCtrl', function ($scope, joinableGames, GridFactory, $state, AuthService, AUTH_EVENTS, $uibModal) {
-	
-  $scope.loggedIn = false;
-	
-  AuthService.getLoggedInUser()
-    .then(function(user) {
-      if(user) $scope.loggedIn = true;
-    });
-
-	$scope.$on(AUTH_EVENTS.logoutSuccess, function() {
-		$scope.loggedIn = false;
-	});
+app.controller('HomeCtrl', function ($scope, joinableGames, GridFactory, $state, AuthService, $uibModal) {
 
   $scope.logout = function () {
     AuthService.logout().then(function () {
