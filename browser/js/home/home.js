@@ -14,12 +14,14 @@ app.config(function ($stateProvider) {
     });
 });
 
-app.controller('HomeCtrl', function ($scope, joinableGames, GridFactory, $state, AuthService, $uibModal, FirebaseFactory, $firebaseObject) {
+app.controller('HomeCtrl', function ($scope, joinableGamesFromServer, GridFactory, $state, AuthService, $uibModal, FirebaseFactory, $firebaseObject) {
 
-  $scope.$on(AUTH_EVENTS.logoutSuccess, function() {
-    $scope.loggedIn = false;
-  });
+  var allGamesRef = FirebaseFactory.getBase();
+  $scope.games = $firebaseObject(allGamesRef);
 
+  $scope.joinableGamesFromServer = joinableGamesFromServer;
+  $scope.getLiveJoinableGames = FirebaseFactory.getLiveJoinableGames.bind(null, $scope);
+   
   $scope.logout = function () {
     AuthService.logout().then(function () {
       $state.go('login');
