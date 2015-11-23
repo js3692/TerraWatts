@@ -16,9 +16,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="grid in joinableGames">
+        <tr ng-repeat="grid in getLiveJoinableGames()">
           <td style="text-align: center;">1</td>
-          <td>{{ grid._id }}</td>
+          <td>{{ grid.key }}</td>
           <td style="text-align: center;">{{ 6 - grid.users.length }}</td>
           <td style="text-align: center;">Waiting</td>
           <td style="text-align: center;">

@@ -4,7 +4,7 @@ app.config(function ($stateProvider) {
         templateUrl: 'js/home/home.html',
         controller: 'HomeCtrl',
         resolve: {
-          joinableGames: function (GridFactory) {
+          joinableGamesFromServer: function (GridFactory) {
             return GridFactory.getJoinableGames();
           }
         },
@@ -14,15 +14,17 @@ app.config(function ($stateProvider) {
     });
 });
 
-app.controller('HomeCtrl', function ($scope, joinableGames, GridFactory, $state, AuthService, $uibModal) {
+app.controller('HomeCtrl', function ($scope, joinableGames, GridFactory, $state, AuthService, $uibModal, FirebaseFactory, $firebaseObject) {
+
+  $scope.$on(AUTH_EVENTS.logoutSuccess, function() {
+    $scope.loggedIn = false;
+  });
 
   $scope.logout = function () {
     AuthService.logout().then(function () {
       $state.go('login');
     });
   };
-
-	$scope.joinableGames = joinableGames;
 
 	$scope.newGame = openGameSettings;
 

@@ -6,7 +6,7 @@ function plantHelperConstructor (rank, capacity, resourceType, numResources) {
 	this.rank = rank;
 	this.capacity = capacity;
 	this.resourceType = resourceType;
-	this.numResources = numResources;
+	this.numResources = numResources || 0;
 }
 
 var seedPlants = function() {

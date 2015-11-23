@@ -21,6 +21,10 @@ var schema = new mongoose.Schema({
     }, 
     history: {
         type: []
+    },
+    availableColors: {
+    	type: [String],
+    	default: ['red', 'green', 'yellow', 'purple', 'black', 'blue']
     }
 });
 
