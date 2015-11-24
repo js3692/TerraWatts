@@ -12,8 +12,8 @@ app.factory('GridFactory', function ($http, $q) {
         return grid;
     }
 
-	GridFactory.newGame = function() {
-		return $http.post(baseUrl)
+	GridFactory.newGame = function(gameSettings) {
+		return $http.post(baseUrl, gameSettings)
             .then(toData)
             .then(updateCachedGrid);
 	}
