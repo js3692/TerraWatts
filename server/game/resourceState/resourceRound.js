@@ -36,6 +36,7 @@ ResourceRound.prototype = Object.create(State.prototype);
 ResourceRound.prototype.constructor = State;
 
 ResourceRound.prototype.go = function() {
+    // redo turn order if first turn
     if (this.game.turn === 1) {
         this.game.turnOrder = determineTurnOrder(this.game.turnOrder);
     }
@@ -44,11 +45,15 @@ ResourceRound.prototype.go = function() {
 }
 
 ResourceRound.prototype.continue = function(wishlist) {
+    // find the player
     var player = this.game.turnOrder[this.game.turnOrder.length - this.turnIndex];
     player.money -= totalPrice(wishlist, this.game.resourceMarket);
+    // resources are moved from market to player
     for(var resource in wishlist) {
         this.game.resourceMarket[resource] -= wishlist[resource];
+        player.resources[resource] += wishlist[resource];
     }
+    // transition or continue
     this.turnIndex++;
     if(this.turnIndex > this.game.turnOrder.length) {
         // transition to city building state
@@ -58,10 +63,6 @@ ResourceRound.prototype.continue = function(wishlist) {
     return this.game;
 
 }
-
-ResourceRound.prototype.endResourceRound = function() {
-    this.game.currentState = new this.nextState;
-};
 
 module.exports = ResourceRound;
 
