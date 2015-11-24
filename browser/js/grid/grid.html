@@ -3,7 +3,8 @@
 	<button ng-click="leaveGame()">Leave Game</button>
 	<h6>Players:</h6>
     <ul>
-        <li ng-repeat="user in grid.users">{{ user.username }}</li>
+        <li ng-repeat="user in grid.users">{{ user.username }} {{ user.color }}<select ng-show="user.id === me._id"ng-options="color as color for color in colors" ng-model="$parent.selected"></select></li>
+        
     </ul>
 	
 </div>

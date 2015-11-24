@@ -27,6 +27,9 @@ var schema = new mongoose.Schema({
   }
 });
 
+schema.set('toObject', { virtuals: true });
+schema.set('toJSON', { virtuals: true });
+
 schema.pre('save', function (next) {
   var self = this;
   request('https://maps.googleapis.com/maps/api/geocode/json?address=' + this.name + '&region=' + this.countryCode + '&key=AIzaSyDY1FnH6Ji9xdyIBTPnApj07nvn-yHyf5o', function (err, res, body) {
@@ -43,7 +46,7 @@ schema.pre('save', function (next) {
 });
 
 schema.statics.findByRegions = function (regions) {
-  return this.find({region: {$in: regions}})
+  return this.find({region: {$in: regions}}).lean().exec();
 }
 
 mongoose.model('City', schema);

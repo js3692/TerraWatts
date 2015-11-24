@@ -11,6 +11,10 @@ app.factory('GridFactory', function ($http, $q) {
         cachedGrid = grid;
         return grid;
     }
+    
+    function organizePlayersForStart(users){
+        return users.map(user => { return { user: user, color: user.color }});
+    }
 
 	GridFactory.newGame = function(gameSettings) {
 		return $http.post(baseUrl, gameSettings)
@@ -29,8 +33,8 @@ app.factory('GridFactory', function ($http, $q) {
 		  .then(toData)
 	}
 
-	GridFactory.start = function(gridId) {
-		return $http.put(baseUrl + gridId + '/start')
+	GridFactory.start = function(gridId, users) {
+		return $http.put(baseUrl + gridId + '/start', organizePlayersForStart(users))
 		  .then(toData);
 	}
 
@@ -49,5 +53,10 @@ app.factory('GridFactory', function ($http, $q) {
         return $q.resolve(cachedGrid);
     }
     
+    GridFactory.changeColor = function(id, userId, color){
+        return $http.put(baseUrl + id + '/changeColor', { userId: userId, color: color })
+            .then(toData);
+            
+    }
 	return GridFactory;
 })

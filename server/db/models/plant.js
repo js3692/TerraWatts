@@ -21,4 +21,7 @@ var schema = new mongoose.Schema({
 	}
 });
 
+schema.set('toObject', { virtuals: true });
+schema.set('toJSON', { virtuals: true });
+
 mongoose.model('Plant', schema);

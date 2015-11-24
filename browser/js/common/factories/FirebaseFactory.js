@@ -10,14 +10,9 @@ app.factory('FirebaseFactory', function($firebaseObject, GridFactory){
         setConnection: function(key){
             localConnection = $firebaseObject(new Firebase(baseUrl + key));  
             return localConnection;
-//            return GridFactory.getCachedGrid()
-//                .then(function(grid){
-//                    localConnection = $firebaseObject(new Firebase(baseUrl + grid.key));
-//                    return localConnection;
-//                });
         },
         getConnection: function(key){
-            if(key && !localConnection) return this.setConnection(key);
+            if(key) return this.setConnection(key);
             return localConnection;
         },
         getLiveJoinableGames: function(scope){

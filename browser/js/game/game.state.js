@@ -4,8 +4,11 @@ app.config(function($stateProvider){
 		controller: 'GameCtrl',
 		templateUrl: 'js/game/game.html',
 		resolve: {
-            gridConnection: function ($stateParams, FirebaseFactory) {
-                return FirebaseFactory.getConnection($stateParams.key);
+            gridId: function ($stateParams) {
+                return $stateParams.id;
+            },
+            key: function($stateParams) {
+                return $stateParams.key;  
             },
             thePlayer: function(AuthService) {
 				return AuthService.getLoggedInUser();

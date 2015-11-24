@@ -1,5 +1,5 @@
 var regions = require('./regions.js');
-var Player = require('./player.js').createPlayer;
+var PlayerCreator = require('./player.js');
 var mongoose = require('mongoose');
 var City = mongoose.model('City');
 var Plant = mongoose.model('Plant');
@@ -13,6 +13,7 @@ players should come in as follows:
 	[{user: user1, color: color2}, {user: user2, color: color2}, etc.]
 */
 module.exports = function startGame(players) {
+    var Player = PlayerCreator();
 	var clockwiseOpts = [0,1,2,3,4,5].slice(0, players.length);
 	players = players.map(function(player) {
 		var clockwise = clockwiseOpts.splice(Math.random()*clockwiseOpts.length,1)[0];
@@ -22,7 +23,7 @@ module.exports = function startGame(players) {
 	var regionsInPlay = regions.randomize(players.length);
 	var cityPromise = City.findByRegions(regionsInPlay);
 	var connectionPromise = Connection.findByRegions(regionsInPlay);
-	var plantPromise = Plant.find();
+	var plantPromise = Plant.find().lean().exec();
 	return Promise.all([cityPromise, connectionPromise, plantPromise])
 	.then(function(data) {
 		var cities = data[0], connections = data[1], plants = data[2];

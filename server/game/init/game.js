@@ -38,11 +38,11 @@ module.exports = function Game (players, plants, cities, connections) {
 
 	this.resourceMarket = {coal: 24, oil: 15, trash: 6, nuke: 2};
 	this.resourceBank = {coal: 0, oil: 9, trash: 18, nuke: 10};
-	this.restockRates = restockRatesMaster[this.players.length][this.phase];
+	this.restockRates = restockRatesMaster[players.length][this.phase];
 
 	this.plantMarket = plants.splice(0, 8);
 	var thirteen = plants.splice(2, 1);
-	plants = removePlants(shuffle(plants), this.players.length);
+	plants = removePlants(shuffle(plants), players.length);
 
 	this.plantDeck = thirteen.concat(plants);
 	this.discardedPlants = [];
