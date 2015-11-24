@@ -14,6 +14,8 @@ module.exports = function(){
 
             this.resources = {coal: 0, oil: 0, trash: 0, nuke: 0};
             this.clockwise = clockwise;
+
+            this.numCities = 0;
         }
     }
 };
