@@ -1,0 +1,25 @@
+.settings-modal {
+	margin-top: 80px;
+	.modal-body {
+		height: 300px;
+	}
+	.modal-header {
+		h2 {
+			margin-left: 1em;
+		}
+	}
+	.modal-body-container {
+		position: relative;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+	.right-column {
+		text-align: right;
+		li {
+			cursor: pointer;
+		}
+		span {
+			margin-right: 8px;
+		}
+	}
+}

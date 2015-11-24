@@ -16,33 +16,34 @@ app.config(function ($stateProvider) {
 
 app.controller('HomeCtrl', function ($scope, joinableGamesFromServer, GridFactory, $state, AuthService, AUTH_EVENTS, $uibModal, FirebaseFactory) {
     
-    /* populates joinable game from backend, then uses live updates from firebase */
-    $scope.games = FirebaseFactory.getBase();
-    $scope.joinableGamesFromServer = joinableGamesFromServer;
+  /* populates joinable game from backend, then uses live updates from firebase */
+  $scope.games = FirebaseFactory.getBase();
+  $scope.joinableGamesFromServer = joinableGamesFromServer;
 	$scope.getLiveJoinableGames = FirebaseFactory.getLiveJoinableGames.bind(null, $scope);
 	
-   $scope.logout = function () {
+  $scope.logout = function () {
     AuthService.logout().then(function () {
       $state.go('login');
     });
-   }
+  };
 
 	$scope.newGame = openGameSettings;
 
 	$scope.joinGame = function (grid) {
 		GridFactory.joinGame(grid.id)
-          .then(function () {
-            $state.go('grid', { id: grid.id, key: grid.key });
-          });
+      .then(function () {
+        $state.go('grid', { id: grid.id, key: grid.key });
+      });
 	};
 
-    function openGameSettings() {
-      var modalInstance = $uibModal.open({
-        animation: true,
-        templateUrl: 'js/settings/settings.html',
-        controller: 'SettingsCtrl',
-        size: 'lg'
-      });
-    }
+  function openGameSettings() {
+    var modalInstance = $uibModal.open({
+      animation: true,
+      templateUrl: 'js/settings/settings.html',
+      controller: 'SettingsCtrl',
+      windowClass: 'settings-modal',
+      size: 'md'
+    });
+  }
                                          
 });
