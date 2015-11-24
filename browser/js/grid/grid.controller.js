@@ -6,9 +6,8 @@ app.controller('GridCtrl', function ($scope, $state, thePlayer, GridFactory, Fir
     $scope.selected = thePlayer.color;
     $scope.colors = ['purple', 'yellow', 'green', 'blue', 'red', 'black'];
     
-    $scope.$watch('selected', function(color) {
-        GridFactory.changeColor(gridId, thePlayer._id, color);
-    });
+    $scope.changeColor = GridFactory.changeColor.bind(null, gridId, thePlayer._id)
+    
     
     $scope.$watch('grid.game', function(game){
         if(game) $state.go('game', { id: gridId, key: key });

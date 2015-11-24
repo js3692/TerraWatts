@@ -11,7 +11,9 @@ app.config(function ($stateProvider) {
                 return $stateParams.key;  
             },
 			thePlayer: function(AuthService) {
-				return AuthService.getLoggedInUser();
+				var player = AuthService.getLoggedInUser();
+                player.color = null;
+                return player;
 			}
 		},
     data: {

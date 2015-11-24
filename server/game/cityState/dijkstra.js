@@ -1,6 +1,6 @@
 var _ = require('lodash');
 
-function totalConnectionCost(citiesToAdd, network, cities, connections) {
+module.exports = function totalConnectionCost(citiesToAdd, network, cities, connections) {
 	var networkCopy = network.slice();
 	var citiesToAddCopy = citiesToAdd.slice();
 	var cost = 0;
