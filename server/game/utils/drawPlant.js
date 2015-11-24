@@ -4,7 +4,7 @@ module.exports = function drawPlant(game) {
 	if (game.plantDeck.length) {
 		game.plantMarket.push(this.game.plantDeck.shift());
 	} else {
-		// PHASE 3 INIT
+		initPhase3(game);
 	}
 	game.plantMarket.sort(function (plant1, plant2) {
 		return plant1.rank < plant2.rank ? -1 : 1;
