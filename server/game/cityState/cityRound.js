@@ -1,6 +1,7 @@
 var State = require('../state');
 var totalPrice = require('./price.js');
-var isOccupiedBy = require('./isOccupiedBy');
+var isOccupiedBy = require('./isOccupiedBy.js');
+var drawPlant = require('../utils/drawPlant.js')
 var _ = require('lodash');
 
 var validators = [
@@ -38,16 +39,8 @@ CityRound.prototype.continue = function(citiesToAdd) {
 	player.numCities += citiesToAdd.length;
 	// RULE: discard plants with lower or equal ranks to numCities
 	while (player.numCities >= this.game.plantMarket[0].rank) {
-		this.game.discardedPlants.push(this.game.plantMarket.pop());
-		// the following if else can be abstracted to a function, will probably also use in the plant phase
-		if (this.game.plantDeck.length) {
-			this.game.plantMarket.push(this.game.plantDeck.pop());
-			this.game.plantMarket.sort(function(plant1, plant2) {
-				return plant1.rank < plant2.rank;
-			})
-		} else {
-			// PHASE 3 init
-		}
+		this.game.discardedPlants.push(this.game.plantMarket.shift());
+		drawPlant(this.game);
 	}
 	// add the player to each city's players array
 	citiesToAdd.forEach(function (cityToAdd) {
