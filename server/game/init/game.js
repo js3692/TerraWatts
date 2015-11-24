@@ -30,7 +30,7 @@ module.exports = function Game (players, plants, cities, connections) {
 	}
 	this.turnOrder = shuffle(players);
 
-	this.turn = 0;
+	this.turn = 1;
 	this.phase = 1;
 
 	this.cities = cities;
@@ -48,5 +48,6 @@ module.exports = function Game (players, plants, cities, connections) {
 	this.discardedPlants = [];
 	this.phase3Plants = [];
     
+    this.activePlayer = null;
     // this.currentState = require('../plantState');
 }
