@@ -108,3 +108,5 @@ EndOfTurn.prototype.continue = function(plantsToPower, playerColor) {
 	// transition to plant state
 	return this.game;
 }
+
+module.exports = EndOfTurn;
