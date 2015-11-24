@@ -1,0 +1,38 @@
+#grid {
+  
+  .color-squares, .button-container {
+      width: 50vh ;
+      margin-left: auto ;
+      margin-right: auto ;
+  }
+  
+  .color-squares {
+      margin-top: 10%;
+  }
+  
+  .color-square {
+      width: 50px;
+      height: 50px;
+      display: block;
+      float: left;
+  }
+
+  ul {
+      li {
+          clear: both;
+      }
+  }
+
+  tr {
+      th, td {
+          text-align: center;
+        
+      }
+      .color-square-td {
+          text-align: right;  
+      }  
+    
+  }
+  
+  
+}
