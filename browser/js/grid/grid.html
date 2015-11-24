@@ -1,10 +1,25 @@
-<div>
-	<button ng-click="startGame()">Start Game</button>
-	<button ng-click="leaveGame()">Leave Game</button>
-	<h6>Players:</h6>
-    <ul>
-        <li ng-repeat="user in grid.users">{{ user.username }} {{ user.color }}<select ng-show="user.id === me._id"ng-options="color as color for color in colors" ng-model="$parent.selected"></select></li>
-        
-    </ul>
-	
+<div id="grid">
+    <div class="container">
+      <div class="color-squares">
+        <div class="color-square" ng-repeat="color in colors" ng-style="{ background: color }" ng-click="changeColor(color)"></div>
+      </div>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Players</th>
+            <th>Color</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="user in grid.users">
+            <td> {{user.username}} </td>
+            <td> <div ng-style="{ background: user.color }" class="color-square"></div> </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="button-container"> 
+        <button class="btn btn-lg btn-default" ng-click="startGame()">Start Game</button>
+        <button class="btn btn-lg btn-default" ng-click="leaveGame()">Leave Game</button>
+      </div>
+	</div>
 </div>
