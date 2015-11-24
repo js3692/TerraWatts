@@ -49,12 +49,11 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, Grid
   });
 
   $scope.ok = function (gameSettings) {
-    console.log(gameSettings);
-    // GridFactory.newGame(gameSettings)
-    //   .then(function (grid) {
-    //     $uibModalInstance.close();
-    //     $state.go('grid', { id: grid.id, key: grid.key });
-    //   });
+    GridFactory.newGame(gameSettings)
+      .then(function (grid) {
+        $uibModalInstance.close();
+        $state.go('grid', { id: grid.id, key: grid.key });
+      });
   };
 
   $scope.cancel = function () {
