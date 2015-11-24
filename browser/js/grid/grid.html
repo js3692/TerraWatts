@@ -3,7 +3,7 @@
       <div class="color-squares">
         <div class="color-square" ng-repeat="color in colors" ng-style="{ background: color }" ng-click="changeColor(color)"></div>
       </div>
-      <table class="table table-hover">
+      <table class="table">
         <thead>
           <tr>
             <th>Players</th>
@@ -13,7 +13,7 @@
         <tbody>
           <tr ng-repeat="user in grid.users">
             <td> {{user.username}} </td>
-            <td> <div ng-style="{ background: user.color }" class="color-square"></div> </td>
+            <td class="color-square-td"> <div ng-style="{ background: user.color }" class="color-square"></div> </td>
           </tr>
         </tbody>
       </table>
