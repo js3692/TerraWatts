@@ -11,39 +11,40 @@ var User = mongoose.model('User');
 // Current URL: 'api/grid'
 
 router.post('/', function (req, res, next) {
+  // req.body has map, max players, and selected regions
 	Grid.create({})
-	.then(function (grid) {
-		return grid.addUser(req.user);
-	})
-	.then(function (grid) {
-		return Grid.populate(grid, "users");
+    .then(function (grid) {
+      return grid.addUser(req.user);
     })
-	.then(function(grid) {
-        // grid.key is the id of the array element in firebase.
-		grid.key = fbRef.push(grid.toObject()).key();
-        res.status(201).json(grid);
-        return grid.save();
-	})
-	.catch(next);
+    .then(function (grid) {
+      return Grid.populate(grid, "users");
+    })
+    .then(function(grid) {
+      // grid.key is the id of the array element in firebase.
+      grid.key = fbRef.push(grid.toObject()).key();
+      res.status(201).json(grid);
+      return grid.save();
+    })
+    .catch(next);
 });
 
 router.get('/canjoin', function (req, res, next) {
 	Grid.getJoinable()
-	.then(function (joinableGrids) {
-		res.json(joinableGrids);
-	})
-	.catch(next);
+    .then(function (joinableGrids) {
+      res.json(joinableGrids);
+    })
+    .catch(next);
 });
 
 router.param('gridId', function(req, res, next, gridId){
-    Grid.findById(gridId)
-        .populate('users')
-        .then(function(grid){
-            req.grid = grid;
-            next();
-        })
-        .catch(next);
-})
+  Grid.findById(gridId)
+    .populate('users')
+    .then(function(grid){
+        req.grid = grid;
+        next();
+    })
+    .catch(next);
+});
 
 router.get('/:gridId', function (req, res, next) {
 	if(req.grid) res.status(200).json(req.grid);
