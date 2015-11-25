@@ -2,6 +2,7 @@ var State = require('../state');
 var determineTurnOrder = require('../utils/turnOrder.js');
 var verifyResources = require('../utils/resourceVerification').verifyResources;
 var totalPrice = require('./price');
+var CityState = require('../cityState')
 
 var validators = [
     // function hasPlayers(game){
@@ -24,27 +25,26 @@ var validators = [
 ];
 
 
-var ResourceRound = function (game){
+var ResourceState = function (game){
     this.game = game;
     this.validators = validators;
-    this.nextState = 'placeholder for building state constructor';
     this.turnIndex = 1;
     State.call(this);
 }
 
-ResourceRound.prototype = Object.create(State.prototype);
-ResourceRound.prototype.constructor = State;
+ResourceState.prototype = Object.create(State.prototype);
+ResourceState.prototype.constructor = State;
 
-ResourceRound.prototype.go = function() {
+ResourceState.prototype.go = function() {
     // redo turn order if first turn
     if (this.game.turn === 1) {
         this.game.turnOrder = determineTurnOrder(this.game.turnOrder);
     }
     this.game.activePlayer = this.game.turnOrder.slice(-1)[0];
-    return this.game;
+    // return save/update game
 }
 
-ResourceRound.prototype.continue = function(wishlist) {
+ResourceState.prototype.continue = function(wishlist) {
     // find the player
     var player = this.game.turnOrder[this.game.turnOrder.length - this.turnIndex];
     player.money -= totalPrice(wishlist, this.game.resourceMarket);
@@ -53,18 +53,19 @@ ResourceRound.prototype.continue = function(wishlist) {
         this.game.resourceMarket[resource] -= wishlist[resource];
         player.resources[resource] += wishlist[resource];
     }
-    // transition or continue
     this.turnIndex++;
     if(this.turnIndex > this.game.turnOrder.length) {
         // transition to city building state
+        this.game.currentState = new CityState(this.game);
+        this.game.currentState.go();
     } else {
         this.game.activePlayer = this.game.turnOrder[this.game.turnOrder.length - this.turnIndex];
+        // return save/update game;
     }
-    return this.game;
 
 }
 
-module.exports = ResourceRound;
+module.exports = ResourceState;
 
 
                            

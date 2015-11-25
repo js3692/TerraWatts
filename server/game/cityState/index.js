@@ -3,6 +3,7 @@ var totalPrice = require('./price.js');
 var isOccupiedBy = require('./isOccupiedBy.js');
 var drawPlant = require('../utils/drawPlant.js')
 var _ = require('lodash');
+var endOfTurn = require('../endOfTurn')
 
 var validators = [
 	function citiesAreOpen(game, citiesToAdd) {
@@ -16,23 +17,22 @@ var validators = [
 
 ];
 
-var CityRound = function(game) {
+var CityState = function(game) {
 	this.game = game;
 	this.validators = validators;
-	this.nextState = 'placeholder for end of turn';
 	this.turnIndex = 1;
 	State.call(this);
 }
 
-CityRound.prototype = Object.create(State.prototype);
-CityRound.prototype.constructor = State;
+CityState.prototype = Object.create(State.prototype);
+CityState.prototype.constructor = State;
 
-CityRound.prototype.go = function() {
+CityState.prototype.go = function() {
 	this.game.activePlayer = this.game.turnOrder.slice(-1)[0];
-	return this.game;
+	// return save/update game
 }
 
-CityRound.prototype.continue = function(citiesToAdd) {
+CityState.prototype.continue = function(citiesToAdd) {
 	// find the correct player to manipulate
 	var player = this.game.turnOrder[this.game.turnOrder.length - this.turnIndex];
 	player.money -= totalPrice(this.game, citiesToAdd);
@@ -52,11 +52,12 @@ CityRound.prototype.continue = function(citiesToAdd) {
 	// transition or continue
 	this.turnIndex++;
 	if (this.turnIndex > this.game.turnOrder.length) {
-		// transition to end of turn
+		this.game.currentState = new endOfTurn(this.game);
+		this.game.currentState.go();
 	} else {
 		this.game.activePlayer = this.game.turnOrder[this.game.turnOrder.length - this.turnIndex];
+		// return save/update game
 	}
-	return this.game;
 }
 
-module.exports = CityRound;
+module.exports = CityState;
