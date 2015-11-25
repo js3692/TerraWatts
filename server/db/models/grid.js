@@ -18,13 +18,13 @@ var schema = new mongoose.Schema({
 	},
     key: {
         type: String
-    }, 
+    },
     history: {
         type: []
     },
     availableColors: {
-    	type: [String],
-    	default: ['red', 'green', 'yellow', 'purple', 'black', 'blue']
+        type: [String],
+        default: ['red', 'green', 'yellow', 'purple', 'black', 'blue']
     }
 });
 
@@ -47,16 +47,6 @@ schema.methods.removeUser = function (userId) {
 	var userIndex = this.users.indexOf(userId);
 	this.users.splice(userIndex,1);
 	return this.save();
-}   
-
-schema.statics.getJoinable = function() {
-	return this.find({})
-        .populate('users')
-		.then(function (grids) {
-			return grids.filter(function (grid) {
-				return !grid.game && !grid.complete;
-			});
-		});
 };
 
 schema.pre('save', function (next) {
