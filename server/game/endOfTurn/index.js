@@ -39,7 +39,7 @@ var EndOfTurn = function(game) {
 }
 
 EndOfTurn.prototype = Object.create(State.prototype);
-EndOfTurn.prototype.constructor = State;
+EndOfTurn.prototype.constructor = EndOfTurn;
 
 EndOfTurn.prototype.go = function() {
 	// return save/update game
