@@ -8,7 +8,7 @@ app.factory('FirebaseFactory', function($firebaseObject, GridFactory){
             return baseConnection;  
         },
         setConnection: function(key){
-            localConnection = $firebaseObject(new Firebase(baseUrl + key));  
+            localConnection = $firebaseObject(new Firebase(baseUrl + key));
             return localConnection;
         },
         getConnection: function(key){
