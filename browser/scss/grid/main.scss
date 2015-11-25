@@ -1,13 +1,15 @@
 #grid {
+    background: $main-background;
+	color: #ddd;
+	min-height: 100vh;
+	height: 100%;
+	width: 100%;
+	padding-top: 60px;
   
-  .color-squares, .button-container {
+  .button-container {
       width: 50vh ;
       margin-left: auto ;
       margin-right: auto ;
-  }
-  
-  .color-squares {
-      margin-top: 10%;
   }
   
   .color-square {
@@ -15,6 +17,10 @@
       height: 50px;
       display: block;
       float: left;
+      margin-right: 10px;
+      margin-bottom: 10px;
+       
+      
   }
 
   ul {
@@ -22,17 +28,25 @@
           clear: both;
       }
   }
-
+  .table {
+      border-top: .15em solid $main-background;
+      width: 20%;
+      margin: 0 auto;
+      margin-top: 5%;
+      clear: both;
+  }
   tr {
+    
       th, td {
           text-align: center;
-        
       }
-      .color-square-td {
-          text-align: right;  
-      }  
     
   }
   
-  
+  button {
+      margin-top: 10%;
+  }
+  .color-header {
+      text-align: left;
+  }
 }
