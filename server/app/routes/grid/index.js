@@ -40,6 +40,6 @@ router.param('gridId', function(req, res, next, gridId){
 
 router.use('/before/:gridId', require('./before'));
 
-// router.use('/after/:gridId', require('./after'));
+router.use('/after/:gridId', require('./after'));
 
 module.exports = router;
