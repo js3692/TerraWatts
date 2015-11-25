@@ -1,37 +1,48 @@
-//bottom-panel {
+$panel-width: 800px;
+$panel-height: 300px;
+$tab-width: 100px;
+$tab-height: 20px;
+
+bottom-panel {
 //    overflow: hidden;
-//    position: relative;
-//    z-index: 2;
-//  
-//    .bottom-slider {
-//        margin-top: 2%;
-//        float: right;
-//        background-color: $main-background;
-//        opacity: .8;
-//        -webkit-transition: width 2s, height 2s, background-color 1s, -webkit-transform .75s;
-//        transition: width 2s, height 2s, background-color 1s, transform .75s;
-//    }
-//
-//    .bottom-slider-pull {
-//        -webkit-transform: translateX($panel-width);
-//        transform: translateX($panel-width);
-//    }
-//  
-//    .menu-tab {
-//        width: 20px;
-//        height: 100px;
-//        border-radius: 5px 0 0 5px;
-//        border-right: 1px solid white;
-//    }
-//    .menu-panel:hover {
-//        background-color: grey;
-//    }
-//  
-//    .menu-panel-body {
-//        height: 60vh;
-//        width: $panel-width;
-//        border-radius: 0 0 0 5px;
-//        border-width: 0;
-//    }
-//    
-//}
+    position: fixed;
+    z-index: 2;
+  
+    .bottom-slider {
+        float: none;
+        background-color: $main-background;
+        opacity: .8;
+        -webkit-transition: width 2s, height 2s, background-color 1s, -webkit-transform .75s;
+        transition: width 2s, height 2s, background-color 1s, transform .75s;
+        -webkit-transform: translateY(calc(100vh - #{$panel-height}));
+        transform: translateY(calc(100vh - #{$panel-height}));
+    }
+
+    .bottom-slider-pull {
+        -webkit-transform: translateY(calc(100vh - #{$tab-height}));
+        transform: translateY(calc(100vh - #{$tab-height}));
+    }
+  
+    .menu-tab {
+        width: $tab-width;
+        height: $tab-height;
+        margin-left: 2%;
+        border-radius: 5px 5px 0 0;
+        border-bottom: 1px solid white;
+        
+//        -webkit-transform: rotate(90deg);
+//        transform: rotate(90deg);
+    }
+    
+    .menu-tab:hover {
+        background-color: grey;
+    }
+  
+    .menu-panel-body {
+        height: $panel-height;
+        width: $panel-width;
+        border-radius: 0 5px 0 0;
+        border-width: 0;
+    }
+    
+}
