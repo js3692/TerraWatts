@@ -1,4 +1,4 @@
-app.factory('FirebaseFactory', function($firebaseObject, GridFactory){
+app.factory('FirebaseFactory', function($firebaseObject){
     var baseUrl = "https://amber-torch-6713.firebaseio.com/",
         baseConnection = $firebaseObject(new Firebase(baseUrl)),
         localConnection;
