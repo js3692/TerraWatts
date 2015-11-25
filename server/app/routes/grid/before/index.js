@@ -31,7 +31,7 @@ router.post('/leave', function (req, res, next) {
 
 router.put('/start', function(req, res, next) {
      
-     require('../../../game/init')(req.body)
+     require('../../../../game/init')(req.body)
         .then(function (newGame) {
             req.grid.game = newGame;
             return req.grid.save();
