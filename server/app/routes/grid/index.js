@@ -28,14 +28,6 @@ router.post('/', function (req, res, next) {
     .catch(next);
 });
 
-router.get('/canjoin', function (req, res, next) {
-	Grid.getJoinable()
-    .then(function (joinableGrids) {
-      res.json(joinableGrids);
-    })
-    .catch(next);
-});
-
 router.param('gridId', function(req, res, next, gridId){
   Grid.findById(gridId)
     .populate('users')
@@ -46,52 +38,8 @@ router.param('gridId', function(req, res, next, gridId){
     .catch(next);
 });
 
-router.get('/:gridId', function (req, res, next) {
-	if(req.grid) res.status(200).json(req.grid);
-});
+router.use('/before/:gridId', require('./before'));
 
-router.post('/:gridId/join', function (req, res, next) {
-	req.grid.addUser(req.user)
-        .then(function (grid) {
-            res.json(grid);
-        }).catch(next);
-});
-
-router.post('/:gridId/leave', function (req, res, next) {
-	req.grid.removeUser(req.user)
-		.then(function (grid) {
-			res.json(grid);
-		})
-		.catch(next);
-})
-
- router.put('/:gridId/start', function(req, res, next) {
-     
-     require('../../../game/init')(req.body)
-        .then(function(newGame){
-            req.grid.game = newGame;
-            return req.grid.save();
-        })
-        .then(function(grid){
-            res.status(200).end();
-        })
-        .catch(next);
- })
- 
- router.put('/:gridId/changeColor', function(req, res, next){
-     User.findById(req.body.userId)
-        .then(function(user){
-            user.color = req.body.color;
-            return user.save();
-        })
-        .then(function(){
-            return Grid.populate(req.grid, 'users')
-        })
-        .then(function(updatedGrid){
-            updatedGrid.save()
-            res.status(200).end() 
-        })
-        .catch(next);
- })
+router.use('/after/:gridId', require('./after'));
 
 module.exports = router;
