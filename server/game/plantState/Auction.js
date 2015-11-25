@@ -47,7 +47,7 @@ function initPIA (players, startingPlayer) {
 		player.clockwise = (player.clockwise - startingPlayer.clockwise + players.length) % players.length;
 	})
 	return players.sort(function (player1, player2) {
-		player1.clockwise < player2.clockwise ? -1 : 1;
+		return player1.clockwise < player2.clockwise ? -1 : 1;
 	})
 }
 
