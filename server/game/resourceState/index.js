@@ -33,7 +33,7 @@ var ResourceState = function (game){
 }
 
 ResourceState.prototype = Object.create(State.prototype);
-ResourceState.prototype.constructor = State;
+ResourceState.prototype.constructor = ResourceState;
 
 ResourceState.prototype.go = function() {
     // redo turn order if first turn

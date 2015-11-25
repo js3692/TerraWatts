@@ -12,7 +12,7 @@ function Auction(plant, openingBid, plantState) {
 }
 
 Auction.prototype = Object.create(State.prototype);
-Auction.prototype.constructor = State;
+Auction.prototype.constructor = Auction;
 
 Auction.prototype.go = function () {
 	if (this.playersInAuction.length === 1) {

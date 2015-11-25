@@ -25,7 +25,7 @@ var CityState = function(game) {
 }
 
 CityState.prototype = Object.create(State.prototype);
-CityState.prototype.constructor = State;
+CityState.prototype.constructor = CityState;
 
 CityState.prototype.go = function() {
 	this.game.activePlayer = this.game.turnOrder.slice(-1)[0];

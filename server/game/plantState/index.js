@@ -16,6 +16,7 @@ var validators = [
 
 var PlantState = function(game) {
 	this.game = game;
+	this.name = 'Plant';
 	this.validators = validators;
 	this.nextState = 'placeholder for resource state';
 	this.numPasses = 0;
@@ -24,7 +25,7 @@ var PlantState = function(game) {
 }
 
 PlantState.prototype = Object.create(State.prototype);
-PlantState.prototype.constructor = State;
+PlantState.prototype.constructor = PlantState;
 
 PlantState.prototype.go = function() {
 	if (!this.game.activePlayer.length) return this.end();
