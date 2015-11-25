@@ -1,4 +1,4 @@
-app.controller('GridCtrl', function ($scope, $state, thePlayer, GridFactory, FirebaseFactory, gridId, key) {
+app.controller('GridCtrl', function ($scope, $state, thePlayer, BeforeGameFactory, FirebaseFactory, gridId, key) {
     
     $scope.grid = FirebaseFactory.getConnection(key);
     
@@ -6,7 +6,7 @@ app.controller('GridCtrl', function ($scope, $state, thePlayer, GridFactory, Fir
     $scope.selected = thePlayer.color;
     $scope.colors = ['purple', 'yellow', 'green', 'blue', 'red', 'black'];
     
-    $scope.changeColor = GridFactory.changeColor.bind(null, gridId, thePlayer._id)
+    $scope.changeColor = BeforeGameFactory.changeColor.bind(null, gridId, thePlayer._id)
     
     $scope.colorPicked = function(color){
         var users = $scope.grid.users || $scope.me;
@@ -23,7 +23,7 @@ app.controller('GridCtrl', function ($scope, $state, thePlayer, GridFactory, Fir
     })
    
 	$scope.startGame = function() {
-		GridFactory
+		BeforeGameFactory
             .start($scope.grid.id, $scope.grid.users)
             .then(function(updatedGrid){
                 $state.go('game', { id: gridId, key: key });
@@ -31,7 +31,7 @@ app.controller('GridCtrl', function ($scope, $state, thePlayer, GridFactory, Fir
 	}; 
 
 	$scope.leaveGame = function() {
-		GridFactory.leaveGame($scope.grid.id)
+		BeforeGameFactory.leaveGame($scope.grid.id)
 		.then(function() {
 			$state.go('home');
 		})

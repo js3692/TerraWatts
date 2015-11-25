@@ -7,6 +7,7 @@ module.exports = router;
 router.use('/members', require('./members'));
 router.use('/user', require('./user'));
 router.use('/grid', require('./grid'));
+router.use('/play', require('./play'));
 
 // Make sure this is after all of
 // the registered routes!
