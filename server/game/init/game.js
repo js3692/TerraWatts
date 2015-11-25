@@ -1,5 +1,6 @@
 var restockRatesMaster = require('./restock.js');
 var shuffle = require('../utils/shuffle')
+var plantState = require('../plantState')
 
 function removePlants(shuffledPlants, numPlayers) {
 	if(numPlayers < 5) {
@@ -36,5 +37,5 @@ module.exports = function Game (players, plants, cities, connections) {
 	this.phase3Plants = [];
     
     this.activePlayer = null;
-    // this.currentState = require('../plantState');
+    this.currentState = new PlantState(this);
 }
