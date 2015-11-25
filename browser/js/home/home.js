@@ -9,7 +9,7 @@ app.config(function ($stateProvider) {
     });
 });
 
-app.controller('HomeCtrl', function ($scope, GridFactory, $state, AuthService, AUTH_EVENTS, $uibModal, FirebaseFactory) {
+app.controller('HomeCtrl', function ($scope, BeforeGameFactory, $state, AuthService, AUTH_EVENTS, $uibModal, FirebaseFactory) {
     
   /* populates joinable game from backend, then uses live updates from firebase */
   $scope.games = FirebaseFactory.getBase();
@@ -24,7 +24,7 @@ app.controller('HomeCtrl', function ($scope, GridFactory, $state, AuthService, A
 	$scope.newGame = openGameSettings;
 
 	$scope.joinGame = function (grid) {
-		GridFactory.joinGame(grid.id)
+		BeforeGameFactory.joinGame(grid.id)
       .then(function () {
         $state.go('grid', { id: grid.id, key: grid.key });
       });

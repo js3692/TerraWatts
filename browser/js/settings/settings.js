@@ -1,4 +1,4 @@
-app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, GridFactory) {
+app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, BeforeGameFactory) {
 
   $scope.gameSettings = {};
   $scope.gameSettings.map = 'United States';
@@ -49,7 +49,7 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, Grid
   });
 
   $scope.ok = function (gameSettings) {
-    GridFactory.newGame(gameSettings)
+    BeforeGameFactory.newGame(gameSettings)
       .then(function (grid) {
         $uibModalInstance.close();
         $state.go('grid', { id: grid.id, key: grid.key });
