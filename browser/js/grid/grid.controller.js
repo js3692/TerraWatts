@@ -8,11 +8,20 @@ app.controller('GridCtrl', function ($scope, $state, thePlayer, BeforeGameFactor
     
     $scope.changeColor = BeforeGameFactory.changeColor.bind(null, gridId, thePlayer._id)
     
+    $scope.colorPicked = function(color){
+        var users = $scope.grid.users || $scope.me;
+        
+        for(let i = 0, len = users.length; i < len; i++){
+            if(color === users[i].color) return .4;
+        }
+        
+        return false;
+    }
     
     $scope.$watch('grid.game', function(game){
         if(game) $state.go('game', { id: gridId, key: key });
     })
-    
+   
 	$scope.startGame = function() {
 		BeforeGameFactory
             .start($scope.grid.id, $scope.grid.users)
