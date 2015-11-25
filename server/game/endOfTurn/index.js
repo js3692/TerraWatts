@@ -6,6 +6,7 @@ var phase2 = depOnNumP.phase2;
 var drawPlant = require('../utils/drawPlant');
 var restockRatesMaster = require('../init/restock.js');
 var determineTurnOrder = require('../utils/turnOrder.js');
+var PlantState = require('../plantState')
 var _ = require('lodash');
 
 var validators = [
@@ -41,7 +42,7 @@ EndOfTurn.prototype = Object.create(State.prototype);
 EndOfTurn.prototype.constructor = State;
 
 EndOfTurn.prototype.go = function() {
-	return this.game;
+	// return save/update game
 }
 
 EndOfTurn.prototype.continue = function(plantsToPower, playerColor) {
@@ -105,8 +106,8 @@ EndOfTurn.prototype.continue = function(plantsToPower, playerColor) {
 	drawPlant(this.game);
 
 	this.game.turnOrder = determineTurnOrder(this.game.turnOrder);
-	// transition to plant state
-	return this.game;
+	this.game.currentState = new PlantState(this.game);
+	this.game.currentState.go();
 }
 
 module.exports = EndOfTurn;
