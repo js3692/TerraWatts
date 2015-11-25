@@ -1,7 +1,7 @@
 var router = require('express').Router();
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-var firebaseHelper = require("../../../firebase");
+var firebaseHelper = require("../../../../firebase");
 
 var fbRef = firebaseHelper.base();
 
