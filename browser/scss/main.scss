@@ -22,6 +22,8 @@ body {
 }
 
 @import 'directives/main';
+@import 'directives/sidePanel';
+@import 'directives/bottomPanel';
 @import 'home/main';
 @import 'about/main';
 @import 'tutorial/main';
