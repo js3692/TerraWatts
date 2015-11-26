@@ -8,6 +8,8 @@ app.directive('game', function($parse) {
 		},
 		link: function(scope, element, attrs) {
 
+
+			
 		 	scope.$watch('data', function(newData, oldData) {
 		 		var gridGame = newData;
 	 			var cities = gridGame.cities;
