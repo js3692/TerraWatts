@@ -6,4 +6,5 @@ require('./grid');
 require('./city');
 require('./connection');
 require('./plant');
+require('./region');
 require('./game');
