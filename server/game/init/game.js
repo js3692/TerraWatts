@@ -37,5 +37,4 @@ module.exports = function Game (players, plants, cities, connections) {
 	this.phase3Plants = [];
     
     this.activePlayer = null;
-    this.currentState = new PlantState(this);
 }
