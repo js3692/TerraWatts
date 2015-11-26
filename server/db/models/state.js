@@ -22,6 +22,7 @@ var schema = new mongoose.Schema({
 		type: String,
 		enum: steps
 	},
+	// used in plant state
 	numPasses: {
 		type: Number,
 		default: 0
@@ -29,7 +30,7 @@ var schema = new mongoose.Schema({
 })
 
 /* 
-List of functions to write:
+List of functions to adapt from game folder:
 
 figure out data pattern for continue
 
