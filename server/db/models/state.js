@@ -1,11 +1,11 @@
 var mongoose = require('mongoose');
 var _ = require('lodash');
-var determineTurnOrder = require('../game/utils/turnOrder');
-var resourcePrice = require('../game/resourceState/price.js');
-var cityPrice = require('../game/cityState/price.js');
-var drawPlant = require('../game/utils/drawPlant.js');
-var payments = require('../game/endOfTurn/payments.js');
-var dONP = require('../game/utils/dependsOnNumPlayers.js')
+var determineTurnOrder = require('../../game/utils/turnOrder');
+var resourcePrice = require('../../game/resourceState/price.js');
+var cityPrice = require('../../game/cityState/price.js');
+var drawPlant = require('../../game/utils/drawPlant.js');
+var payments = require('../../game/endOfTurn/payments.js');
+var dONP = require('../../game/utils/dependsOnNumPlayers.js')
 var plantSpaces = dONP.plantSpaces;
 var endGame = dONP.endGame;
 
@@ -75,7 +75,7 @@ schema.methods.continue = function(update) {
 			// start an auction (return)
 		}
 	}
-	return this.go;
+	return this.go();
 }
 
 schema.methods.end = function() {
@@ -155,8 +155,7 @@ schema.methods.transaction = function(update) {
 		if (player.plants.length > plantSpaces[this.game.turnOrder.length]) {
 			// make player discard a plant
 		}
-	}
-	if (this.step === 'resource') {
+	} else if (this.step === 'resource') {
 		var wishlist = update.data;
 		player.money -= resourcePrice(wishlist, this.game.resourceMarket);
 		for(var resource in wishlist) {
