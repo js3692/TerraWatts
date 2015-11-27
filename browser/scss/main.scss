@@ -21,9 +21,11 @@ body {
   margin: auto;
 }
 
-@import 'directives/main';
+@import 'directives/_main';
 @import 'directives/sidePanel';
 @import 'directives/bottomPanel';
+@import 'directives/chatPanel';
+@import 'directives/plantPanel';
 @import 'home/main';
 @import 'about/main';
 @import 'tutorial/main';

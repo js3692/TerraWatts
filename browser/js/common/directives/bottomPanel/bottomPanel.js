@@ -6,8 +6,7 @@ app.directive('bottomPanel', function(SliderFactory){
            resources: '='
         },
         link: function(scope, elem, attrs){
-            scope.open = SliderFactory.slideOut.bind(null, 'bottom');
-            
+            scope.open = SliderFactory.slideOut.bind(null, 'bottom');    
         }
     } 
 });

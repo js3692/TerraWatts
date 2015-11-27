@@ -1,10 +1,9 @@
 $panel-width: 800px;
 $panel-height: 300px;
 $tab-width: 100px;
-$tab-height: 20px;
+$tab-height: 30px;
 
 bottom-panel {
-//    overflow: hidden;
     position: fixed;
     z-index: 2;
   
@@ -29,9 +28,6 @@ bottom-panel {
         margin-left: 2%;
         border-radius: 5px 5px 0 0;
         border-bottom: 1px solid white;
-        
-//        -webkit-transform: rotate(90deg);
-//        transform: rotate(90deg);
     }
     
     .menu-tab:hover {
