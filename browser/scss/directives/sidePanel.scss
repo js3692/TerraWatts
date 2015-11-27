@@ -12,8 +12,8 @@ side-panel {
         float: right;
         background-color: $main-background;
         opacity: .8;
-        -webkit-transition: width 2s, height 2s, background-color 1s, -webkit-transform .75s;
-        transition: width 2s, height 2s, background-color 1s, transform .75s;
+        -webkit-transition: width 2s, height 2s, background-color 1s, -webkit-transform .25s;
+        transition: width 2s, height 2s, background-color 1s, transform .25s;
     }
 
     .right-slider-pull {

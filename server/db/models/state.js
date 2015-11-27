@@ -1,11 +1,11 @@
 var mongoose = require('mongoose');
 var _ = require('lodash');
-var determineTurnOrder = require('../game/utils/turnOrder');
-var resourcePrice = require('../game/resourceState/price.js');
-var cityPrice = require('../game/cityState/price.js');
-var drawPlant = require('../game/utils/drawPlant.js');
-var payments = require('../game/endOfTurn/payments.js');
-var dONP = require('../game/utils/dependsOnNumPlayers.js')
+var determineTurnOrder = require('../../game/utils/turnOrder.js');
+var resourcePrice = require('../../game/resourceState/price.js');
+var cityPrice = require('../../game/cityState/price.js');
+var drawPlant = require('../../game/utils/drawPlant.js');
+var payments = require('../../game/endOfTurn/payments.js');
+var dONP = require('../../game/utils/dependsOnNumPlayers.js')
 var plantSpaces = dONP.plantSpaces;
 var endGame = dONP.endGame;
 

@@ -1,5 +1,7 @@
 <div class="panel panel-default">
   <div class="panel-body">
-    {{ player.username }}
+    {{ player.user.username }} money: {{ player.money }} cities: {{ player.numCities }}
+      <div class="color-square"
+           ng-style="{ background: player.user.color }">
   </div>
 </div>

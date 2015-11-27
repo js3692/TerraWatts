@@ -1,6 +1,6 @@
 
-$plant-panel-width: 600px;
-$plant-panel-height: 200px;
+$plant-panel-width: 450px;
+$plant-panel-height: 225px;
 $plant-side-tab-width: 30px;
 $plant-side-tab-height: 100px;
 plant-panel {
@@ -14,8 +14,8 @@ plant-panel {
         float: left;
         background-color: $main-background;
         opacity: .8;
-        -webkit-transition: width 2s, height 2s, background-color 1s, -webkit-transform .75s;
-        transition: width 2s, height 2s, background-color 1s, transform .75s;
+        -webkit-transition: width 2s, height 2s, background-color 1s, -webkit-transform .25s;
+        transition: width 2s, height 2s, background-color 1s, transform .25s;
         -webkit-transform: translateX(0);
         transform: translateX(0);
     }

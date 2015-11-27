@@ -1,9 +1,8 @@
 plant {
-    display: block;
-    float: left;
-    box-sizing: border-box;
-    border-radius: 3px;
-    border-color: white;
-    font-size: 10pt;
-    margin: 2%;
+    img {
+        margin: 11px 5px 10px 13px; 
+        max-height: 90px;
+        max-width: 190px;
+        opacity: 1;
+    }
 }
