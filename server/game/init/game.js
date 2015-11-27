@@ -1,6 +1,6 @@
 var restockRatesMaster = require('./restock.js');
 var shuffle = require('../utils/shuffle')
-var plantState = require('../plantState')
+var PlantState = require('../plantState')
 
 function removePlants(shuffledPlants, numPlayers) {
 	if(numPlayers < 5) {

@@ -32,7 +32,7 @@ router.post('/leave', function (req, res, next) {
 
 router.put('/start', function(req, res, next) {
      
-     require('../../../game/init')(req.body)
+     require('../../../../game/init')(req.body)
         .then(function (newGame) {
             req.grid.state = new PlantState(newGame);
             req.grid.game = req.grid.state.go();

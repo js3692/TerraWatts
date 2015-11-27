@@ -1,0 +1,39 @@
+$panel-width: 300px;
+
+side-panel {
+    overflow: hidden;
+    position: relative;
+    z-index: 200;
+  
+    .right-slider {
+        margin-top: 2%;
+        float: right;
+        background-color: $main-background;
+        opacity: .8;
+        -webkit-transition: width 2s, height 2s, background-color 1s, -webkit-transform .75s;
+        transition: width 2s, height 2s, background-color 1s, transform .75s;
+    }
+
+    .right-slider-pull {
+        -webkit-transform: translateX($panel-width);
+        transform: translateX($panel-width);
+    }
+  
+    .menu-tab {
+        width: 20px;
+        height: 100px;
+        border-radius: 5px 0 0 5px;
+        border-right: 1px solid white;
+    }
+    .menu-tab:hover {
+        background-color: grey;
+    }
+  
+    .menu-panel-body {
+        height: 60vh;
+        width: $panel-width;
+        border-radius: 0 0 0 5px;
+        border-width: 0;
+    }
+    
+}
