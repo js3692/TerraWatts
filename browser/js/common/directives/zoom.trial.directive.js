@@ -39,18 +39,49 @@ app.directive('zoomMap', function($parse) {
 
 			var vector = svg.append("path");
 
+			// var mapCities = svg.append('g')
+			// 	.attr('id', 'cities');
 
 
-			d3.csv("/utils/maps/us-state-capitols.csv", type, function(error, capitals) {
-			  if (error) throw error;
 
-			  console.log('capitals', capitals)
+			// d3.csv("/utils/maps/us-state-capitols.csv", type, function(error, capitals) {
+			//   if (error) throw error;
 
-			  svg.call(zoom);
-			  vector.datum({type: "FeatureCollection", features: capitals});
-			  zoomed();
-			});
+			//   console.log('capitals', capitals)
 
+			//   svg.call(zoom);
+			//   vector.datum({type: "FeatureCollection", features: capitals});
+			//   zoomed();
+			// });
+
+
+
+			scope.$watch('data', function(newData, oldData) {
+				var cities = newData.cities;
+
+				if(cities) {
+
+					console.log('inside watch')
+					console.log('cities', cities)
+
+					svg.call(zoom);
+					vector.datum({type: "FeatureCollection", features: cities});
+					zoomed();
+
+					console.log('below zoomed')
+
+					// var stringed = JSON.stringify(cities);
+					// console.log('stringed', stringed)
+
+					// d3.json('stringed', function(error, theCities) {
+					// 	console.log('inside')
+					// 	if(error) throw error;
+
+					// 	console.log('theCities', theCities)
+					// })
+
+				}
+			}, true)
 
 			
 
@@ -70,17 +101,51 @@ app.directive('zoomMap', function($parse) {
 
 			// 			svg.call(zoom);
 			// 			vector.datum({type: "FeatureCollection", features: capitalsObj});
+			// 			console.log('vector.datum', vector.datum)
 			// 			zoomed();
 			// 		});
 
 			// 	}
 			// },true);
 
+			// scope.$watch('data', function(newData, oldData) {
+			// 	var cities = newData.cities;
+
+			// 	if(cities) {
+			// 		console.log('cities', cities)
+
+			// 		cities.forEach(function(city) {
+
+			// 			var lat = city.location[0],
+			// 				lon = city.location[1];
+
+			// 			mapCities.append('circle')
+			// 				.attr('id', city.name)
+			// 				.attr('r', 9)
+			// 				.attr("transform", function(d) {return "translate(" + projection([lon,lat]) + ")"})
+
+			// 			mapCities.append('text')
+			// 				.text(city.name)
+			// 				.attr("text-anchor", "middle")
+			// 				.attr("transform", function(d) {return "translate(" + projection([lon,lat-0.7]) + ")"})
+			// 				.attr("font-family", "sans-serif")
+			// 				.attr("font-size", "5px")
+			// 				.attr("fill", "black");
+
+			// 			svg.call(zoom);
+
+			// 		})
+
+			// 	}
+			// }, true)
 
 
+
+			svg.call(zoom) // Unclear
+			zoomed() // Necessary
 
 			function type(d) {
-				console.log('d', d)
+				console.log('d in type', d)
 			  return {
 			    type: "Feature",
 			    properties: {
@@ -116,7 +181,9 @@ app.directive('zoomMap', function($parse) {
 			      .remove();
 
 			  image.enter().append("image")
-			      .attr("xlink:href", function(d) { return "http://" + ["a", "b", "c"][Math.random() * 3 | 0] + ".tile.openstreetmap.org/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
+			      .attr("xlink:href", function(d) {
+			      	console.log('d in image.enter', d) 
+			      	return "http://" + ["a", "b", "c"][Math.random() * 3 | 0] + ".tile.openstreetmap.org/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
 			      .attr("width", 1)
 			      .attr("height", 1)
 			      .attr("x", function(d) { return d[0]; })
