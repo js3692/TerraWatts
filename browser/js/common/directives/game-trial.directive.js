@@ -1,4 +1,4 @@
-app.directive('gametrial', function($parse) {
+app.directive('gametrial', function() {
 	return {
 		restrict: 'E',
 		replace: true,
@@ -21,6 +21,7 @@ app.directive('gametrial', function($parse) {
 			var path = d3.geo.path()
 			    .projection(projection);
 
+
 			var tile = d3.geo.tile()
 			    .scale(projection.scale() * 2 * Math.PI)
 			    .translate(projection([0, 0]))
@@ -34,91 +35,140 @@ app.directive('gametrial', function($parse) {
 			    .attr("height", height);
 
 			d3.json("/utils/maps/us.json", function(error, topology) {
-			  if (error) throw error;
+				if (error) throw error;
 
-			  var tiles = tile();
+				var tiles = tile();
 
-			  var defs = svg.append("defs");
+				var defs = svg.append("defs");
 
-			  // USA Outline
-			  defs.append("path")
-			      .attr("id", "land")
-			      .attr('transform', 'scale(2)')
-			      .datum(topojson.feature(topology, topology.objects.land))
-			      .attr("d", path);
+				// USA Outline
+				defs.append("path")
+			    	.attr("id", "land")
+			    	.attr('transform', 'scale(2)')
+			    	.datum(topojson.feature(topology, topology.objects.land))
+			    	.attr("d", path);
 
-			  defs.append("clipPath")
-			      .attr("id", "clip")
-			    .append("use")
-			      .attr("xlink:href", "#land");
+				defs.append("clipPath")
+			    	.attr("id", "clip")
+			  		.append("use")
+			    	.attr("xlink:href", "#land");
 
-			  svg.append("g")
-			  	.attr('transform', 'scale(2)')
-			      .attr("clip-path", "url(#clip)")
+				svg.append("g")
+			  		.attr('transform', 'scale(2)')
+			    	.attr("clip-path", "url(#clip)")
+			   		.selectAll("image")
+					.data(tiles)
+					.enter().append("image")
+					.attr("xlink:href", function(d) { return "http://" + ["a", "b", "c", "d"][Math.random() * 4 | 0] + ".tiles.mapbox.com/v3/mapbox.natural-earth-2/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
+					.attr("width", Math.round(tiles.scale))
+					.attr("height", Math.round(tiles.scale))
+					.attr("x", function(d) { return Math.round((d[0] + tiles.translate[0]) * tiles.scale); })
+					.attr("y", function(d) { return Math.round((d[1] + tiles.translate[1]) * tiles.scale); });
 
-			    .selectAll("image")
-			      .data(tiles)
-			    .enter().append("image")
-			      .attr("xlink:href", function(d) { return "http://" + ["a", "b", "c", "d"][Math.random() * 4 | 0] + ".tiles.mapbox.com/v3/mapbox.natural-earth-2/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
-			      .attr("width", Math.round(tiles.scale))
-			      .attr("height", Math.round(tiles.scale))
-			      .attr("x", function(d) { return Math.round((d[0] + tiles.translate[0]) * tiles.scale); })
-			      .attr("y", function(d) { return Math.round((d[1] + tiles.translate[1]) * tiles.scale); });
-
-			  svg.append("use")
-			      .attr("xlink:href", "#land")
-			      .attr("class", "stroke");
+				svg.append("use")
+			    	.attr("xlink:href", "#land")
+			    	.attr("class", "stroke");
 			});
 			// Map END
 
 
 
-			// Cities START
 			scope.$watch('data', function(newData, oldData) {
 				var gridGame = newData;
 	 			var cities = gridGame.cities;
+	 			var connections = gridGame.connections;
 
-	 			if(cities) {
-	 				console.log('cities', cities)
+	 			console.log('gridGame', gridGame)
+	 			
+				var mapConnections = d3.select('#map')
+					.append('g')
+					.attr('id', 'connections')
+					.attr('transform', 'scale(2)');
 
-			    	var mapCities = d3.select('#map')
-						.append('g')
-						.attr('id', 'cities')
-						.attr('transform', 'scale(2)')
-
-					var text = d3.select('#map')
-						.append('text');
-
-
-					mapper(cities);
+		    	var mapCities = d3.select('#map')
+					.append('g')
+					.attr('id', 'cities')
+					.attr('transform', 'scale(2)');
 
 
-					function mapper(gameData) {
-						console.log('inside mapper')
+				var text = d3.select('#map')
+					.append('text');
 
-						gameData.forEach(function(city) {
+
+				if(cities) {
+					(function cityMapper(cities) {
+
+						cities.forEach(function(city) {
 
 							var lat = city.location[0],
 								lon = city.location[1];
 
 							mapCities.append('circle')
 								.attr('id', city.name)
-								.attr('r', 5)
+								.attr('r', 9)
 								.attr("transform", function(d) {return "translate(" + projection([lon,lat]) + ")"})
 
 							mapCities.append('text')
 								.text(city.name)
 								.attr("text-anchor", "middle")
-								.attr("transform", function(d) {return "translate(" + projection([lon,lat-0.5]) + ")"})
+								.attr("transform", function(d) {return "translate(" + projection([lon,lat-0.7]) + ")"})
 								.attr("font-family", "sans-serif")
-							   .attr("font-size", "5px")
-							   .attr("fill", "black");
+								.attr("font-size", "5px")
+								.attr("fill", "black");
 						})
-					}
-
-
-
+					})(cities);
 	 			}
+
+
+	 			if(connections) {
+					(function connectionMapper(connections) {
+
+						connections.forEach(function(connection) {
+							
+							var firstLon = connection.cities[0].location[1],
+								firstLat = connection.cities[0].location[0],
+								secondLon = connection.cities[1].location[1],
+								secondLat = connection.cities[1].location[0];
+
+							var coordinates = [
+								[firstLon, firstLat],
+								[secondLon, secondLat],
+							];
+
+							var distance = connection.distance;
+
+							mapConnections.append('path')
+								.attr('fill', 'none')
+								.attr('stroke', 'grey')
+								.attr('d', function(d) {
+									return path({
+										type: 'LineString',
+										coordinates: coordinates
+									});
+								});
+
+							mapConnections.append('circle')
+								.attr('id', connection.cityNames.join(", "))
+								.attr('r', 5)
+								.attr('fill', 'grey')
+								.attr("transform", function(d) {return "translate(" + projection([(firstLon+secondLon)/2,(firstLat+secondLat)/2]) + ")"})
+
+							mapConnections.append('text')
+								.text(connection.distance)
+								.attr("text-anchor", "middle")
+								.attr('alignment-baseline', 'middle')
+								.attr("transform", function(d) {return "translate(" + projection([(firstLon+secondLon)/2,(firstLat+secondLat)/2]) + ")"})
+								.attr("font-family", "sans-serif")
+								.attr("font-size", "5px")
+								.attr("fill", "white");
+
+						});
+
+					})(connections);
+				}
+
+
+
 			}, true)
 
 
