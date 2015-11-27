@@ -5,7 +5,15 @@
     left: 0;
     top: 0;
     z-index: -1;
-
 }
 
-
+#gameMapTrial {
+	svg {
+		position: absolute;
+	}
+	.stroke {
+		fill: none;
+		stroke: #000;
+		stroke-width: .5;
+	}
+}
