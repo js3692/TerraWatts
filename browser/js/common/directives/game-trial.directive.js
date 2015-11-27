@@ -9,10 +9,8 @@ app.directive('gametrial', function($parse) {
 		link: function(scope, element, attrs) {
 
 			// Map START
-
-		    var width = 960,
-			    height = 500,
-			    buffer = 40,
+		    var width = 2020,
+			    height = 1090,
 			    centerLon = -96,
 			    centerLat = 38.3;
 
@@ -32,8 +30,8 @@ app.directive('gametrial', function($parse) {
 			var svg = d3.select("#gameMapTrial").append("svg")
 				.attr('id', 'map')
 				// .attr('viewBox', '0 0 960 500')
-			    .attr("width", 2020)
-			    .attr("height", 1075);
+			    .attr("width", width)
+			    .attr("height", height);
 
 			d3.json("/utils/maps/us.json", function(error, topology) {
 			  if (error) throw error;
@@ -73,6 +71,8 @@ app.directive('gametrial', function($parse) {
 			});
 			// Map END
 
+
+
 			// Cities START
 			scope.$watch('data', function(newData, oldData) {
 				var gridGame = newData;
@@ -81,26 +81,10 @@ app.directive('gametrial', function($parse) {
 	 			if(cities) {
 	 				console.log('cities', cities)
 
-	 				// var xBank = [],
-			   //  		yBank = []
-			   //  	cities.forEach(function(city) {
-			   //  		var lat = city.location[0];
-			   //  		var lon = city.location[1];
-			   //  		xBank.push(lon);
-			   //  		yBank.push(lat);
-			   //  	})
-			   //  	var xMin = Math.min.apply(null, xBank),
-			   //  		xMax = Math.max.apply(null, xBank),
-			   //  		xRange = xMax-xMin,
-			   //  		yMin = Math.min.apply(null, yBank),
-			   //  		yMax = Math.max.apply(null, yBank),
-			   //  		yRange = yMax-yMin;
-
-
-
 			    	var mapCities = d3.select('#map')
 						.append('g')
-						.attr('id', 'cities');
+						.attr('id', 'cities')
+						.attr('transform', 'scale(2)')
 
 					var text = d3.select('#map')
 						.append('text');
@@ -110,44 +94,33 @@ app.directive('gametrial', function($parse) {
 
 
 					function mapper(gameData) {
+						console.log('inside mapper')
 
 						gameData.forEach(function(city) {
 
-							var lat = city.location[0];
-				    		var lon = city.location[1];
-
-							// var interpolX = buffer + ((lon - xMin)/xRange)*(width-2*buffer);
-							// var interpolY = buffer + (1-(lat - yMin)/yRange)*(height-2*buffer);
+							var lat = city.location[0],
+								lon = city.location[1];
 
 							mapCities.append('circle')
 								.attr('id', city.name)
-								// .attr('cx', lon)
-								// .attr('cy', lat)
-								.attr('cx', 200)
-								.attr('cy', 200)
-								.attr('r', 15);
+								.attr('r', 5)
+								.attr("transform", function(d) {return "translate(" + projection([lon,lat]) + ")"})
 
 							mapCities.append('text')
 								.text(city.name)
 								.attr("text-anchor", "middle")
-								.attr('x', 200)
-								.attr('y', 200)
+								.attr("transform", function(d) {return "translate(" + projection([lon,lat-0.5]) + ")"})
 								.attr("font-family", "sans-serif")
-							   .attr("font-size", "11px")
+							   .attr("font-size", "5px")
 							   .attr("fill", "black");
 						})
 					}
 
 
 
-
-
 	 			}
 			}, true)
 
-
-
-		 	
 
 					
 		}
