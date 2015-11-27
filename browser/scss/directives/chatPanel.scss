@@ -1,49 +1,40 @@
-$chat-panel-width: 300px;
-$chat-panel-height: 300px;
-$chat-tab-width: 100px;
-$chat-tab-height: 30px;
 
+$chat-panel-width: 300px;
+$chat-panel-height: 200px;
+$chat-tab-width: 30px;
+$chat-tab-height: 100px;
 chat-panel {
-    position: fixed;
+    position: relative;
     z-index: 2;
   
     .chat-slider {
-        float: none;
+        float: right;
         background-color: $main-background;
         opacity: .8;
         -webkit-transition: width 2s, height 2s, background-color 1s, -webkit-transform .75s;
         transition: width 2s, height 2s, background-color 1s, transform .75s;
-        -webkit-transform: translateY(calc(100vh - #{$chat-panel-height})) translateX(150vh);
-        transform: translateY(calc(100vh - #{$chat-panel-height})) translateX(150vh);
     }
 
     .chat-slider-pull {
-        -webkit-transform: translateY(calc(100vh - #{$chat-tab-height})) translateX(150vh);
-        transform: translateY(calc(100vh - #{$chat-tab-height})) translateX(150vh);
+        -webkit-transform: translateX($chat-panel-width);
+        transform: translateX($chat-panel-width);
     }
   
     .menu-tab {
         width: $chat-tab-width;
         height: $chat-tab-height;
-        margin-left: 2%;
-        border-radius: 5px 5px 0 0;
-        border-bottom: 1px solid white;
+        border-radius: 5px 0 0 5px;
+        border-right: 1px solid white;
     }
-    
     .menu-tab:hover {
         background-color: grey;
     }
   
     .menu-panel-body {
+        clear: both;
         height: $chat-panel-height;
         width: $chat-panel-width;
-        border-radius: 5px 5px 0 0;
+        border-radius: 0 0 0 5px;
         border-width: 0;
     }
-//    .glyphicon-comment {
-//        margin-left: 41px;
-//        margin-top: 5px;
-//        color: white;
-//        font-size: 20px;
-//    }
 }

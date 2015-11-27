@@ -1,19 +1,23 @@
-$plant-panel-width: 300px;
+
+$plant-panel-width: 500px;
+$plant-panel-height: 200px;
 $plant-side-tab-width: 30px;
 $plant-side-tab-height: 100px;
-
 plant-panel {
-    overflow: hidden;
+    width:0;
+    height:0;
     position: relative;
     z-index: 200;
   
     .plant-slider {
-        margin-top: 2%;
+        margin-top: 3%;
         float: left;
         background-color: $main-background;
         opacity: .8;
         -webkit-transition: width 2s, height 2s, background-color 1s, -webkit-transform .75s;
         transition: width 2s, height 2s, background-color 1s, transform .75s;
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
     }
 
     .plant-slider-pull {
@@ -32,16 +36,9 @@ plant-panel {
     }
   
     .menu-panel-body {
-        height: 60vh;
+        height: $plant-panel-height;
         width: $plant-panel-width;
         border-radius: 0 0 5px 0;
         border-width: 0;
     }
-    .glyphicon-user {
-        font-size: 20px;
-        margin-left: 5px;
-        margin-top: 37px;
-        color: white;
-    }
-    
 }

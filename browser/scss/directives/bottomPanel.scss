@@ -4,6 +4,8 @@ $tab-width: 100px;
 $tab-height: 30px;
 
 bottom-panel {
+    width: 0;
+    height: 0;
     position: fixed;
     z-index: 2;
   
@@ -25,7 +27,7 @@ bottom-panel {
     .menu-tab {
         width: $tab-width;
         height: $tab-height;
-        margin-left: 2%;
+        margin-left: calc(#{$panel-width} - #{$tab-width});
         border-radius: 5px 5px 0 0;
         border-bottom: 1px solid white;
     }
@@ -35,9 +37,9 @@ bottom-panel {
     }
   
     .menu-panel-body {
+        border-radius: 0;
         height: $panel-height;
         width: $panel-width;
-        border-radius: 0 5px 0 0;
         border-width: 0;
     }
     
