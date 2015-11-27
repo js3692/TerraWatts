@@ -8,3 +8,4 @@ require('./connection');
 require('./plant');
 require('./region');
 require('./game');
+require('./state');

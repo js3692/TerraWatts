@@ -28,9 +28,9 @@ PlantState.prototype = Object.create(State.prototype);
 PlantState.prototype.constructor = PlantState;
 
 PlantState.prototype.go = function() {
-	if (!this.game.activePlayer.length) return this.end();
+	if (!this.canChoosePlant.length) return this.end();
 	this.game.activePlayer = this.canChoosePlant[0];
-	// return save/update game
+	return this.game;
 }
 
 //format of choice: 'pass', or {plant: Plant, openingBid: num}
