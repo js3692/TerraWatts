@@ -1,4 +1,4 @@
-app.directive('gametrial', function($parse) {
+app.directive('gametrial', function() {
 	return {
 		restrict: 'E',
 		replace: true,
@@ -73,7 +73,6 @@ app.directive('gametrial', function($parse) {
 
 
 
-			// Cities START
 			scope.$watch('data', function(newData, oldData) {
 				var gridGame = newData;
 	 			var cities = gridGame.cities;
@@ -97,7 +96,6 @@ app.directive('gametrial', function($parse) {
 
 
 				if(cities) {
-
 					(function cityMapper(cities) {
 
 						cities.forEach(function(city) {
@@ -107,29 +105,23 @@ app.directive('gametrial', function($parse) {
 
 							mapCities.append('circle')
 								.attr('id', city.name)
-								.attr('r', 5)
-								.attr('z-index', 200)
+								.attr('r', 9)
 								.attr("transform", function(d) {return "translate(" + projection([lon,lat]) + ")"})
 
 							mapCities.append('text')
 								.text(city.name)
 								.attr("text-anchor", "middle")
-								.attr("transform", function(d) {return "translate(" + projection([lon,lat-0.5]) + ")"})
+								.attr("transform", function(d) {return "translate(" + projection([lon,lat-0.7]) + ")"})
 								.attr("font-family", "sans-serif")
 								.attr("font-size", "5px")
 								.attr("fill", "black");
 						})
 					})(cities);
-	 			
 	 			}
 
 
 	 			if(connections) {
-					console.log('connections', connections)
-
-					connectionMapper(connections);
-
-					function connectionMapper(connections) {
+					(function connectionMapper(connections) {
 
 						connections.forEach(function(connection) {
 							
@@ -138,15 +130,11 @@ app.directive('gametrial', function($parse) {
 								secondLon = connection.cities[1].location[1],
 								secondLat = connection.cities[1].location[0];
 
-							console.log('firstLon', firstLon);
-							console.log('firstLat', firstLat);
-							console.log('secondLon', secondLon);
-							console.log('secondLat', secondLat);
-
 							var coordinates = [
 								[firstLon, firstLat],
 								[secondLon, secondLat],
 							];
+
 							var distance = connection.distance;
 
 							mapConnections.append('path')
@@ -156,8 +144,8 @@ app.directive('gametrial', function($parse) {
 									return path({
 										type: 'LineString',
 										coordinates: coordinates
-									})
-								})
+									});
+								});
 
 							mapConnections.append('circle')
 								.attr('id', connection.cityNames.join(", "))
@@ -174,12 +162,9 @@ app.directive('gametrial', function($parse) {
 								.attr("font-size", "5px")
 								.attr("fill", "white");
 
-						})
+						});
 
-						
-
-					};
-
+					})(connections);
 				}
 
 
