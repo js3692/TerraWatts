@@ -81,76 +81,19 @@ app.directive('gametrial', function($parse) {
 
 	 			console.log('gridGame', gridGame)
 	 			
-		    	var mapCities = d3.select('#map')
-					.append('g')
-					.attr('id', 'cities')
-					.attr('transform', 'scale(2)');
-
 				var mapConnections = d3.select('#map')
 					.append('g')
 					.attr('id', 'connections')
 					.attr('transform', 'scale(2)');
 
-				// TRIAL
-				// mapConnections.append('path')
-				// 	.attr('d', 'M20,20 L200,200')
-				// 	.attr('fill', 'none')
-				// 	.attr('stroke', '#fff')
+		    	var mapCities = d3.select('#map')
+					.append('g')
+					.attr('id', 'cities')
+					.attr('transform', 'scale(2)');
 
 
 				var text = d3.select('#map')
 					.append('text');
-
-
-				if(connections) {
-					console.log('connections', connections)
-
-					connectionMapper(connections);
-
-					function connectionMapper(connections) {
-
-						connections.forEach(function(connection) {
-							// console.log('connection', connection)
-
-
-							var firstLon = connection.cities[0].location[1];
-							// console.log('firstLon', firstLon)
-							var firstLat = connection.cities[0].location[0];
-							// console.log('firstLat', firstLat)
-							var secondLon = connection.cities[1].location[1];
-							// console.log('secondLon', secondLon)
-							var secondLat = connection.cities[1].location[0];
-							// console.log('secondLat', secondLat)
-
-							if(connection.cityNames.indexOf('Fargo') > -1) {
-								console.log('Fargo', connection)
-								console.log('firstLon', firstLon)
-								console.log('firstLat', firstLat)
-								console.log('secondLon', secondLon)
-								console.log('secondLat', secondLat)
-							}
-
-							mapConnections.append('path')
-								.attr('fill', 'none')
-								.attr('stroke', '#fff')
-								.attr('d', function(d) {
-									return path({
-										type: 'LineString',
-										coordinates: [
-											[firstLon, firstLat],
-											[secondLon, secondLat]
-										]
-									})
-								})
-
-						})
-
-						
-
-					};
-
-				}
-
 
 
 				if(cities) {
@@ -165,6 +108,7 @@ app.directive('gametrial', function($parse) {
 							mapCities.append('circle')
 								.attr('id', city.name)
 								.attr('r', 5)
+								.attr('z-index', 200)
 								.attr("transform", function(d) {return "translate(" + projection([lon,lat]) + ")"})
 
 							mapCities.append('text')
@@ -178,6 +122,65 @@ app.directive('gametrial', function($parse) {
 					})(cities);
 	 			
 	 			}
+
+
+	 			if(connections) {
+					console.log('connections', connections)
+
+					connectionMapper(connections);
+
+					function connectionMapper(connections) {
+
+						connections.forEach(function(connection) {
+							
+							var firstLon = connection.cities[0].location[1],
+								firstLat = connection.cities[0].location[0],
+								secondLon = connection.cities[1].location[1],
+								secondLat = connection.cities[1].location[0];
+
+							console.log('firstLon', firstLon);
+							console.log('firstLat', firstLat);
+							console.log('secondLon', secondLon);
+							console.log('secondLat', secondLat);
+
+							var coordinates = [
+								[firstLon, firstLat],
+								[secondLon, secondLat],
+							];
+							var distance = connection.distance;
+
+							mapConnections.append('path')
+								.attr('fill', 'none')
+								.attr('stroke', 'grey')
+								.attr('d', function(d) {
+									return path({
+										type: 'LineString',
+										coordinates: coordinates
+									})
+								})
+
+							mapConnections.append('circle')
+								.attr('id', connection.cityNames.join(", "))
+								.attr('r', 5)
+								.attr('fill', 'grey')
+								.attr("transform", function(d) {return "translate(" + projection([(firstLon+secondLon)/2,(firstLat+secondLat)/2]) + ")"})
+
+							mapConnections.append('text')
+								.text(connection.distance)
+								.attr("text-anchor", "middle")
+								.attr('alignment-baseline', 'middle')
+								.attr("transform", function(d) {return "translate(" + projection([(firstLon+secondLon)/2,(firstLat+secondLat)/2]) + ")"})
+								.attr("font-family", "sans-serif")
+								.attr("font-size", "5px")
+								.attr("fill", "white");
+
+						})
+
+						
+
+					};
+
+				}
 
 
 
