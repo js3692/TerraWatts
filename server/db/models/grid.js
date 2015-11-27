@@ -25,6 +25,10 @@ var schema = new mongoose.Schema({
     availableColors: {
         type: [String],
         default: ['red', 'green', 'yellow', 'purple', 'black', 'blue']
+    },
+    state: {
+        type: Object,
+        default: null
     }
 });
 
