@@ -21,6 +21,7 @@ app.directive('gametrial', function($parse) {
 			var path = d3.geo.path()
 			    .projection(projection);
 
+
 			var tile = d3.geo.tile()
 			    .scale(projection.scale() * 2 * Math.PI)
 			    .translate(projection([0, 0]))
@@ -34,40 +35,39 @@ app.directive('gametrial', function($parse) {
 			    .attr("height", height);
 
 			d3.json("/utils/maps/us.json", function(error, topology) {
-			  if (error) throw error;
+				if (error) throw error;
 
-			  var tiles = tile();
+				var tiles = tile();
 
-			  var defs = svg.append("defs");
+				var defs = svg.append("defs");
 
-			  // USA Outline
-			  defs.append("path")
-			      .attr("id", "land")
-			      .attr('transform', 'scale(2)')
-			      .datum(topojson.feature(topology, topology.objects.land))
-			      .attr("d", path);
+				// USA Outline
+				defs.append("path")
+			    	.attr("id", "land")
+			    	.attr('transform', 'scale(2)')
+			    	.datum(topojson.feature(topology, topology.objects.land))
+			    	.attr("d", path);
 
-			  defs.append("clipPath")
-			      .attr("id", "clip")
-			    .append("use")
-			      .attr("xlink:href", "#land");
+				defs.append("clipPath")
+			    	.attr("id", "clip")
+			  		.append("use")
+			    	.attr("xlink:href", "#land");
 
-			  svg.append("g")
-			  	.attr('transform', 'scale(2)')
-			      .attr("clip-path", "url(#clip)")
+				svg.append("g")
+			  		.attr('transform', 'scale(2)')
+			    	.attr("clip-path", "url(#clip)")
+			   		.selectAll("image")
+					.data(tiles)
+					.enter().append("image")
+					.attr("xlink:href", function(d) { return "http://" + ["a", "b", "c", "d"][Math.random() * 4 | 0] + ".tiles.mapbox.com/v3/mapbox.natural-earth-2/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
+					.attr("width", Math.round(tiles.scale))
+					.attr("height", Math.round(tiles.scale))
+					.attr("x", function(d) { return Math.round((d[0] + tiles.translate[0]) * tiles.scale); })
+					.attr("y", function(d) { return Math.round((d[1] + tiles.translate[1]) * tiles.scale); });
 
-			    .selectAll("image")
-			      .data(tiles)
-			    .enter().append("image")
-			      .attr("xlink:href", function(d) { return "http://" + ["a", "b", "c", "d"][Math.random() * 4 | 0] + ".tiles.mapbox.com/v3/mapbox.natural-earth-2/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
-			      .attr("width", Math.round(tiles.scale))
-			      .attr("height", Math.round(tiles.scale))
-			      .attr("x", function(d) { return Math.round((d[0] + tiles.translate[0]) * tiles.scale); })
-			      .attr("y", function(d) { return Math.round((d[1] + tiles.translate[1]) * tiles.scale); });
-
-			  svg.append("use")
-			      .attr("xlink:href", "#land")
-			      .attr("class", "stroke");
+				svg.append("use")
+			    	.attr("xlink:href", "#land")
+			    	.attr("class", "stroke");
 			});
 			// Map END
 
@@ -77,26 +77,87 @@ app.directive('gametrial', function($parse) {
 			scope.$watch('data', function(newData, oldData) {
 				var gridGame = newData;
 	 			var cities = gridGame.cities;
+	 			var connections = gridGame.connections;
 
-	 			if(cities) {
-	 				console.log('cities', cities)
+	 			console.log('gridGame', gridGame)
+	 			
+		    	var mapCities = d3.select('#map')
+					.append('g')
+					.attr('id', 'cities')
+					.attr('transform', 'scale(2)');
 
-			    	var mapCities = d3.select('#map')
-						.append('g')
-						.attr('id', 'cities')
-						.attr('transform', 'scale(2)')
+				var mapConnections = d3.select('#map')
+					.append('g')
+					.attr('id', 'connections')
+					.attr('transform', 'scale(2)');
 
-					var text = d3.select('#map')
-						.append('text');
+				// TRIAL
+				// mapConnections.append('path')
+				// 	.attr('d', 'M20,20 L200,200')
+				// 	.attr('fill', 'none')
+				// 	.attr('stroke', '#fff')
 
 
-					mapper(cities);
+				var text = d3.select('#map')
+					.append('text');
 
 
-					function mapper(gameData) {
-						console.log('inside mapper')
+				if(connections) {
+					console.log('connections', connections)
 
-						gameData.forEach(function(city) {
+					connectionMapper(connections);
+
+					function connectionMapper(connections) {
+
+						connections.forEach(function(connection) {
+							// console.log('connection', connection)
+
+
+							var firstLon = connection.cities[0].location[1];
+							// console.log('firstLon', firstLon)
+							var firstLat = connection.cities[0].location[0];
+							// console.log('firstLat', firstLat)
+							var secondLon = connection.cities[1].location[1];
+							// console.log('secondLon', secondLon)
+							var secondLat = connection.cities[1].location[0];
+							// console.log('secondLat', secondLat)
+
+							if(connection.cityNames.indexOf('Fargo') > -1) {
+								console.log('Fargo', connection)
+								console.log('firstLon', firstLon)
+								console.log('firstLat', firstLat)
+								console.log('secondLon', secondLon)
+								console.log('secondLat', secondLat)
+							}
+
+							mapConnections.append('path')
+								.attr('fill', 'none')
+								.attr('stroke', '#fff')
+								.attr('d', function(d) {
+									return path({
+										type: 'LineString',
+										coordinates: [
+											[firstLon, firstLat],
+											[secondLon, secondLat]
+										]
+									})
+								})
+
+						})
+
+						
+
+					};
+
+				}
+
+
+
+				if(cities) {
+
+					(function cityMapper(cities) {
+
+						cities.forEach(function(city) {
 
 							var lat = city.location[0],
 								lon = city.location[1];
@@ -111,14 +172,15 @@ app.directive('gametrial', function($parse) {
 								.attr("text-anchor", "middle")
 								.attr("transform", function(d) {return "translate(" + projection([lon,lat-0.5]) + ")"})
 								.attr("font-family", "sans-serif")
-							   .attr("font-size", "5px")
-							   .attr("fill", "black");
+								.attr("font-size", "5px")
+								.attr("fill", "black");
 						})
-					}
-
-
-
+					})(cities);
+	 			
 	 			}
+
+
+
 			}, true)
 
 
