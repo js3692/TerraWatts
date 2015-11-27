@@ -7,6 +7,7 @@ var seedUsers = require('./user');
 var seedPlants = require('./plant');
 var seedCities = require('./city');
 var seedConnections = require('./connection');
+var seedRegions = require('./region');
 
 connectToDb.then(function (db) {
     return db.db.dropDatabase();
@@ -25,6 +26,10 @@ connectToDb.then(function (db) {
 })
 .then (function () {
   console.log(chalk.grey('Cities created'));
+  return seedRegions();
+})
+.then (function () {
+  console.log(chalk.grey('Regions created'));
   return seedConnections();
 })
 .then(function () {
