@@ -1,10 +1,11 @@
 $panel-width: 800px;
 $panel-height: 300px;
 $tab-width: 100px;
-$tab-height: 20px;
+$tab-height: 30px;
 
 bottom-panel {
-//    overflow: hidden;
+    width: 0;
+    height: 0;
     position: fixed;
     z-index: 2;
   
@@ -12,8 +13,8 @@ bottom-panel {
         float: none;
         background-color: $main-background;
         opacity: .8;
-        -webkit-transition: width 2s, height 2s, background-color 1s, -webkit-transform .75s;
-        transition: width 2s, height 2s, background-color 1s, transform .75s;
+        -webkit-transition: width 2s, height 2s, background-color 1s, -webkit-transform .25s;
+        transition: width 2s, height 2s, background-color 1s, transform .25s;
         -webkit-transform: translateY(calc(100vh - #{$panel-height}));
         transform: translateY(calc(100vh - #{$panel-height}));
     }
@@ -26,12 +27,9 @@ bottom-panel {
     .menu-tab {
         width: $tab-width;
         height: $tab-height;
-        margin-left: 2%;
+        margin-left: calc(#{$panel-width} - #{$tab-width});
         border-radius: 5px 5px 0 0;
         border-bottom: 1px solid white;
-        
-//        -webkit-transform: rotate(90deg);
-//        transform: rotate(90deg);
     }
     
     .menu-tab:hover {
@@ -39,9 +37,9 @@ bottom-panel {
     }
   
     .menu-panel-body {
+        border-radius: 0;
         height: $panel-height;
         width: $panel-width;
-        border-radius: 0 5px 0 0;
         border-width: 0;
     }
     

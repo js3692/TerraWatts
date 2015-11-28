@@ -1,4 +1,4 @@
-var dij = require('dijkstra.js');
+var dij = require('./dijkstra.js');
 var isOccupiedBy = require('./isOccupiedBy');
 
 module.exports = function totalCost(game, citiesToAdd) {

@@ -1,14 +1,13 @@
-$panel-width: 300px;
-$side-tab-width: 30px;
-$side-tab-height: 100px;
 
-side-panel {
-    overflow: hidden;
+$chat-panel-width: 300px;
+$chat-panel-height: 200px;
+$chat-tab-width: 30px;
+$chat-tab-height: 100px;
+chat-panel {
     position: relative;
-    z-index: 200;
+    z-index: 2;
   
-    .right-slider {
-        margin-top: 3%;
+    .chat-slider {
         float: right;
         background-color: $main-background;
         opacity: .8;
@@ -16,14 +15,14 @@ side-panel {
         transition: width 2s, height 2s, background-color 1s, transform .25s;
     }
 
-    .right-slider-pull {
-        -webkit-transform: translateX($panel-width);
-        transform: translateX($panel-width);
+    .chat-slider-pull {
+        -webkit-transform: translateX($chat-panel-width);
+        transform: translateX($chat-panel-width);
     }
   
     .menu-tab {
-        width: $side-tab-width;
-        height: $side-tab-height;
+        width: $chat-tab-width;
+        height: $chat-tab-height;
         border-radius: 5px 0 0 5px;
         border-right: 1px solid white;
     }
@@ -32,16 +31,10 @@ side-panel {
     }
   
     .menu-panel-body {
-        height: 60vh;
-        width: $panel-width;
+        clear: both;
+        height: $chat-panel-height;
+        width: $chat-panel-width;
         border-radius: 0 0 0 5px;
         border-width: 0;
     }
-    .glyphicon-user {
-        font-size: 20px;
-        margin-left: 5px;
-        margin-top: 37px;
-        color: white;
-    }
-    
 }

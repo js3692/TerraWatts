@@ -7,7 +7,6 @@ app.directive('bottomPanel', function(SliderFactory){
         },
         link: function(scope, elem, attrs){
             scope.open = SliderFactory.slideOut.bind(null, 'bottom');
-            
         }
     } 
 });
