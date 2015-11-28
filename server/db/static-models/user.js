@@ -6,7 +6,8 @@ var _ = require('lodash');
 var schema = new mongoose.Schema({
     username: {
         type: String,
-        unique: true
+        unique: true,
+        maxlength: 16
     },
     email: {
         type: String,

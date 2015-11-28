@@ -8,6 +8,6 @@ var fbRef = firebaseHelper.base();
 var Grid = mongoose.model('Grid');
 var User = mongoose.model('User');
 
-// Current URL: 'api/grid/after/:gridId'
+// Current URL: 'api/play/plantState'
 
 module.exports = router;

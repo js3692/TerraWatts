@@ -1,26 +1,28 @@
-var mongoose = require('mongoose');
 var _ = require('lodash');
-var determineTurnOrder = require('../../game/utils/turnOrder.js');
-var resourcePrice = require('../../game/resourceState/price.js');
-var cityPrice = require('../../game/cityState/price.js');
-var drawPlant = require('../../game/utils/drawPlant.js');
-var payments = require('../../game/endOfTurn/payments.js');
-var dONP = require('../../game/utils/dependsOnNumPlayers.js')
+var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
+
+var determineTurnOrder =	require('../utils/0_basic_rules/turnOrder');
+var dONP =								require('../utils/0_basic_rules/dependsOnNumPlayers.js');
+var drawPlant =						require('../utils/1_plant_phase/drawPlant');
+var resourcePrice =				require('../utils/2_resource_phase/price');
+var cityPrice =						require('../utils/3_city_phase/price');
+var payments =						require('../utils/4_bureaucracy_phase/payments.js');
+
 var plantSpaces = dONP.plantSpaces;
 var endGame = dONP.endGame;
 
-
-var steps = ['plant', 'resource', 'city', 'turnover'];
+var phases = ['plant', 'resource', 'city', 'bureaucracy'];
 
 var schema = new mongoose.Schema({
 	game: {
 		type: Object,
 		required: true
 	},
-	step: {
+	phase: {
 		type: String,
 		required: true,
-		enum: steps
+		enum: phases
 	},
 	remainingPlayers: {
 		type: [Object]
@@ -28,28 +30,28 @@ var schema = new mongoose.Schema({
 	activePlayer: {
 		type: Object
 	},
-	nextStep: {
+	nextPhase: {
 		type: String,
-		enum: steps
+		enum: phases
 	},
 	// used in plant state
 	numPasses: {
 		type: Number,
 		default: 0
 	}
-})
+});
 
 schema.pre('save', function() {
-	if(this.step === 'resource' && this.game.turn === 1) {
+	if(this.phase === 'resource' && this.game.turn === 1) {
 		this.game.turnOrder = determineTurnOrder(this.game.turnOrder);
 	}
-	this.nextStep = this.steps[this.steps.indexOf(this.step) + 1] || this.steps[0];
+	this.nextPhase = this.phase[this.phase.indexOf(this.phase) + 1] || this.phase[0];
 	this.remainingPlayers = this.setRemainingPlayers();
 });
 
 schema.methods.go = function() {
 	if (!this.remainingPlayers.length) return this.end();
-	if (this.step !== 'turnover' || this.remainingPlayers.length === this.game.turnOrder.length) {
+	if (this.phase !== 'bureaucracy' || this.remainingPlayers.length === this.game.turnOrder.length) {
 		this.activePlayer = this.remainingPlayers[0];
 		return this;
 	}
@@ -57,7 +59,7 @@ schema.methods.go = function() {
 
 /* 
 update is an object with two keys: player and data
-data is different depending on the step:
+data is different depending on the phase:
 	resource: data is the wishlist object
 	city: data is an array of cities to buy
 	plant: data is 'pass', or {plant: plant, price: price}
@@ -65,7 +67,7 @@ data is different depending on the step:
 	endofturn: data is an array of plants being powered
 */
 schema.methods.continue = function(update) {
-	if(this.step !== plant || this.remainingPlayers.length === 1) {
+	if(this.phase !== plant || this.remainingPlayers.length === 1) {
 		this.game = this.transaction(update);
 	} else {
 		if (update.data === 'pass') {
@@ -75,21 +77,21 @@ schema.methods.continue = function(update) {
 			// start an auction (return)
 		}
 	}
-	return this.go;
+	return this.go();
 }
 
 schema.methods.end = function() {
-	if(this.step === 'plant') {
+	if(this.phase === 'plant') {
 		if (this.numPasses === this.game.turnOrder.length) {
 			this.game.discardedPlants.push(this.game.plantMarket.shift());
 			drawPlant(this.game);
 		}
-		if(this.game.phase === 2.5) {
+		if(this.game.step === 2.5) {
 			this.game.discardedPlants.push(this.game.plantMarket.shift());
-			this.game.phase = 3;
+			this.game.step = 3;
 		}		
 	}
-	if (this.step === 'turnover') {
+	if (this.phase === 'bureaucracy') {
 		var maxCities = this.game.turnOrder.reduce(function (prev, curr) {
 			return Math.max(prev, curr.numCities);
 		}, 0);
@@ -106,25 +108,25 @@ schema.methods.end = function() {
 			// return gameOver(this.turnOrder)
 		}
 
-		// start phase 2 if necessary
-		if (this.game.phase === 1 && maxCities > phase2[this.game.turnOrder.length]) {
-			this.game.phase = 2;
+		// start step 2 if necessary
+		if (this.game.step === 1 && maxCities > step2[this.game.turnOrder.length]) {
+			this.game.step = 2;
 			this.game.discardedPlants.push(this.game.plantMarket.shift());
 			drawPlant(this.game);
 		}
 
 		// restock resources
-		this.game.restockRates = restockRatesMaster[this.turnOrder.length][this.phase];
+		this.game.restockRates = restockRatesMaster[this.turnOrder.length][this.step];
 		for(var resource in this.game.resources) {
 			var canFill = Math.min(this.game.restockRates[resource], this.game.resourceBank[resource]);
 			this.game.resourceBank -= canFill;
 			this.game.resources += canFill;
 		}
 
-		if (this.game.phase === 3) {
+		if (this.game.step === 3) {
 			this.game.discardedPlants.push(this.game.plantMarket.shift());
 		} else {
-			this.game.phase3Plants.push(this.game.plantMarket.pop());
+			this.game.stepThreePlants.push(this.game.plantMarket.pop());
 		}
 		drawPlant(this.game);
 		this.game.turn++;
@@ -133,7 +135,7 @@ schema.methods.end = function() {
 
 	var nextState = new State({
 		game: this.game,
-		step: this.nextStep
+		phase: this.nextPhase
 	});
 	return nextState.go();
 }
@@ -143,7 +145,7 @@ schema.methods.transaction = function(update) {
 		return p.color = update.player.color;
 	});
 	this.playersRemaining = this.removePlayer(player);
-	if (this.step === 'plant') {
+	if (this.phase === 'plant') {
 		player.money -= update.data.price;
 		var plantIndex;
 		this.game.plantMarket.forEach(function (plant,i) {
@@ -155,15 +157,14 @@ schema.methods.transaction = function(update) {
 		if (player.plants.length > plantSpaces[this.game.turnOrder.length]) {
 			// make player discard a plant
 		}
-	}
-	if (this.step === 'resource') {
+	} else if (this.phase === 'resource') {
 		var wishlist = update.data;
 		player.money -= resourcePrice(wishlist, this.game.resourceMarket);
 		for(var resource in wishlist) {
 	        this.game.resourceMarket[resource] -= wishlist[resource];
 	        player.resources[resource] += wishlist[resource];
     	}
-	} else if (this.step === 'city') {
+	} else if (this.phase === 'city') {
 		var citiesToAdd = update.data;
 		player.money -= cityPrice(citiesToAdd, this.game);
 		player.numCities += citiesToAdd.length;
@@ -179,7 +180,7 @@ schema.methods.transaction = function(update) {
 			});
 			city.players.push(player);
 		})
-	} else if (this.step === 'turnover') {
+	} else if (this.phase === 'bureaucracy') {
 		var totalCapacity = 0;
 		plantsToPower.forEach(function (plant) {
 			totalCapacity += plant.capacity;
@@ -198,7 +199,7 @@ schema.methods.transaction = function(update) {
 }
 
 schema.methods.setRemainingPlayers = function() {
-	if (this.step === 'plant') return this.game.turnOrder.slice();
+	if (this.phase === 'plant') return this.game.turnOrder.slice();
 	else return this.game.turnOrder.slice().reverse();
 }
 
@@ -206,6 +207,6 @@ schema.methods.removePlayer = function(player) {
 	return this.playersRemaining.filter(function (p) {
 		return p.color !== player.color;
 	})
-}
+};
 
 mongoose.model('State', schema);
