@@ -8,10 +8,9 @@ app.directive('zoomMap', function($parse) {
 		},
 		link: function(scope, element, attrs) {
 
-			console.log('inside zoom directive')
-
 			var width = Math.max(960, window.innerWidth),
-			    height = Math.max(500, window.innerHeight);
+			    height = Math.max(500, window.innerHeight),
+			    pointRadius = 10;
 
 			var tile = d3.geo.tile()
 			    .size([width, height]);
@@ -22,38 +21,38 @@ app.directive('zoomMap', function($parse) {
 
 			var center = projection([-100, 40]);
 
-			var path = d3.geo.path()
-			    .projection(projection);
-
 			var zoom = d3.behavior.zoom()
 			    .scale(projection.scale() * 2 * Math.PI)
 			    .scaleExtent([1 << 11, 1 << 14])
 			    .translate([width - center[0], height - center[1]])
 			    .on("zoom", zoomed);
 
+			var path = d3.geo.path()
+			    .pointRadius(zoom.scale()/800)
+			    .projection(projection)
+			    // .call(zoom);
+			
 			var svg = d3.select("body").append("svg")
 			    .attr("width", width)
 			    .attr("height", height);
 
+			// Map Tiles
 			var raster = svg.append("g");
 
+			// City Circles
 			var vector = svg.append("path");
 
-			// var mapCities = svg.append('g')
-			// 	.attr('id', 'cities');
-
-
-
 			// d3.csv("/utils/maps/us-state-capitols.csv", type, function(error, capitals) {
-			//   if (error) throw error;
+			// 	if (error) throw error;
 
-			//   console.log('capitals', capitals)
+			// 	console.log('capitals', capitals)
 
-			//   svg.call(zoom);
-			//   vector.datum({type: "FeatureCollection", features: capitals});
-			//   zoomed();
+			// 	// svg.call(zoom);
+			// 	vector.datum({type: "FeatureCollection", features: capitals})
+			// 		.attr('d', function(d) {console.log('d', d)})
+			// 	console.log('vector', vector)
+			// 	zoomed();
 			// });
-
 
 
 			scope.$watch('data', function(newData, oldData) {
@@ -61,133 +60,63 @@ app.directive('zoomMap', function($parse) {
 
 				if(cities) {
 
-					console.log('inside watch')
-					console.log('cities', cities)
-
+					var revisedCities = cities.map(function(city) {
+						return type(city);
+					});
+					
 					svg.call(zoom);
-					vector.datum({type: "FeatureCollection", features: cities});
+					vector.datum({type: "FeatureCollection", features: revisedCities})
 					zoomed();
 
-					console.log('below zoomed')
-
-					// var stringed = JSON.stringify(cities);
-					// console.log('stringed', stringed)
-
-					// d3.json('stringed', function(error, theCities) {
-					// 	console.log('inside')
-					// 	if(error) throw error;
-
-					// 	console.log('theCities', theCities)
-					// })
-
 				}
-			}, true)
+			}, true);
 
-			
-
-
-			// scope.$watch('data', function(newData, oldData) {
-			// 	var capitals = newData.cities;
-			// 	if(capitals) {
-
-			// 		var capitalsObj = d3.entries(capitals);
-			// 		console.log('capitalsObj', capitalsObj)
-
-			// 		var typeCapitalsObj = type(capitalsObj);
-
-			// 		d3.json(capitalsObj, type, function(error, capitalsObj) {
-			// 			if (error) throw error;
-
-
-			// 			svg.call(zoom);
-			// 			vector.datum({type: "FeatureCollection", features: capitalsObj});
-			// 			console.log('vector.datum', vector.datum)
-			// 			zoomed();
-			// 		});
-
-			// 	}
-			// },true);
-
-			// scope.$watch('data', function(newData, oldData) {
-			// 	var cities = newData.cities;
-
-			// 	if(cities) {
-			// 		console.log('cities', cities)
-
-			// 		cities.forEach(function(city) {
-
-			// 			var lat = city.location[0],
-			// 				lon = city.location[1];
-
-			// 			mapCities.append('circle')
-			// 				.attr('id', city.name)
-			// 				.attr('r', 9)
-			// 				.attr("transform", function(d) {return "translate(" + projection([lon,lat]) + ")"})
-
-			// 			mapCities.append('text')
-			// 				.text(city.name)
-			// 				.attr("text-anchor", "middle")
-			// 				.attr("transform", function(d) {return "translate(" + projection([lon,lat-0.7]) + ")"})
-			// 				.attr("font-family", "sans-serif")
-			// 				.attr("font-size", "5px")
-			// 				.attr("fill", "black");
-
-			// 			svg.call(zoom);
-
-			// 		})
-
-			// 	}
-			// }, true)
-
-
-
-			svg.call(zoom) // Unclear
-			zoomed() // Necessary
 
 			function type(d) {
-				console.log('d in type', d)
-			  return {
-			    type: "Feature",
-			    properties: {
-			      name: d.description,
-			      state: d.name
-			    },
-			    geometry: {
-			      type: "Point",
-			      coordinates: [+d.longitude, +d.latitude]
-			    }
-			  };
+				return {
+					type: 'Feature',
+					properties: {
+						name: d.name,
+						state: 'temp'
+					},
+					geometry: {
+						type: 'Point',
+						coordinates: [d.location[1], d.location[0]]
+					}
+				}
 			}
 
 			function zoomed() {
-			  var tiles = tile
-			      .scale(zoom.scale())
-			      .translate(zoom.translate())
-			      ();
+				var tiles = tile
+			    	.scale(zoom.scale())
+			    	.translate(zoom.translate())
+			    	();
 
-			  projection
-			      .scale(zoom.scale() / 2 / Math.PI)
-			      .translate(zoom.translate());
+				projection
+			    	.scale(zoom.scale() / 2 / Math.PI)
+			    	.translate(zoom.translate());
+		    	
+		    	vector
+			    	.attr("d", path)
 
-			  vector
-			      .attr("d", path);
+		    	path
+		    		.pointRadius(zoom.scale()/800);
 
-			  var image = raster
-			      .attr("transform", "scale(" + tiles.scale + ")translate(" + tiles.translate + ")")
-			    .selectAll("image")
-			      .data(tiles, function(d) { return d; });
+				var image = raster
+			    	.attr("transform", "scale(" + tiles.scale + ")translate(" + tiles.translate + ")")
+			  		.selectAll("image")
+			    	.data(tiles, function(d) { return d; });
 
-			  image.exit()
-			      .remove();
+				image.exit()
+			    	.remove();
 
-			  image.enter().append("image")
-			      .attr("xlink:href", function(d) {
-			      	console.log('d in image.enter', d) 
-			      	return "http://" + ["a", "b", "c"][Math.random() * 3 | 0] + ".tile.openstreetmap.org/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
-			      .attr("width", 1)
-			      .attr("height", 1)
-			      .attr("x", function(d) { return d[0]; })
-			      .attr("y", function(d) { return d[1]; });
+				image.enter().append("image")
+			    	.attr("xlink:href", function(d) {
+			      		return "http://" + ["a", "b", "c"][Math.random() * 3 | 0] + ".tile.openstreetmap.org/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
+			    	.attr("width", 1)
+			    	.attr("height", 1)
+			    	.attr("x", function(d) { return d[0]; })
+			    	.attr("y", function(d) { return d[1]; });
 			}
 			
 		 	
