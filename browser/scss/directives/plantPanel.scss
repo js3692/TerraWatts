@@ -42,4 +42,10 @@ plant-panel {
         border-radius: 0 0 5px 0;
         border-width: 0;
     }
+    
+    .plantHover {
+        img {
+            border: 4px solid $main-background;
+        }
+    }
 }
