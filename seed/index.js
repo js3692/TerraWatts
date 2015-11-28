@@ -22,19 +22,19 @@ connectToDb.then(function (db) {
 })
 .then (function () {
   console.log(chalk.grey('Plants created'));
-  return seedCities();
-})
-.then (function () {
-  console.log(chalk.grey('Cities created'));
   return seedRegions();
 })
 .then (function () {
   console.log(chalk.grey('Regions created'));
+  return seedCities();
+})
+.then (function () {
+  console.log(chalk.grey('Cities created'));
   return seedConnections();
 })
 .then(function () {
   console.log(chalk.grey('Connections created'));
-  console.log(chalk.green('Seed successful!'));
+  console.log(chalk.blue('Seed successful!'));
   process.kill(0);
 }).catch(function (err) {
   console.error(err);

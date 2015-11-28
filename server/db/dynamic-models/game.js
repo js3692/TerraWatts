@@ -1,3 +1,4 @@
+'use strict';
 var _ = require('lodash');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
@@ -7,7 +8,7 @@ var Plant = mongoose.model('Plant');
 var City = mongoose.model('City');
 var Connection = mongoose.model('Connection');
 
-var restockRatesMaster = require('../utils/0_basic_rules/restock');
+var masterRestockRates = require('../utils/0_basic_rules/restock');
 
 var shuffle = require('../utils/common/shuffle');
 var countryCode = require('../utils/common/countryCodes');
@@ -88,7 +89,7 @@ schema.methods.init = function (map, players, selectedRegions) {
     .then(function (connectionsInPlay) {
       this.connections = grabObjectId(connectionsInPlay);
       this.turnOrder = shuffle(players);
-      this.restockRates = restockRatesMaster[players.length][this.step];
+      this.restockRates = masterRestockRates[players.length][this.step];
       return Plant.find().sort({ rank: 'asc' });
     })
     .then(function (plants) {

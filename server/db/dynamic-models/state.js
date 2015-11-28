@@ -2,16 +2,15 @@ var _ = require('lodash');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-var determineTurnOrder = require('../../game/utils/turnOrder');
-var resourcePrice = require('../../game/resourceState/price.js');
-var cityPrice = require('../../game/cityState/price.js');
-var drawPlant = require('../../game/utils/drawPlant.js');
-var payments = require('../../game/endOfTurn/payments.js');
-var dONP = require('../../game/utils/dependsOnNumPlayers.js');
+var determineTurnOrder =	require('../utils/0_basic_rules/turnOrder');
+var dONP =								require('../utils/0_basic_rules/dependsOnNumPlayers.js');
+var drawPlant =						require('../utils/1_plant_phase/drawPlant');
+var resourcePrice =				require('../utils/2_resource_phase/price');
+var cityPrice =						require('../utils/3_city_phase/price');
+var payments =						require('../utils/4_bureaucracy_phase/payments.js');
 
 var plantSpaces = dONP.plantSpaces;
 var endGame = dONP.endGame;
-
 
 var phases = ['plant', 'resource', 'city', 'bureaucracy'];
 
