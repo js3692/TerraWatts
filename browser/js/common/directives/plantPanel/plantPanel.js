@@ -6,7 +6,8 @@ app.directive('plantPanel', function(SliderFactory){
             plantMarket: '='
         },
         link: function(scope, elem, attrs){   
-          scope.open = SliderFactory.slideOut.bind(null, 'plant');
+            scope.open = SliderFactory.slideOut.bind(null, 'plant');
+          
         }
     }
 })

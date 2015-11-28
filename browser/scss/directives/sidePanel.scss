@@ -1,4 +1,5 @@
-$panel-width: 300px;
+$panel-width: 480px;
+$panel-height: 300px;
 $side-tab-width: 30px;
 $side-tab-height: 100px;
 
@@ -32,7 +33,7 @@ side-panel {
     }
   
     .menu-panel-body {
-        height: 60vh;
+        height: $panel-height;
         width: $panel-width;
         border-radius: 0 0 0 5px;
         border-width: 0;

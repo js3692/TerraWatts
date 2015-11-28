@@ -1,6 +1,6 @@
 
-$chat-panel-width: 300px;
-$chat-panel-height: 200px;
+$chat-panel-width: 430px;
+$chat-panel-height: 270px;
 $chat-tab-width: 30px;
 $chat-tab-height: 100px;
 chat-panel {
@@ -36,5 +36,30 @@ chat-panel {
         width: $chat-panel-width;
         border-radius: 0 0 0 5px;
         border-width: 0;
+        
+        .chat-body, form {
+            width: 95%;
+            margin: 0 auto;
+            border: 1px solid black;
+            overflow-y: scroll;
+            padding-bottom: 0px;
+        }
+        
+        .message {
+            height: 10%;
+            color: white; 
+        }
+        
+        .chat-body {
+            height: 76%;
+            margin: 2% auto;
+            border-radius: 3px;
+            color: white;
+        }
+        
+        form {
+            color: black;
+            border-radius: 4px;
+        }
     }
 }
