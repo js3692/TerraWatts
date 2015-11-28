@@ -29,13 +29,24 @@ app.directive('zoomMap', function($parse) {
 
 		    const initZoomScale = zoom.scale();
 
+
 			var cityPath = d3.geo.path()
 			    .pointRadius(zoom.scale()/800)
 			    .projection(projection)
 			    // .call(zoom);
 
+		    var cityCircle = d3.geo.circle()
+		    	.origin([-100, 40])
+		    	.call(zoom);
+
+
 		    var connectionPath = d3.geo.path()
 		    	.projection(projection)
+
+	    	var distancePath = d3.geo.path()
+			    .pointRadius(zoom.scale()/1600)
+			    .projection(projection);
+
 
 			
 			var svg = d3.select("body").append("svg")
@@ -44,27 +55,62 @@ app.directive('zoomMap', function($parse) {
 
 			var raster = svg.append("g");
 
+
 			var connectionVector = svg.append("path")
+				.attr('class', 'connections')
 				.attr('fill', 'none')
 				.attr('stroke', 'grey');
 
-			var cityVector = svg.append("path");
+			var connectionDistVector = svg.append("path")
+				.attr('class', 'connectionDistances');
+
+			// var cityVector = svg.append("path")
+			// 	.attr('class', 'cities');
+
+			var cityVector = svg.append("circle")
+				.attr('class', 'cities');
 
 
 			scope.$watch('data', function(newData, oldData) {
 				var cities = newData.cities;
 				var connections = newData.connections;
 
-				if(cities) {
-					var revisedCities = cities.map(function(city) {
-						return type(city);
-					});
+				// if(cities) {
+				// 	var revisedCities = cities.map(function(city) {
+				// 		return type(city);
+				// 	});
 					
-					console.log('revisedCities', revisedCities)
+				// 	console.log('revisedCities', revisedCities)
+
+				// 	svg.call(zoom);
+				// 	cityVector.datum({type: "FeatureCollection", features: revisedCities})
+				// 	zoomed();
+				// }
+
+
+
+				if(cities) {
+					console.log('cities', cities)
 
 					svg.call(zoom);
-					cityVector.datum({type: "FeatureCollection", features: revisedCities})
 					zoomed();
+
+					cities.forEach(function(city) {
+						var lonlat = [city.location[1], city.location[0]];
+						console.log('lonlat', lonlat)
+						var xy = projection(lonlat);
+						console.log('xy', xy)
+
+
+						cityVector
+							.attr('transform', function(d) {
+								return "translate(" + projection(lonlat) + ")";
+							})
+							.attr('r', 50)
+
+
+
+					})
 				}
 
 				if(connections) {
@@ -73,11 +119,16 @@ app.directive('zoomMap', function($parse) {
 					var revisedConnections = connections.map(function(connection) {
 						return connectionType(connection);
 					})
-
 					console.log('revisedConnections', revisedConnections)
 
-					svg.call(zoom);
+					var revisedDistMarkers = connections.map(function(connection) {
+						return connectionDistType(connection);
+					})
+					console.log('revisedDistMarkers', revisedDistMarkers)
+
+					// svg.call(zoom);
 					connectionVector.datum({type: "FeatureCollection", features: revisedConnections})
+					connectionDistVector.datum({type: "FeatureCollection", features: revisedDistMarkers})
 					zoomed();
 
 				}
@@ -94,6 +145,23 @@ app.directive('zoomMap', function($parse) {
 					geometry: {
 						type: 'Point',
 						coordinates: [d.location[1], d.location[0]]
+					}
+				}
+			}
+
+			function connectionDistType(d) {
+				var firstLon = d.cities[0].location[1],
+					firstLat = d.cities[0].location[0],
+					secondLon = d.cities[1].location[1],
+					secondLat = d.cities[1].location[0];
+
+				var coordinates = [ (firstLon+secondLon)/2, (firstLat+secondLat)/2 ]
+
+				return {
+					type: 'Feature',
+					geometry: {
+						type: 'Point',
+						coordinates: coordinates
 					}
 				}
 			}
@@ -132,17 +200,27 @@ app.directive('zoomMap', function($parse) {
 			    	.scale(zoom.scale() / 2 / Math.PI)
 			    	.translate(zoom.translate());
 		    	
-		    	cityVector
-			    	.attr("d", cityPath)
+		    	// cityVector
+			    // 	.attr("d", cityPath)
+
+			    cityVector
+			    	.attr('d', function(d) {console.log('d', d)})
+			    	.attr("d", cityCircle)
 
 		    	connectionVector
 			    	.attr('d', connectionPath)
 
+		    	connectionDistVector
+		    		.attr('d', distancePath)
+
 		    	cityPath
 		    		.pointRadius(zoom.scale()/800);
 
-	    		console.log('zoom.scale()', zoom.scale())
-	    		console.log('initZoomScale', initZoomScale)
+	    		distancePath
+	    			.pointRadius(zoom.scale()/1600);
+
+	    		// console.log('zoom.scale()', zoom.scale())
+	    		// console.log('initZoomScale', initZoomScale)
 
 				var image = raster
 			    	.attr("transform", "scale(" + tiles.scale + ")translate(" + tiles.translate + ")")
