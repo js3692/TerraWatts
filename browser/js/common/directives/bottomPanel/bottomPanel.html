@@ -1,7 +1,5 @@
 <div class="bottom-slider bottom-slider-pull menu-tab" ng-click="open()"><span class="glyphicon glyphicon-flash"></span></div>
 <div ng-click="open()" class="menu-panel-body panel-default bottom-slider bottom-slider-pull">
-    <resource ng-repeat="(resource, quantity) in resources"
-              resource="resource"
-              quantity="quantity"
-    </resource>
+    <!--    <resource ng-repeat="(resource, quantity) in resources" resource="resource" quantity="quantity" </resource>-->
+    <bars data="resources"></bars>
 </div>

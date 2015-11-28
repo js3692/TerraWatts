@@ -1,24 +1,22 @@
 $main-background: #132330;
-
-
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-  background: #fdfdfd;
+    background: #fdfdfd;
 }
 
 @mixin clearfix {
-  &:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
 }
 
 #main {
-  margin: auto;
+    margin: auto;
 }
 
 @import 'directives/_main';
@@ -31,6 +29,7 @@ body {
 @import 'directives/player';
 @import 'directives/bidModal';
 @import 'directives/message';
+@import 'directives/resourceChart';
 @import 'home/main';
 @import 'about/main';
 @import 'tutorial/main';
