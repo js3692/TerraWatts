@@ -27,45 +27,57 @@ app.directive('zoomMap', function($parse) {
 			    .translate([width - center[0], height - center[1]])
 			    .on("zoom", zoomed);
 
-			var path = d3.geo.path()
+		    const initZoomScale = zoom.scale();
+
+			var cityPath = d3.geo.path()
 			    .pointRadius(zoom.scale()/800)
 			    .projection(projection)
 			    // .call(zoom);
+
+		    var connectionPath = d3.geo.path()
+		    	.projection(projection)
+
 			
 			var svg = d3.select("body").append("svg")
 			    .attr("width", width)
 			    .attr("height", height);
 
-			// Map Tiles
 			var raster = svg.append("g");
 
-			// City Circles
-			var vector = svg.append("path");
+			var connectionVector = svg.append("path")
+				.attr('fill', 'none')
+				.attr('stroke', 'grey');
 
-			// d3.csv("/utils/maps/us-state-capitols.csv", type, function(error, capitals) {
-			// 	if (error) throw error;
-
-			// 	console.log('capitals', capitals)
-
-			// 	// svg.call(zoom);
-			// 	vector.datum({type: "FeatureCollection", features: capitals})
-			// 		.attr('d', function(d) {console.log('d', d)})
-			// 	console.log('vector', vector)
-			// 	zoomed();
-			// });
+			var cityVector = svg.append("path");
 
 
 			scope.$watch('data', function(newData, oldData) {
 				var cities = newData.cities;
+				var connections = newData.connections;
 
 				if(cities) {
-
 					var revisedCities = cities.map(function(city) {
 						return type(city);
 					});
 					
+					console.log('revisedCities', revisedCities)
+
 					svg.call(zoom);
-					vector.datum({type: "FeatureCollection", features: revisedCities})
+					cityVector.datum({type: "FeatureCollection", features: revisedCities})
+					zoomed();
+				}
+
+				if(connections) {
+					console.log('connections', connections)
+
+					var revisedConnections = connections.map(function(connection) {
+						return connectionType(connection);
+					})
+
+					console.log('revisedConnections', revisedConnections)
+
+					svg.call(zoom);
+					connectionVector.datum({type: "FeatureCollection", features: revisedConnections})
 					zoomed();
 
 				}
@@ -86,6 +98,30 @@ app.directive('zoomMap', function($parse) {
 				}
 			}
 
+			function connectionType(d) {
+				var firstLon = d.cities[0].location[1],
+					firstLat = d.cities[0].location[0],
+					secondLon = d.cities[1].location[1],
+					secondLat = d.cities[1].location[0];
+
+				var coordinates = [
+					[firstLon, firstLat],
+					[secondLon, secondLat],
+				];
+
+				return {
+					type: 'Feature',
+					// properties: {
+					// 	name: d.name,
+					// 	state: 'temp'
+					// },
+					geometry: {
+						type: 'LineString',
+						coordinates: coordinates
+					}
+				}
+			}
+
 			function zoomed() {
 				var tiles = tile
 			    	.scale(zoom.scale())
@@ -96,11 +132,17 @@ app.directive('zoomMap', function($parse) {
 			    	.scale(zoom.scale() / 2 / Math.PI)
 			    	.translate(zoom.translate());
 		    	
-		    	vector
-			    	.attr("d", path)
+		    	cityVector
+			    	.attr("d", cityPath)
 
-		    	path
+		    	connectionVector
+			    	.attr('d', connectionPath)
+
+		    	cityPath
 		    		.pointRadius(zoom.scale()/800);
+
+	    		console.log('zoom.scale()', zoom.scale())
+	    		console.log('initZoomScale', initZoomScale)
 
 				var image = raster
 			    	.attr("transform", "scale(" + tiles.scale + ")translate(" + tiles.translate + ")")
