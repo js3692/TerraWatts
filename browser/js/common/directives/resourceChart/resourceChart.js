@@ -4,21 +4,16 @@ app.directive('bars', function ($parse) {
         replace: true,
         template: '<div id="chart"></div>',
         scope: {
-            data: '='
+            data: '=',
+            resourceColors: '='
         },
         link: function (scope, element, attrs) {
-            var resourceColors = {
-                coal: 'brown',
-                oil: 'black',
-                trash: 'yellow',
-                nuke: 'red'
-            };
 
             scope.$watch('data', function (resources) {
                 var data = [];
 
                 for (var key in resources) {
-                    data.push({ value: resources[key], type: key, color: resourceColors[key]});
+                    data.push({ value: resources[key], type: key, color: scope.resourceColors[key]});
                 }
                 var chart = d3.select('#chart')
                     .append("div").attr("class", "chart")
@@ -27,13 +22,16 @@ app.directive('bars', function ($parse) {
                     .append("div")
                     .transition().ease("elastic")
                     .style("width", function (d) {
-                        return d.value + "%";
+                        return (d.value/24)*94 + "%";
                     })
                     .style("background-color", function(d){
                         return d.color;
                     })
+                    .style("box-sizing", function(){
+                        return "border-box";
+                    })
                     .text(function (d) {
-                        return d.type;
+                        return d.type + ': ' + d.value;
                     });
             })
         }

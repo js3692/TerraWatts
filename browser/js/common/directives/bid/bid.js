@@ -3,7 +3,8 @@ app.directive('bid', function () {
         restrict: 'E',
         templateUrl: 'js/common/directives/bid/bid.html',
         scope: {
-            start: '='
+            start: '=',
+            buttonColor: '='
         },
         link: function (scope, elem, attrs) {
             scope.bid = scope.start;
