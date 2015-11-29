@@ -49,6 +49,7 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, Befo
   });
 
   $scope.ok = function (gameSettings) {
+    gameSettings.name = $scope.gameName;
     BeforeGameFactory.newGame(gameSettings)
       .then(function (grid) {
         $uibModalInstance.close();

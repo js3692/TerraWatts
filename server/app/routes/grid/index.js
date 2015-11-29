@@ -12,7 +12,7 @@ var User = mongoose.model('User');
 
 router.post('/', function (req, res, next) {
   // req.body has map, max players, and selected regions
-	Grid.create({})
+	Grid.create(req.body)
     .then(function (grid) {
       return grid.addUser(req.user);
     })
