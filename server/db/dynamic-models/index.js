@@ -3,7 +3,7 @@
 // anywhere the User model needs to be used.
 require('./player');
 require('./game');
-// require('./state');
+require('./state');
 require('./grid');
 
 // require('./auction');

@@ -8,7 +8,8 @@ var schema = new mongoose.Schema({
 		required: true
 	},
 	bid: {
-		type: Number
+		type: Number,
+		required: true
 	},
 	plantState: {
 		type: mongoose.Schema.Types.ObjectId,
@@ -29,15 +30,17 @@ var schema = new mongoose.Schema({
 	}
 })
 
-schema.pre('save', function() {
+schema.methods.init = function() {
+	this.remainingPlayers = this.plantState.remainingPlayers;
 	var numPlayers = this.remainingPlayers.length;
 	this.remainingPlayers.forEach(function (player) {
 		player.clockwise = (player.clockwise - highestBidder.clockwise + numPlayers) % numPlayers;
 	})
-	this.remainingPlayers.sort(function (player1, player2) {
+	this.remainingPlayers = this.remainingPlayers.sort(function (player1, player2) {
 		return player1.clockwise < player2.clockwise ? -1 : 1;
 	})
-})
+	this.go();
+}
 
 schema.methods.go = function() {
 	if (this.remainingPlayers.length === 1) {
@@ -54,8 +57,8 @@ schema.methods.go = function() {
 			if (player.color === highestBidder.color) {
 				this.activePlayer = this.remainingPlayers[(i+1)%this.playersInAuction.length]
 			}
-		})	
-		return this;	
+		})
+		return this.save();	
 	}
 }
 // update has player and bid

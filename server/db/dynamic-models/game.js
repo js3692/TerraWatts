@@ -22,16 +22,17 @@ var schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Connection'
   }],
-  turnOrder: {
-    type: [Number]
-  },
+  turnOrder: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Player'
+    }],
   turn: {
     type: Number,
     default: 1
   },
   step: {
     type: Number,
-    enum: [1, 2, 3],
+    enum: [1, 2, 2.5, 3],
     default: 1
   },
   resourceMarket: {
@@ -80,28 +81,33 @@ schema.methods.init = function (map, players, selectedRegions) {
     return shuffledPlants;
   }
 
-  return City.find({ countryCode: countryCode[map] }, { region: { $in: selectedRegions } })
+  var self = this;
+  var regions = selectedRegions.map(function(region) {
+    return region.regionId;
+  })
+
+  return City.find({ countryCode: countryCode[map], region: { $in: regions } })
     .then(function (citiesInPlay) {
       citiesInPlay = grabObjectId(citiesInPlay);
-      this.cities = citiesInPlay;
-      return Connection.find({ 'cities.0': { $in: citiesInPlay } }, { 'cities.1': { $in: citiesInPlay } });
+      self.cities = citiesInPlay;
+      return Connection.find({ 'cities.0': { $in: citiesInPlay }, 'cities.1': { $in: citiesInPlay } });
     })
     .then(function (connectionsInPlay) {
-      this.connections = grabObjectId(connectionsInPlay);
-      this.turnOrder = shuffle(players);
-      this.restockRates = masterRestockRates[players.length][this.step];
+      self.connections = grabObjectId(connectionsInPlay);
+      self.turnOrder = shuffle(players);
+      self.restockRates = masterRestockRates[players.length][self.step];
       return Plant.find().sort({ rank: 'asc' });
     })
     .then(function (plants) {
       var allPlants = grabObjectId(plants);
 
-      this.plantMarket = allPlants.splice(0, 8);
+      self.plantMarket = allPlants.splice(0, 8);
 
       var thirteen = allPlants.splice(2, 1);
       var remainingPlants = removePlants(shuffle(allPlants), players.length);
-      this.plantDeck = thirteen.concat(remainingPlants);
+      self.plantDeck = thirteen.concat(remainingPlants);
 
-      return this.save();
+      return self.save();
     });
 
 };
