@@ -74,7 +74,10 @@ schema.pre('save', function (next) {
   
   firebaseHelper
     .getConnection(this.key)
-    .set(gridSnapshot);
+    .transaction(function(oldGrid) {
+        if(oldGrid && oldGrid.chat) gridSnapshot.chat = oldGrid.chat;
+        return gridSnapshot;
+    });
     
   next();
 });

@@ -14,7 +14,7 @@ router.post('/', function (req, res, next) {
   // req.body has map, max players, and selected regions
 	Grid.create(req.body)
     .then(function (grid) {
-      return grid.addUser(req.user);
+      return grid.addPlayer(req.user);
     })
     .then(function (grid) {
       return Grid.populate(grid, "users");

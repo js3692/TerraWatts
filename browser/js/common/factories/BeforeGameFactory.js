@@ -1,4 +1,5 @@
 app.factory('BeforeGameFactory', function ($http, $q) {
+
 	var baseUrl = '/api/grid/before/';
 	var BeforeGameFactory = {};
 	var cachedGrid;
