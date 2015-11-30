@@ -41,15 +41,17 @@ var schema = new mongoose.Schema({
 	}
 });
 
-schema.pre('save', function() {
+schema.pre('save', function(done) {
 	if(this.phase === 'resource' && this.game.turn === 1) {
 		this.game.turnOrder = determineTurnOrder(this.game.turnOrder);
 	}
 	this.nextPhase = this.phase[this.phase.indexOf(this.phase) + 1] || this.phase[0];
 	this.remainingPlayers = this.setRemainingPlayers();
+	done();
 });
 
-schema.methods.go = function() {
+schema.methods.go = function(game) {
+	
 	if (!this.remainingPlayers.length) return this.end();
 	if (this.phase !== 'bureaucracy' || this.remainingPlayers.length === this.game.turnOrder.length) {
 		this.activePlayer = this.remainingPlayers[0];

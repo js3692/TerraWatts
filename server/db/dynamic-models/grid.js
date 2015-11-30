@@ -74,8 +74,10 @@ schema.pre('save', function (next) {
   */
   
   firebaseHelper
-    .getConnectionToGame(this.key) // ==> get connection to game
+    .getConnection(this.key) // ==> get connection to game
     .set(this.game.toObject());
+
+  fire
 
   next();
 });
@@ -97,15 +99,26 @@ schema.methods.addPlayer = function (newPlayer) {
 
   if (this.players.some(player => player.user._id.equals(newPlayer.user._id))) return Promise.resolve(this);
 
+  var colorIdx = this.availableColors.indexOf(newPlayer.color);
+  this.availableColors.splice(colorIdx, 1);
+
 	this.players.push(newPlayer);
+
 	return this.save();
 };
 
 schema.methods.removePlayer = function (userId) {
-  Player.findOne({ user: userId })
-	var userIndex = this.players.indexOf(userId);
-	this.players.splice(userIndex,1);
-	return this.save();
+  var self = this;
+
+  return Player.findOne({ user: userId })
+    .then(function (foundPlayer) {
+    	var playerIdx = self.players.indexOf(foundPlayer._id);
+    	self.players.splice(playerIdx, 1);
+      return foundPlayer.remove();
+    })
+    .then(function () {
+    	return self.save();
+    });
 };
 
 schema.methods.createGame = function () {
@@ -117,5 +130,17 @@ schema.methods.createGame = function () {
       return self.save();
     });
 };
+
+schema.methods.init = function () {
+  var self = this;
+  return this.state.init(this.game)
+    .then(function () {
+      return self.save();
+    })
+};
+
+schema.method.continue = function () {
+  
+}
 
 mongoose.model('Grid', schema);

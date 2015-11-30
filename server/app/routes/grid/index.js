@@ -6,29 +6,28 @@ var firebaseHelper = require("../../../firebase");
 var fbRef = firebaseHelper.base();
 
 var Grid = mongoose.model('Grid');
-var User = mongoose.model('User');
+var Player = mongoose.model('Player');
 
 // Current URL: 'api/grid'
 
 router.post('/', function (req, res, next) {
-  // req.body has map, max players, and selected regions
 	Grid.create({
+      name: req.body.name,
       map: req.body.map,
       maxPlayers: req.body.maxPlayers
     })
-    .then(function (newGrid) {
-      return newGrid.makeRandomRegions(newGrid.maxPlayers);
-    })
-    .then(function (updatedGrid) {
-      return updatedGrid.addPlayer(req.user);
-    })
-    .then(function (grid) {
-      return Grid.populate(grid, "players");
+    .then(function (createdGrid) {
+      return Player.create({ user: req.user, color: req.body.color })
+        .then(function (newPlayer) {
+          return createdGrid.addPlayer(newPlayer);
+        });
     })
     .then(function (grid) {
-      // grid.key is the id of the array element in firebase.
+      return Grid.populate(grid, 'players');
+    })
+    .then(function (grid) {
       grid.key = fbRef.push(grid.toObject()).key();
-      res.status(201).json(grid);
+      res.sendStatus(201);
       return grid.save();
     })
     .catch(next);
@@ -36,10 +35,10 @@ router.post('/', function (req, res, next) {
 
 router.param('gridId', function(req, res, next, gridId){
   Grid.findById(gridId)
-    .populate('users')
-    .then(function(grid){
-        req.grid = grid;
-        next();
+    .populate('players game state')
+    .then(function (grid) {
+      req.grid = grid;
+      next();
     })
     .catch(next);
 });
