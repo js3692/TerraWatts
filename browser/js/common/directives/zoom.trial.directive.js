@@ -23,7 +23,8 @@ app.directive('zoomMap', function($parse) {
 
 			var zoom = d3.behavior.zoom()
 			    .scale(projection.scale() * 2 * Math.PI)
-			    .scaleExtent([1 << 11, 1 << 14])
+			    // .scaleExtent([1 << 11, 1 << 14])
+			    .scaleExtent([1 << 13, 1 << 14])
 			    .translate([width - center[0], height - center[1]])
 			    .on("zoom", zoomed);
 
@@ -57,16 +58,18 @@ app.directive('zoomMap', function($parse) {
 				.attr('stroke', 'grey');
 
 			var connectionDists = svg.append("g")
-				.attr('class', 'Connection Distances');
+				.attr('class', 'Connection Distances')
+				.attr('fill', 'grey');
 
 			var citiesCollection = svg.append("g")
-				.attr('class', 'Cities');
+				.attr('class', 'Cities')
+				.attr('opacity', 0.5);
 
 
 			var connectionDistVector,
 				cityVector,
 				distText,
-				centroids = {};
+				distCentroids = {};
 
 
 			scope.$watch('data', function(newData, oldData) {
@@ -103,7 +106,11 @@ app.directive('zoomMap', function($parse) {
 						.data(revisedDistMarkers)
 						.enter()
 						.append('text')
-						.text(function(d) { return d.properties.distance; });
+						.text(function(d) { return d.properties.distance; })
+						.attr("text-anchor", "middle")
+						.attr('alignment-baseline', 'middle')
+						.attr("font-family", "sans-serif")
+						.attr("fill", "white");
 					
 					zoomed();
 				}
@@ -175,7 +182,11 @@ app.directive('zoomMap', function($parse) {
 
 			function renderDist() {
 				distText
-					.attr("transform", function(d,i) {return "translate(" + centroids[i] + ")"});
+					.attr("transform", function(d,i) {return "translate(" + distCentroids[i] + ")"})
+					.attr("font-size", function(d) {
+						if(zoom.scale()/1000 < 10) return zoom.scale()/1000;
+						return 10;
+					});
 			}
 
 			function zoomed() {
@@ -203,7 +214,7 @@ app.directive('zoomMap', function($parse) {
 		    		.attr('distance', function(d) { return d.properties.distance })
 		    		.attr('d', distancePath)
 		    		.each(function(d,i) {
-		    			centroids[i] = distancePath.centroid(d);
+		    			distCentroids[i] = distancePath.centroid(d);
 					});
 
 
