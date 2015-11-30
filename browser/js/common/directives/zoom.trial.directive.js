@@ -15,10 +15,11 @@ app.directive('zoomMap', function($parse) {
 			    .size([width, height]);
 
 			var projection = d3.geo.mercator()
-			    .scale((1 << 12) / 2 / Math.PI)
+			    .scale((1 << 13) / 2 / Math.PI)
 			    .translate([width / 2, height / 2]);
 
-			var center = projection([-100, 40]);
+			// var center = projection([-100, 40]);
+			var center = projection([-97, 39]);
 
 			var zoom = d3.behavior.zoom()
 			    .scale(projection.scale() * 2 * Math.PI)
@@ -40,7 +41,7 @@ app.directive('zoomMap', function($parse) {
 			    .pointRadius(zoom.scale()/1600)
 			    .projection(projection);
 
-			
+
 			var svg = d3.select(".map").append("svg")
 			    .attr("width", width)
 			    .attr("height", height);
@@ -58,13 +59,14 @@ app.directive('zoomMap', function($parse) {
 			var connectionDists = svg.append("g")
 				.attr('class', 'Connection Distances');
 
-			var connectionDistVector;
-
 			var citiesCollection = svg.append("g")
 				.attr('class', 'Cities');
 
-			var cityVector;
 
+			var connectionDistVector,
+				cityVector,
+				distText,
+				centroids = {};
 
 
 			scope.$watch('data', function(newData, oldData) {
@@ -97,19 +99,12 @@ app.directive('zoomMap', function($parse) {
 						.append('path')
 						.attr('id', function(d,i) { return "path_" + i; });
 
-					connectionDists.selectAll('text')
+					distText = connectionDists.selectAll('text')
 						.data(revisedDistMarkers)
 						.enter()
 						.append('text')
-						.append('textPath')
-						.attr("xlink:href", function (d,i) { return "#path_" + i; })
-						.attr('spacing', 'exact')
-			            .text(function (d) { return d.properties.distance; })
-			            .attr("text-anchor", "middle")
-						.attr("font-family", "sans-serif")
-						.attr("font-size", "15px")
-						.attr("fill", "black");
-
+						.text(function(d) { return d.properties.distance; });
+					
 					zoomed();
 				}
 
@@ -161,7 +156,7 @@ app.directive('zoomMap', function($parse) {
 
 				var coordinates = [
 					[firstLon, firstLat],
-					[secondLon, secondLat],
+					[secondLon, secondLat]
 				];
 
 				return {
@@ -178,6 +173,11 @@ app.directive('zoomMap', function($parse) {
 				}
 			}
 
+			function renderDist() {
+				distText
+					.attr("transform", function(d,i) {return "translate(" + centroids[i] + ")"});
+			}
+
 			function zoomed() {
 				var tiles = tile
 			    	.scale(zoom.scale())
@@ -188,7 +188,6 @@ app.directive('zoomMap', function($parse) {
 			    	.scale(zoom.scale() / 2 / Math.PI)
 			    	.translate(zoom.translate());
 		    	
-
 		    	cityVector
 		    		.attr('name', function(d) { return d.properties.name })
 		    		.attr('region', function(d) { return d.properties.region })
@@ -202,7 +201,13 @@ app.directive('zoomMap', function($parse) {
 
 		    	connectionDistVector
 		    		.attr('distance', function(d) { return d.properties.distance })
-		    		.attr('d', distancePath);
+		    		.attr('d', distancePath)
+		    		.each(function(d,i) {
+		    			centroids[i] = distancePath.centroid(d);
+					});
+
+
+				renderDist();
 
 
 		    	cityPath
@@ -222,7 +227,8 @@ app.directive('zoomMap', function($parse) {
 
 				image.enter().append("image")
 			    	.attr("xlink:href", function(d) {
-			      		return "http://" + ["a", "b", "c"][Math.random() * 3 | 0] + ".tile.openstreetmap.org/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
+			      		// return "http://" + ["a", "b", "c"][Math.random() * 3 | 0] + ".tile.openstreetmap.org/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
+				    	return "http://" + ["a", "b", "c", "d"][Math.random() * 4 | 0] + ".tiles.mapbox.com/v3/mapbox.natural-earth-1/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
 			    	.attr("width", 1)
 			    	.attr("height", 1)
 			    	.attr("x", function(d) { return d[0]; })
@@ -232,4 +238,4 @@ app.directive('zoomMap', function($parse) {
 					
 		}
 	}
-})
+});
