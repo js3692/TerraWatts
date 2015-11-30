@@ -66,18 +66,21 @@ schema.pre('save', function (next) {
   */
   
   // var gridSnapshot = _.omit(this.toObject(), ['history']);
-  if(this.game) this.history.push(this.game.toObject());
+  if(this.game) {
+    this.history.push(this.game.toObject());
+
+    firebaseHelper
+      .getConnection(this.key) // ==> get connection to game
+      .set(this.game.toObject());
+  }
   
   /* 
       finds connection within connections hash
       then updates firebase game object.
   */
   
-  firebaseHelper
-    .getConnection(this.key) // ==> get connection to game
-    .set(this.game.toObject());
 
-  fire
+  // fire
 
   next();
 });
@@ -97,7 +100,10 @@ schema.methods.addPlayer = function (newPlayer) {
 
   if (this.players.length >= 6) throw new Error('The Game is already full');
 
-  if (this.players.some(player => player.user._id.equals(newPlayer.user._id))) return Promise.resolve(this);
+  if (this.players.some(player => {
+    console.log(player);
+    return player.user._id.equals(newPlayer.user._id)
+  })) return Promise.resolve(this);
 
   var colorIdx = this.availableColors.indexOf(newPlayer.color);
   this.availableColors.splice(colorIdx, 1);
@@ -131,13 +137,13 @@ schema.methods.createGame = function () {
     });
 };
 
-schema.methods.init = function () {
-  var self = this;
-  return this.state.init(this.game)
-    .then(function () {
-      return self.save();
-    })
-};
+// schema.methods.init = function () {
+//   var self = this;
+//   return this.state.init(this.game)
+//     .then(function () {
+//       return self.save();
+//     })
+// };
 
 schema.method.continue = function () {
   

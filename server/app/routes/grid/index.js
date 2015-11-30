@@ -14,11 +14,12 @@ router.post('/', function (req, res, next) {
 	Grid.create({
       name: req.body.name,
       map: req.body.map,
-      maxPlayers: req.body.maxPlayers
+      maxPlayers: req.body.numPlayers
     })
     .then(function (createdGrid) {
       return Player.create({ user: req.user, color: req.body.color })
         .then(function (newPlayer) {
+          console.log(newPlayer, 'new player')
           return createdGrid.addPlayer(newPlayer);
         });
     })
@@ -28,6 +29,7 @@ router.post('/', function (req, res, next) {
     .then(function (grid) {
       grid.key = fbRef.push(grid.toObject()).key();
       res.sendStatus(201);
+      console.log(grid);
       return grid.save();
     })
     .catch(next);
