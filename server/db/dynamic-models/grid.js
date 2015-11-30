@@ -4,6 +4,7 @@ mongoose.Promise = require('bluebird');
 var firebaseHelper = require('../../firebase');
 
 var Region = mongoose.model('Region');
+var Player = mongoose.model('Player');
 var Game = mongoose.model('Game');
 
 var schema = new mongoose.Schema({
@@ -64,8 +65,8 @@ schema.pre('save', function (next) {
       Pushes grid (minus grid history) into grid.
   */
   
-  var gridSnapshot = _.omit(this.toObject(), ['history']);
-  if(this.game) this.history.push(gridSnapshot);
+  // var gridSnapshot = _.omit(this.toObject(), ['history']);
+  if(this.game) this.history.push(this.game.toObject());
   
   /* 
       finds connection within connections hash
@@ -73,19 +74,19 @@ schema.pre('save', function (next) {
   */
   
   firebaseHelper
-    .getConnection(this.key)
-    .set(gridSnapshot);
-    
+    .getConnectionToGame(this.key) // ==> get connection to game
+    .set(this.game.toObject());
+
   next();
 });
 
 schema.methods.makeRandomRegions = function (numPlayers) {
+  var self = this;
   Region.makeRandom(this.map, numPlayers)
     .then(function (selectedRegions) {
-      this.regions = selectedRegions;
+      self.regions = selectedRegions;
+      return self.save();
     });
-
-  return this.save();
 };
 
 schema.methods.addPlayer = function (newPlayer) {
@@ -94,23 +95,26 @@ schema.methods.addPlayer = function (newPlayer) {
 
   if (this.players.length >= 6) throw new Error('The Game is already full');
 
-  if (this.players.some(player => player._id.equals(newPlayer._id))) return Promise.resolve(this);
+  if (this.players.some(player => player.user._id.equals(newPlayer.user._id))) return Promise.resolve(this);
 
 	this.players.push(newPlayer);
 	return this.save();
 };
 
 schema.methods.removePlayer = function (userId) {
+  Player.findOne({ user: userId })
 	var userIndex = this.players.indexOf(userId);
 	this.players.splice(userIndex,1);
 	return this.save();
 };
 
 schema.methods.createGame = function () {
+  var self = this;
+
   return Game.init(this.map, this.players, this.regions)
     .then(function (newGame) {
-      this.game = newGame;
-      return this.save();
+      self.game = newGame;
+      return self.save();
     });
 };
 

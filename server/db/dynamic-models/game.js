@@ -80,28 +80,30 @@ schema.methods.init = function (map, players, selectedRegions) {
     return shuffledPlants;
   }
 
+  var self = this;
+
   return City.find({ countryCode: countryCode[map] }, { region: { $in: selectedRegions } })
     .then(function (citiesInPlay) {
       citiesInPlay = grabObjectId(citiesInPlay);
-      this.cities = citiesInPlay;
+      self.cities = citiesInPlay;
       return Connection.find({ 'cities.0': { $in: citiesInPlay } }, { 'cities.1': { $in: citiesInPlay } });
     })
     .then(function (connectionsInPlay) {
-      this.connections = grabObjectId(connectionsInPlay);
-      this.turnOrder = shuffle(players);
-      this.restockRates = masterRestockRates[players.length][this.step];
+      self.connections = grabObjectId(connectionsInPlay);
+      self.turnOrder = shuffle(players);
+      self.restockRates = masterRestockRates[players.length][self.step];
       return Plant.find().sort({ rank: 'asc' });
     })
     .then(function (plants) {
       var allPlants = grabObjectId(plants);
 
-      this.plantMarket = allPlants.splice(0, 8);
+      self.plantMarket = allPlants.splice(0, 8);
 
       var thirteen = allPlants.splice(2, 1);
       var remainingPlants = removePlants(shuffle(allPlants), players.length);
-      this.plantDeck = thirteen.concat(remainingPlants);
+      self.plantDeck = thirteen.concat(remainingPlants);
 
-      return this.save();
+      return self.save();
     });
 
 };

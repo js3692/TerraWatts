@@ -12,14 +12,20 @@ var User = mongoose.model('User');
 
 router.post('/', function (req, res, next) {
   // req.body has map, max players, and selected regions
-	Grid.create({})
-    .then(function (grid) {
-      return grid.addUser(req.user);
+	Grid.create({
+      map: req.body.map,
+      maxPlayers: req.body.maxPlayers
+    })
+    .then(function (newGrid) {
+      return newGrid.makeRandomRegions(newGrid.maxPlayers);
+    })
+    .then(function (updatedGrid) {
+      return updatedGrid.addPlayer(req.user);
     })
     .then(function (grid) {
-      return Grid.populate(grid, "users");
+      return Grid.populate(grid, "players");
     })
-    .then(function(grid) {
+    .then(function (grid) {
       // grid.key is the id of the array element in firebase.
       grid.key = fbRef.push(grid.toObject()).key();
       res.status(201).json(grid);
