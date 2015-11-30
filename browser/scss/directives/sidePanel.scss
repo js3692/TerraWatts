@@ -1,12 +1,11 @@
-$panel-width: 300px;
+$panel-width: 500px;
+$panel-height: 300px;
 $side-tab-width: 30px;
 $side-tab-height: 100px;
-
 side-panel {
     overflow: hidden;
     position: relative;
     z-index: 200;
-  
     .right-slider {
         margin-top: 3%;
         float: right;
@@ -15,12 +14,10 @@ side-panel {
         -webkit-transition: width 2s, height 2s, background-color 1s, -webkit-transform .25s;
         transition: width 2s, height 2s, background-color 1s, transform .25s;
     }
-
     .right-slider-pull {
         -webkit-transform: translateX($panel-width);
         transform: translateX($panel-width);
     }
-  
     .menu-tab {
         width: $side-tab-width;
         height: $side-tab-height;
@@ -30,9 +27,8 @@ side-panel {
     .menu-tab:hover {
         background-color: grey;
     }
-  
     .menu-panel-body {
-        height: 60vh;
+        height: $panel-height;
         width: $panel-width;
         border-radius: 0 0 0 5px;
         border-width: 0;
@@ -43,5 +39,4 @@ side-panel {
         margin-top: 37px;
         color: white;
     }
-    
 }

@@ -79,9 +79,6 @@ schema.pre('save', function (next) {
       then updates firebase game object.
   */
   
-
-  // fire
-
   next();
 });
 
