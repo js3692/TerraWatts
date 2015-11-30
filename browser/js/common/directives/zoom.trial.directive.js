@@ -16,7 +16,7 @@ app.directive('zoomMap', function($parse) {
 
 			var projection = d3.geo.mercator()
 			    .scale((1 << 12) / 2 / Math.PI)
-			    .translate([width / 2, height / 2])
+			    .translate([width / 2, height / 2]);
 
 			var center = projection([-100, 40]);
 
@@ -55,9 +55,10 @@ app.directive('zoomMap', function($parse) {
 				.attr('fill', 'none')
 				.attr('stroke', 'grey');
 
-			var connectionDistVector = svg.append("path")
+			var connectionDists = svg.append("g")
 				.attr('class', 'Connection Distances');
 
+			var connectionDistVector;
 
 			var citiesCollection = svg.append("g")
 				.attr('class', 'Cities');
@@ -67,12 +68,18 @@ app.directive('zoomMap', function($parse) {
 
 
 			scope.$watch('data', function(newData, oldData) {
-				var cities = newData.cities;
-				var connections = newData.connections;
+				var cities = newData.cities,
+					connections = newData.connections;
 
-				if(cities) {
+				if(cities && connections) {
 					var revisedCities = cities.map(function(city) {
 						return cityType(city);
+					});
+					var revisedConnections = connections.map(function(connection) {
+						return connectionType(connection);
+					});
+					var revisedDistMarkers = connections.map(function(connection) {
+						return connectionDistType(connection);
 					});
 
 					svg.call(zoom);
@@ -82,22 +89,30 @@ app.directive('zoomMap', function($parse) {
 						.enter()
 						.append('path');
 
-					zoomed();
-				}
-
-				if(connections) {
-					var revisedConnections = connections.map(function(connection) {
-						return connectionType(connection);
-					})
-
-					var revisedDistMarkers = connections.map(function(connection) {
-						return connectionDistType(connection);
-					})
-
 					connectionVector.datum({type: "FeatureCollection", features: revisedConnections});
-					connectionDistVector.datum({type: "FeatureCollection", features: revisedDistMarkers});
+
+					connectionDistVector = connectionDists.selectAll("path")
+						.data(revisedDistMarkers)
+						.enter()
+						.append('path')
+						.attr('id', function(d,i) { return "path_" + i; });
+
+					connectionDists.selectAll('text')
+						.data(revisedDistMarkers)
+						.enter()
+						.append('text')
+						.append('textPath')
+						.attr("xlink:href", function (d,i) { return "#path_" + i; })
+						.attr('spacing', 'exact')
+			            .text(function (d) { return d.properties.distance; })
+			            .attr("text-anchor", "middle")
+						.attr("font-family", "sans-serif")
+						.attr("font-size", "15px")
+						.attr("fill", "black");
+
 					zoomed();
 				}
+
 
 			}, true);
 
@@ -107,7 +122,7 @@ app.directive('zoomMap', function($parse) {
 					type: 'Feature',
 					properties: {
 						name: d.name,
-						state: 'temp'
+						region: d.region
 					},
 					geometry: {
 						type: 'Point',
@@ -126,6 +141,11 @@ app.directive('zoomMap', function($parse) {
 
 				return {
 					type: 'Feature',
+					properties: {
+						distance: d.distance,
+						cities: d.cities,
+						cityNames: d.cityNames
+					},
 					geometry: {
 						type: 'Point',
 						coordinates: coordinates
@@ -146,10 +166,11 @@ app.directive('zoomMap', function($parse) {
 
 				return {
 					type: 'Feature',
-					// properties: {
-					// 	name: d.name,
-					// 	state: 'temp'
-					// },
+					properties: {
+						distance: d.distance,
+						cities: d.cities,
+						cityNames: d.cityNames
+					},
 					geometry: {
 						type: 'LineString',
 						coordinates: coordinates
@@ -169,12 +190,18 @@ app.directive('zoomMap', function($parse) {
 		    	
 
 		    	cityVector
-					.attr('d', cityPath);
+		    		.attr('name', function(d) { return d.properties.name })
+		    		.attr('region', function(d) { return d.properties.region })
+					.attr('d', cityPath)
+					.on('click', function(d,i) {
+						console.log("You've clicked " + d.properties.name)
+					});
 
 		    	connectionVector
 			    	.attr('d', connectionPath);
 
 		    	connectionDistVector
+		    		.attr('distance', function(d) { return d.properties.distance })
 		    		.attr('d', distancePath);
 
 
