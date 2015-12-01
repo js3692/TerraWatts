@@ -105,7 +105,7 @@ schema.methods.end = function(game) {
 	}
 	if (this.phase === 'bureaucracy') {
 		var maxCities = game.turnOrder.reduce(function (prev, curr) {
-			return Math.max(prev, curr.numCities);
+			return Math.max(prev, curr.cities.length);
 		}, 0);
 
 		// check end game condition
@@ -175,10 +175,10 @@ schema.methods.transaction = function(update, game) {
 	    	}
 		} else if (self.phase === 'city') {
 			var citiesToAdd = update.data;
-			player.money -= cityPrice(citiesToAdd, game);
-			player.numCities += citiesToAdd.length;
+			player.money -= cityPrice(citiesToAdd, game, player);
+			player.cities = player.cities.concat(citiesToAdd);
 			// remove plant from market if necessary
-			while (player.numCities >= game.plantMarket[0].rank) {
+			while (player.cities.length >= game.plantMarket[0].rank) {
 				game.discardedPlants.push(game.plantMarket.shift());
 				game = drawPlant(game);
 			}
@@ -202,7 +202,7 @@ schema.methods.transaction = function(update, game) {
 					game.resourceBank[plant.resourceType] += plant.resourceNum;
 				}
 			})
-			player.numPowered = Math.min(player.numCities, totalCapacity);
+			player.numPowered = Math.min(player.cities.length, totalCapacity);
 			player.money += payments[player.numPowered];
 		}
 		return player.save();
