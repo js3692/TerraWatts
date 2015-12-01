@@ -163,18 +163,16 @@ schema.methods.createGame = function () {
     });
 };
 
-/*
 schema.methods.init = function () {
   var self = this;
   this.state = new State();
   return this.state.init(this.game)
-    .then(function (arr) {
-      self.state = arr[0];
-      self.game = arr[1];
+    .then(function (savedStateAndGame) {
+      self.state = savedStateAndGame[0];
+      self.game = savedStateAndGame[1];
       return self.save();
     })
 };
-*/
 
 schema.method.continue = function () {
   
