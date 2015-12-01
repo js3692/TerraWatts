@@ -22,9 +22,10 @@ var schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Connection'
   }],
-  turnOrder: {
-    type: [Number]
-  },
+  turnOrder: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Player'
+    }],
   turn: {
     type: Number,
     default: 1
@@ -82,11 +83,15 @@ schema.methods.init = function (map, players, selectedRegions) {
 
   var self = this;
 
-  return City.find({ countryCode: countryCode[map] }, { region: { $in: selectedRegions } })
+  var regions = selectedRegions.map(function(region) {
+    return region.regionId;
+  })
+
+  return City.find({ countryCode: countryCode[map], region: { $in: regions } })
     .then(function (citiesInPlay) {
       citiesInPlay = grabObjectId(citiesInPlay);
       self.cities = citiesInPlay;
-      return Connection.find({ 'cities.0': { $in: citiesInPlay } }, { 'cities.1': { $in: citiesInPlay } });
+      return Connection.find({ 'cities.0': { $in: citiesInPlay }, 'cities.1': { $in: citiesInPlay } });
     })
     .then(function (connectionsInPlay) {
       self.connections = grabObjectId(connectionsInPlay);
