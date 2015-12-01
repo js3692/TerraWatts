@@ -1,4 +1,3 @@
-var _ = require('lodash');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 var firebaseHelper = require('../../firebase');
@@ -24,13 +23,16 @@ var schema = new mongoose.Schema({
   regions: {
     type: [Number]
   },
+  randomRegions: {
+    type: Boolean
+  },
   maxPlayers: {
     type: Number,
     enum: [2, 3, 4, 5, 6]
   },
   availableColors: {
     type: [String],
-    default: ['purple', 'yellow', 'green', 'blue', 'red', 'black']
+    default: ['yellow', 'green', 'blue', 'red', 'black', 'purple']
   },
   // Below are references to each COMPONENT of the game environment
   players: [{
@@ -56,8 +58,8 @@ var schema = new mongoose.Schema({
 });
 
 // Only needed when there are virtuals
-// schema.set('toObject', { virtuals: true });
-// schema.set('toJSON', { virtuals: true });
+schema.set('toObject', { virtuals: true });
+schema.set('toJSON', { virtuals: true });
 
 schema.pre('save', function (next) {
   
@@ -97,10 +99,10 @@ schema.methods.addPlayer = function (newPlayer) {
 
   if (this.players.length >= 6) throw new Error('The Game is already full');
 
-  if (this.players.some(player => {
-    console.log(player);
-    return player.user._id.equals(newPlayer.user._id)
-  })) return Promise.resolve(this);
+  // if (this.players.some(player => {
+  //   console.log(player);
+  //   return player.user.equals(newPlayer.user)
+  // })) return Promise.resolve(this);
 
   var colorIdx = this.availableColors.indexOf(newPlayer.color);
   this.availableColors.splice(colorIdx, 1);
@@ -113,14 +115,33 @@ schema.methods.addPlayer = function (newPlayer) {
 schema.methods.removePlayer = function (userId) {
   var self = this;
 
+  console.log(userId, 'skldjflks')
   return Player.findOne({ user: userId })
     .then(function (foundPlayer) {
     	var playerIdx = self.players.indexOf(foundPlayer._id);
     	self.players.splice(playerIdx, 1);
+      self.availableColors.push(foundPlayer.color);
       return foundPlayer.remove();
     })
     .then(function () {
     	return self.save();
+    });
+};
+
+schema.methods.switchColor = function (player, newColor) {
+  if (player.color === newColor) throw new Error('You already own that color');
+
+  var self = this;
+  var oldColor = player.color;
+  player.color = newColor;
+
+  return player.save()
+    .then(function () {
+      self.availableColors.push(oldColor);
+      self.availableColors.pull(newColor);
+    })
+    .then(function () {
+      return self.save();
     });
 };
 
