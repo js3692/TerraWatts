@@ -4,6 +4,7 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, Befo
   $scope.gameSettings.map = 'United States';
   $scope.gameSettings.numPlayers = 4;
   $scope.gameSettings.checkedRegions = [];
+  $scope.gameSettings.color = 'purple';
 
   $scope.countries = [
     { name: 'United States', code: 'us' },
@@ -21,11 +22,20 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, Befo
     '5': false,
     '6': false
   };
+  $scope.colorChoices = ['purple', 'yellow', 'green', 'blue', 'red', 'black'];
+  $scope.dropdownColor = {
+    purple: "#6600cc",
+    yellow: "#ffd700",
+    green: "#009933",
+    blue: "#0066cc",
+    red: "#cc0000",
+    black: "#191919"
+  };
 
   $scope.flag = function (country) {
     var spanClass;
     $scope.countries.forEach(function (elem) {
-      if (elem.name == country) spanClass = "flag-icon flag-icon-" + elem.code;
+      if (elem.name === country) spanClass = "flag-icon flag-icon-" + elem.code;
     });
     return spanClass;
   };
@@ -36,6 +46,10 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, Befo
 
   $scope.selectNumPlayers = function (number) {
     $scope.gameSettings.numPlayers = number;
+  };
+
+  $scope.selectColor = function (color) {
+    $scope.gameSettings.color = color;
   };
 
 
@@ -49,10 +63,9 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, Befo
   });
 
   $scope.ok = function (gameSettings) {
-    gameSettings.name = $scope.gameName;
+    if (gameSettings.checkedRegions.length < 3) gameSettings.makeRandom = true;
     BeforeGameFactory.newGame(gameSettings)
       .then(function (grid) {
-        console.log('the grid', grid);
         $uibModalInstance.close();
         $state.go('grid', { id: grid._id, key: grid.key });
       });

@@ -12,5 +12,8 @@ module.exports = {
     getConnection: function(key) {
         if(!gridHash[key]) this.setConnection(key);
         return gridHash[key];
+    },
+    getConnectionToGame: function (gridKey) {
+        return new Firebase(baseUrl + gridKey + '/game');
     }
 };

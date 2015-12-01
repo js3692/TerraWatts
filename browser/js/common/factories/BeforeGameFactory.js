@@ -50,7 +50,7 @@ app.factory('BeforeGameFactory', function ($http, $q) {
 	};
 
 	BeforeGameFactory.changeColor = function (id, userId, color) {
-		return $http.put(baseUrl + id + '/changeColor', { userId: userId, color: color })
+		return $http.put(baseUrl + id + '/color', { userId: userId, color: color })
 			.then(toData);
 	};
 	

@@ -31,9 +31,10 @@ app.controller('GridCtrl', function ($scope, $state, thePlayer, BeforeGameFactor
 	}; 
 
 	$scope.leaveGame = function() {
-		BeforeGameFactory.leaveGame($scope.grid.id)
-		.then(function() {
-			$state.go('home');
-		})
+		BeforeGameFactory
+      .leaveGame($scope.grid.id)
+      .then(function() {
+        $state.go('home');
+      });
 	};
 })
