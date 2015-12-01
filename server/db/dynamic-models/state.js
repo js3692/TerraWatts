@@ -6,11 +6,11 @@ var Player = mongoose.model('Player');
 var Auction = mongoose.model('Auction');
 
 var determineTurnOrder =	require('../utils/0_basic_rules/turnOrder');
-var dONP =					require('../utils/0_basic_rules/dependsOnNumPlayers.js');
-var drawPlant =				require('../utils/1_plant_phase/drawPlant');
-var resourcePrice =			require('../utils/2_resource_phase/price');
-var cityPrice =				require('../utils/3_city_phase/price');
-var payments =				require('../utils/4_bureaucracy_phase/payments.js');
+var dONP =								require('../utils/0_basic_rules/dependsOnNumPlayers.js');
+var drawPlant =						require('../utils/1_plant_phase/drawPlant');
+var resourcePrice =				require('../utils/2_resource_phase/price');
+var cityPrice =						require('../utils/3_city_phase/price');
+var payments =						require('../utils/4_bureaucracy_phase/payments.js');
 
 var plantSpaces = dONP.plantSpaces;
 var endGame = dONP.endGame;

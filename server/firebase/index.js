@@ -15,5 +15,11 @@ module.exports = {
     },
     getConnectionToGame: function (gridKey) {
         return new Firebase(baseUrl + gridKey + '/game');
+    },
+    getConnectionToState: function (gridKey) {
+        return new Firebase(baseUrl + gridKey + '/state');
+    },
+    getConnectionToPlayers: function (gridKey) {
+        return new Firebase(baseUrl + gridKey + '/players');
     }
 };
