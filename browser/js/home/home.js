@@ -12,8 +12,8 @@ app.config(function ($stateProvider) {
 app.controller('HomeCtrl', function ($scope, BeforeGameFactory, $state, AuthService, AUTH_EVENTS, $uibModal, FirebaseFactory) {
     
   /* populates joinable game from backend, then uses live updates from firebase */
-  $scope.games = FirebaseFactory.getBase();
-	$scope.getLiveJoinableGames = FirebaseFactory.getLiveJoinableGames.bind(null, $scope);
+    $scope.games = FirebaseFactory.getBase();
+    $scope.getLiveJoinableGames = FirebaseFactory.getLiveJoinableGames.bind(null, $scope);
 	
   $scope.logout = function () {
     AuthService.logout().then(function () {

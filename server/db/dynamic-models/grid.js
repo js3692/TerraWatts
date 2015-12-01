@@ -10,7 +10,8 @@ var State = mongoose.model('State');
 var schema = new mongoose.Schema({
   // Below are game ENVIRONMENT settings
   key: {
-    type: String
+    type: String,
+    required: true
   },
   name: {
     type: String,
