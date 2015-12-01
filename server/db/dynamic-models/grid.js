@@ -5,6 +5,7 @@ var firebaseHelper = require('../../firebase');
 var Region = mongoose.model('Region');
 var Player = mongoose.model('Player');
 var Game = mongoose.model('Game');
+var State = mongoose.model('State');
 
 var schema = new mongoose.Schema({
   // Below are game ENVIRONMENT settings
@@ -41,11 +42,18 @@ var schema = new mongoose.Schema({
   }],
   game: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: 'Game',
       default: null
   },
   state: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: 'State',
       default: null
+  },
+  auction: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Auction',
+    default: null
   },
   // Below are HISTORICAL data relevant to this game environment
   complete: {
@@ -155,13 +163,18 @@ schema.methods.createGame = function () {
     });
 };
 
-// schema.methods.init = function () {
-//   var self = this;
-//   return this.state.init(this.game)
-//     .then(function () {
-//       return self.save();
-//     })
-// };
+/*
+schema.methods.init = function () {
+  var self = this;
+  this.state = new State();
+  return this.state.init(this.game)
+    .then(function (arr) {
+      self.state = arr[0];
+      self.game = arr[1];
+      return self.save();
+    })
+};
+*/
 
 schema.method.continue = function () {
   
