@@ -28,10 +28,10 @@ var schema = new mongoose.Schema({
   clockwise: {
     type: Number
   },
-  numCities: {
-    type: Number,
-    default: 0
-  }
+  cities: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'City'
+  }]
 });
 
 mongoose.model('Player', schema);

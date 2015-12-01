@@ -13,7 +13,7 @@ module.exports = function drawPlant(game, state) {
 };
 
 function initStepThree(game, state) {
-	if(game.step === 3) return;
+	if(game.step === 3) return game;
 	if (state.phase === 'plant') {
 		// stuff shouldn't actually happen here until the end of the state
 		game.step = 2.5;

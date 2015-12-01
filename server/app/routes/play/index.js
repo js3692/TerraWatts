@@ -2,6 +2,7 @@ var router = require('express').Router();
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 var firebaseHelper = require("../../../firebase");
+var validations = require('../../../db/validations');
 
 var fbRef = firebaseHelper.base();
 
@@ -15,21 +16,24 @@ router.use('/resourceState', require('./resourceState'));
 router.use('/cityState', require('./cityState'));
 router.use('/endOfTurn', require('./endOfTurn'));
 
-module.exports = router;
+router.post('/:gridId/continue', function(req, res, next) {
+	var passedGlobalValidations = validations.global.every(function(validationFunc) {
+		return validationFunc(req.body, req.grid);
+	});
+	var passedSpecificValidations = validations[req.body.phase].every(function(validationFunc) {
+		return validationFunc(req.body, req.grid);
+	})
+	if (!passedGlobalValidations || !passedSpecificValidations) res.sendStatus(400);
 
-router.post('/:gridId...', function(req, res, next) {
-	// find grid
-	var update = req.body;
-	// run validation functions
-		// if any are false, respond with some error, and the game
-		// if all true:
-		grid.state.continue(update, grid.game)
-		.then(function () {
-			return grid.findById(req.grid._id)
-		})
-		.then(function (grid) {
-			// save, fb stuff
-			res.sendStatus(201);
-		})
+	req.grid.state.continue(req.body, req.grid.game)
+	.then(function () {
+		return Grid.findById(req.grid._id)
+	})
+	.then(function (grid) {
+		// save, fb stuff
+		res.sendStatus(201);
+	})
 
 })
+
+module.exports = router;
