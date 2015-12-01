@@ -7,7 +7,7 @@ app.directive('plantPanel', function(SliderFactory, $uibModal){
             resources: '='
         },
         link: function(scope, elem, attrs){   
-            scope.plantsTrueResourcesFalse = false;
+            scope.plantsTrueResourcesFalse = true;
             scope.open = SliderFactory.slideOut.bind(null, 'plant');
             scope.toggleArrows = SliderFactory.toggleSliderArrowsHandler();
             

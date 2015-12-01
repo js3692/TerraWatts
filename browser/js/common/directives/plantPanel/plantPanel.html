@@ -1,5 +1,4 @@
-<div ng-click="open()" 
-     class="menu-panel-body
+<div class="menu-panel-body
             panel 
             panel-default
             plant-slider
@@ -19,9 +18,20 @@
           ng-click="buyResources()">
     </bars>
 </div>
-<div class="plant-slider plant-slider-pull">
-    <div class="menu-tab" ng-click="changeView('plants')"><span class="glyphicon glyphicon-off"></span></div>
-    <div class="menu-tab resource-menu-tab" ng-click="changeView('resources')"><span class="glyphicon glyphicon-oil"></span></div>
+<div class="plant-slider
+            plant-slider-pull">
+    <div class="menu-tab plant-menu-tab"
+         ng-click="changeView('plants')"
+         ng-class="{ selectedPlantOrResource: plantsTrueResourcesFalse}">
+        <span class="glyphicon glyphicon-off">
+        </span>
+    </div>
+    <div class="menu-tab resource-menu-tab"
+         ng-click="changeView('resources')"
+         ng-class="{ selectedPlantOrResource: !plantsTrueResourcesFalse}">
+        <span class="glyphicon glyphicon-oil">
+        </span>
+    </div>
 </div>
 <div class="plant-slider plant-slider-pull tab-container main-pull-tab" ng-click="open(); toggleArrows()">
     <span class="glyphicon glyphicon-triangle-right">
