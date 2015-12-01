@@ -11,6 +11,8 @@ var Region = mongoose.model('Region');
 var State = mongoose.model('State');
 var Player = mongoose.model('Player');
 var User = mongoose.model('User');
+var Plant = mongoose.model('Plant');
+var Auction = mongoose.model('Auction');
 
 describe('game', function() {
  	beforeEach('Establish DB connection', function (done) {
@@ -130,15 +132,15 @@ describe('game', function() {
     })
 })
 
-xdescribe('states', function() {
+describe('auction', function() {
 	beforeEach('Establish DB connection', function (done) {
  		if (mongoose.connection.db) return done();
         mongoose.connect(dbURI, done);
  	})
 
-	var users;
+ 	var users;
 	var players;
-	beforeEach('grabs some users', function(done) {
+	beforeEach('grab some users', function (done) {
 		User.find()
 		.then(function(_users) {
 			users = _users.slice(0,3);
@@ -146,7 +148,16 @@ xdescribe('states', function() {
 		}, done)
 	})
 
-	beforeEach('creates some players', function(done) {
+	var plant;
+	beforeEach('grab a plant', function (done) {
+		Plant.find()
+		.then(function (_plants) {
+			plant = _plants[3];
+			done()
+		}, done)
+	})
+
+	beforeEach('create some players', function(done) {
 		var promises = ['red', 'blue', 'green'].map(function(color, i) {
 			return Player.create({user: users[i], color: color, clockwise: i});
 		});
@@ -157,28 +168,24 @@ xdescribe('states', function() {
 		}, done);
 	})
 
-	afterEach('Clear test database', function (done) {
+    afterEach('Clear test database', function (done) {
         clearDB(done);
     });
 
-	describe('go and continue', function() {
-		var dummyGame, state;
+    var state = new State({remainingPlayers: players});
 
-		it('takes in a pass through continue', function(done) {
-			var update = {
-				player: players[0],
-				data: 'pass'
-			}
-			state.continue(update, dummyGame)
-			.then(function (arr) {
-				state = arr[0];
-				dummyGame = arr[1];
-				// console.log('state', state);
-				// console.log('game', dummyGame);
-				done();
-			}, done)
-		})
-	})
+    it('inits auction', function(done) {
+    	state.auction = new Auction({
+    		plant: plant,
+    		bid: plant.rank,
+    		plantState: state
+    	});
+    	state.auction.init()
+    	.then(function (auction) {
+    		console.log(auction);
+    		done()
+    	})
+    })
 })
 
 describe('buy resources', function() {

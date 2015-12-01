@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var Promise = require('bluebird')
 mongoose.Promise = Promise;
 var Player = mongoose.model('Player');
+var Auction = mongoose.model('Auction');
 
 var determineTurnOrder =	require('../utils/0_basic_rules/turnOrder');
 var dONP =					require('../utils/0_basic_rules/dependsOnNumPlayers.js');

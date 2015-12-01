@@ -77,6 +77,4 @@ schema.methods.continue = function(update) {
 	return this.go();
 }
 
-
-
 mongoose.model('Auction', schema);
