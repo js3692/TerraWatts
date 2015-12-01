@@ -19,7 +19,7 @@
         <tr ng-repeat="grid in getLiveJoinableGames()">
           <td style="text-align: center;">{{ $index + 1 }}</td>
           <td>{{ grid.name }}</td>
-          <td style="text-align: center;">{{ 6 - grid.users.length }}</td>
+          <td style="text-align: center;">{{ 6 - grid.players.length }}</td>
           <td style="text-align: center;">Waiting</td>
           <td style="text-align: center;">
             <button ng-click="joinGame(grid)" class="btn btn-success">Join</button>

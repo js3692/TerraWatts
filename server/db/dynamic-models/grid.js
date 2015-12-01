@@ -1,17 +1,20 @@
 var mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+var Promise = require('bluebird');
+mongoose.Promise = Promise;
 var firebaseHelper = require('../../firebase');
 
 var Region = mongoose.model('Region');
 var Player = mongoose.model('Player');
 var Game = mongoose.model('Game');
 var State = mongoose.model('State');
+var _ = require('lodash');
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
+
 
 var schema = new mongoose.Schema({
   // Below are game ENVIRONMENT settings
   key: {
-    type: String,
-    required: true
+    type: String
   },
   name: {
     type: String,
@@ -66,39 +69,85 @@ var schema = new mongoose.Schema({
   },
 });
 
+schema.plugin(deepPopulate, {
+  whitelist: [
+    'players.user',
+    'game.cities',
+    'game.connections',
+    'game.plantMarket',
+    'game.plantDeck',
+    'game.discardedPlants',
+    'game.stepThreePlants'
+  ],
+  populate: {
+    'players.user': {
+      select: 'username'
+    }
+  }
+})
+
 // For the "id" virtual
 schema.set('toObject', { virtuals: true });
 schema.set('toJSON', { virtuals: true });
 
-schema.pre('save', function (next) {
-  // POPULATE FIELDS BEFORE SENDING
+schema.post('save', function (grid) {
+    
 
-  // This is mainly for '/join' and '/leave' of players
-  firebaseHelper
-    .getConnectionToPlayers(this.key)
-    .set(this.players.toObject());
+    // POPULATE FIELDS BEFORE SENDING
+    if(grid.players.length > 0) {
+      grid.constructor
+        .populate(grid, 'game state players auction')
+        .then(function(grid){
+          grid.deepPopulate([
+            'players.user',
+            'game.cities',
+            'game.connections',
+            'game.plantMarket',
+            'game.plantDeck',
+            'game.discardedPlants',
+            'game.stepThreePlants'
+          ], function(err, populatedGrid) {
+            // This is mainly for '/join' and '/leave' of players
+            firebaseHelper
+              .getConnection(populatedGrid.key)
+              .update({
+                  "players": populatedGrid.players.map(player => player.toObject())
+              });
 
-  // This means the game was initizlied and started
-  if(this.game) {
-    this.history.push(this.game.toObject());
+            // This means the game was initialized and started
+            if(populatedGrid.game) {
 
-    firebaseHelper
-      .getConnectiontoGame(this.key)
-      .set(this.game.toObject());
+              firebaseHelper
+                .getConnection(populatedGrid.key)
+                .update({
+                  'game': populatedGrid.game.toObject()
+                });
 
-    firebaseHelper
-      .getConnectiontoState(this.key)
-      .set(this.state.toObject());
-  }
+              firebaseHelper
+                .getConnection(populatedGrid.key)
+                .update({
+                  'state': populatedGrid.state.toObject()
+                });
+              }
 
-  next();
+          })
+        })
+    }
+      
+      
+
+  
 });
+
+//schema.methods.saveHistory = function () {
+//  this.history.push(this.game.toObject());
+//};
 
 schema.methods.makeRandomRegions = function (numPlayers) {
   var self = this;
-  Region.makeRandom(this.map, numPlayers)
+  return Region.makeRandom(this.map, numPlayers)
     .then(function (selectedRegions) {
-      self.regions = selectedRegions;
+      self.regions = selectedRegions.map(region => region.regionId);
       return self.save();
     });
 };
@@ -154,17 +203,17 @@ schema.methods.switchColor = function (player, newColor) {
 schema.methods.createGame = function () {
   var self = this;
 
-  return Game.init(this.map, this.players, this.regions)
+  return Game.initialize(this.map, this.players, this.regions)
     .then(function (newGame) {
       self.game = newGame;
       return self.save();
     });
 };
 
-schema.methods.init = function () {
+schema.methods.initialize = function () {
   var self = this;
   this.state = new State();
-  return this.state.init(this.game)
+  return this.state.initialize(this.game)
     .then(function (savedStateAndGame) {
       self.state = savedStateAndGame[0];
       self.game = savedStateAndGame[1];
