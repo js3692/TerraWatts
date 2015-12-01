@@ -175,7 +175,7 @@ schema.methods.transaction = function(update, game) {
 	    	}
 		} else if (self.phase === 'city') {
 			var citiesToAdd = update.data;
-			player.money -= cityPrice(citiesToAdd, game);
+			player.money -= cityPrice(citiesToAdd, game, player);
 			player.cities = player.cities.concat(citiesToAdd);
 			// remove plant from market if necessary
 			while (player.cities.length >= game.plantMarket[0].rank) {
