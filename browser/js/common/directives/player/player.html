@@ -1,11 +1,39 @@
-<div class="panel panel-default">
+<div class="panel panel-default"
+     ng-style="{ 'border-color': player.color }">
   <div class="panel-body">
-      <div class="player-box glyphicon glyphicon-home"
-           ng-style="{ color: player.user.color }">
-          <div class="player-text">{{ player.user.username }}</div>
-      </div>
-      <div class="player-box glyphicon glyphicon-piggy-bank">
-           <div class="player-text">{{ player.money }}</div>
+      <div class="row player-top-row">
+          <div class="player-box glyphicon pull-left">
+              <div class="player-text username">{{ player.user.username }}</div>
+              <div class="below-username player-box glyphicon glyphicon-home pull-right"
+                   ng-style="{ color: player.user.color }">
+                  <div class="player-text">{{ player.numCities }}</div>
+              </div>
+              <div class="below-username player-box glyphicon glyphicon-piggy-bank pull-right">
+                   <div class="player-text">{{ player.money }}</div>
+              </div>
+          </div>
+          <div class="pull-right resource-box">
+              <div class="row">
+                  <div class="player-box glyphicon nuke">
+                      <img ng-src='/coal.png'>
+                      <div class="player-text">3</div>
+                  </div>
+                  <div class="player-box glyphicon nuke">
+                      <img ng-src='/oil.png'>
+                      <div class="player-text">3</div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="player-box glyphicon nuke">
+                      <img ng-src='/trash.png'>
+                      <div class="player-text">3</div>
+                  </div>
+                  <div class="player-box glyphicon nuke">
+                      <img ng-src='/nuke.png'>
+                      <div class="player-text">3</div>
+                  </div>
+              </div>
+          </div>
       </div>
 <!--    {{ player.user.username }} money: {{ player.money }} cities: {{ player.numCities }}-->
   </div>

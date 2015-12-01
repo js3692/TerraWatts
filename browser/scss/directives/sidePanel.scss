@@ -1,13 +1,16 @@
-$panel-width: 500px;
-$panel-height: 300px;
+$panel-width: 280px;
+$panel-height: 500px;
 $side-tab-width: 30px;
 $side-tab-height: 100px;
+$panel-position: 60px;
 side-panel {
     overflow: hidden;
-    position: relative;
+    position: fixed;
+    top: $panel-position;
+    right: 0;
+    clear: both;
     z-index: 200;
     .right-slider {
-        margin-top: 3%;
         float: right;
         background-color: $main-background;
         opacity: .8;
