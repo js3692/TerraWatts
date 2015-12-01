@@ -62,8 +62,7 @@ app.directive('zoomMap', function($parse) {
 				.attr('fill', 'grey');
 
 			var citiesCollection = svg.append("g")
-				.attr('class', 'Cities')
-				// .attr('opacity', 0.5);
+				.attr('class', 'Cities');
 
 
 			var connectionDistVector,
@@ -74,17 +73,27 @@ app.directive('zoomMap', function($parse) {
 				leftRect,
 				midRect,
 				rightRect,
+				cityText,
+				leftTower,
+				midTower,
+				rightTower,
 				distCentroids = {},
 				cityCentroids = {};
 
-
-
 			// City Shape Variables:
-			var cityWidth = 80,
-				cityHeight = 50,
-				rectDimension = 20,
-				cityBoxBuffer = 5,
-				cityBoxYOffset = 5;
+			var cityWidth = zoom.scale()/110 > 120 ? 120 : zoom.scale()/110,
+				cityHeight = cityWidth/2,
+				rectDimension = cityWidth/4,
+				cityBoxBuffer = cityWidth/16,
+				cityBoxYOffset = cityWidth/16,
+				textYOffset = cityWidth/8,
+				textFontSize = cityWidth/8,
+				leftTowerWidth = rectDimension*0.25,
+				leftTowerHeight = rectDimension*0.4,
+				midTowerWidth = rectDimension*0.3,
+				midTowerHeight = rectDimension*0.8,
+				rightTowerWidth = rectDimension*0.25,
+				rightTowerHeight = rectDimension*0.6;
 
 
 			scope.$watch('data', function(newData, oldData) {
@@ -129,14 +138,15 @@ app.directive('zoomMap', function($parse) {
 
 					var cityBoxSelection = citiesCollection.selectAll('rect')
 						.data(revisedCities)
-						.enter()
+						.enter();
 
 					cityBox = cityBoxSelection
 						.append('rect')
 						.attr('width', cityWidth)
 						.attr('height', cityHeight)
-						.attr('rx', 10)
-						.attr('ry', 10)
+						.attr('rx', 5)
+						.attr('ry', 5)
+						.attr('opacity', 0.8);
 
 					leftRect = cityBoxSelection
 						.append('rect')
@@ -145,7 +155,7 @@ app.directive('zoomMap', function($parse) {
 						.attr('height', rectDimension)
 						.attr('rx', 2)
 						.attr('ry', 2)
-						.attr('fill', 'white')
+						.attr('fill', 'white');
 
 					midRect = cityBoxSelection
 						.append('rect')
@@ -154,7 +164,7 @@ app.directive('zoomMap', function($parse) {
 						.attr('height', rectDimension)
 						.attr('rx', 2)
 						.attr('ry', 2)
-						.attr('fill', 'white')
+						.attr('fill', 'white');
 
 					rightRect = cityBoxSelection
 						.append('rect')
@@ -163,15 +173,42 @@ app.directive('zoomMap', function($parse) {
 						.attr('height', rectDimension)
 						.attr('rx', 2)
 						.attr('ry', 2)
-						.attr('fill', 'white')
+						.attr('fill', 'white');
 
-					// cityRect = cityBoxSelection
-					// 	.append('rect')
-					// 	.attr('width', rectDimension)
-					// 	.attr('height', rectDimension)
-					// 	.attr('fill', 'white')
+					cityText = cityBoxSelection
+						.append('text')
+						.text(function(d) {return d.properties.name})
+						.attr("text-anchor", "middle")
+						.attr("font-family", "sans-serif")
+						.attr("font-size", textFontSize)
+						.attr("fill", "white");
 
+					leftTower = cityBoxSelection
+						.append('rect')
+						.attr('id', 'leftTower')
+						.attr('width', leftTowerWidth)
+						.attr('height', leftTowerHeight)
+						.attr('fill', 'grey')
+						.attr('stroke', 'black')
+						.attr('stroke-width', '1px');
 
+					midTower = cityBoxSelection
+						.append('rect')
+						.attr('id', 'midTower')
+						.attr('width', midTowerWidth)
+						.attr('height', midTowerHeight)
+						.attr('fill', 'grey')
+						.attr('stroke', 'black')
+						.attr('stroke-width', '1px');
+
+					rightTower = cityBoxSelection
+						.append('rect')
+						.attr('id', 'rightTower')
+						.attr('width', rightTowerWidth)
+						.attr('height', rightTowerHeight)
+						.attr('fill', 'grey')
+						.attr('stroke', 'black')
+						.attr('stroke-width', '1px');
 
 					
 					zoomed();
@@ -199,15 +236,31 @@ app.directive('zoomMap', function($parse) {
 
 				leftRect
 					.attr('x', function(d,i) {return cityCentroids[i][0] - 1.5*rectDimension - cityBoxBuffer})
-					.attr('y', function(d,i) {return cityCentroids[i][1] - rectDimension/2 + cityBoxYOffset})
+					.attr('y', function(d,i) {return cityCentroids[i][1] - rectDimension/2 + cityBoxYOffset});
 
 				midRect
 					.attr('x', function(d,i) {return cityCentroids[i][0] - rectDimension/2})
-					.attr('y', function(d,i) {return cityCentroids[i][1] - rectDimension/2 + cityBoxYOffset})
+					.attr('y', function(d,i) {return cityCentroids[i][1] - rectDimension/2 + cityBoxYOffset});
 
 				rightRect
 					.attr('x', function(d,i) {return cityCentroids[i][0] + 0.5*rectDimension + cityBoxBuffer})
-					.attr('y', function(d,i) {return cityCentroids[i][1] - rectDimension/2 + cityBoxYOffset})
+					.attr('y', function(d,i) {return cityCentroids[i][1] - rectDimension/2 + cityBoxYOffset});
+
+				cityText
+					.attr('x', function(d,i) {return cityCentroids[i][0]})
+					.attr('y', function(d,i) {return cityCentroids[i][1] - textYOffset});
+
+				leftTower
+					.attr('x', function(d,i) {return cityCentroids[i][0] - 1.5*leftTowerWidth})
+					.attr('y', function(d,i) {return cityCentroids[i][1] + rectDimension/2 + cityBoxYOffset - leftTowerHeight});
+
+				midTower
+					.attr('x', function(d,i) {return cityCentroids[i][0] - midTowerWidth/2})
+					.attr('y', function(d,i) {return cityCentroids[i][1] + rectDimension/2 + cityBoxYOffset - midTowerHeight});
+
+				rightTower
+					.attr('x', function(d,i) {return cityCentroids[i][0] - midTowerWidth/2 + rightTowerWidth})
+					.attr('y', function(d,i) {return cityCentroids[i][1] + rectDimension/2 + cityBoxYOffset - rightTowerHeight});
 
 			}
 
@@ -287,14 +340,10 @@ app.directive('zoomMap', function($parse) {
 		    		.attr('name', function(d) { return d.properties.name })
 		    		.attr('region', function(d) { return d.properties.region })
 					.attr('d', cityPath)
+					.attr('fill', 'none')
 					.each(function(d,i) {
 		    			cityCentroids[i] = cityPath.centroid(d);
-					})
-					// .on('click', function(d,i) {
-					// 	console.log("You've clicked " + d.properties.name)
-					// });
-
-				console.log('cityCentroids', cityCentroids)
+					});
 
 		    	connectionVector
 			    	.attr('d', connectionPath);
@@ -306,16 +355,13 @@ app.directive('zoomMap', function($parse) {
 		    			distCentroids[i] = distancePath.centroid(d);
 					});
 
-
 				renderOnCentroid();
-
 
 		    	cityPath
 		    		.pointRadius(zoom.scale()/800);
 
 	    		distancePath
 	    			.pointRadius(zoom.scale()/1600);
-
 
 				var image = raster
 			    	.attr("transform", "scale(" + tiles.scale + ")translate(" + tiles.translate + ")")
