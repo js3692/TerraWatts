@@ -3,12 +3,16 @@ $plant-panel-width: 450px;
 $plant-panel-height: 225px;
 $plant-side-tab-width: 30px;
 $plant-side-tab-height: 100px;
+
 plant-panel {
     width:0;
     height:0;
     position: relative;
     z-index: 200;
-  
+    
+    div {
+        border-radius: 0;
+    }
     .plant-slider {
         margin-top: 3%;
         float: left;
@@ -21,24 +25,44 @@ plant-panel {
     }
 
     .plant-slider-pull {
-        -webkit-transform: translateX(-$plant-panel-width);
-        transform: translateX(-$plant-panel-width);
+        -webkit-transform: translateX(calc(-#{$plant-panel-width} - #{$plant-side-tab-width}));
+        transform: translateX(calc(-#{$plant-panel-width} - #{$plant-side-tab-width}));
+    }
+    
+    .tab-container {
+        border-radius: 0 5px 5px 0;
     }
   
     .menu-tab {
         width: $plant-side-tab-width;
-        height: $plant-side-tab-height;
-        border-radius: 0 5px 5px 0;
+        height: $plant-panel-height/2;
         border-left: 1px solid white;
     }
-    .menu-tab:hover {
+    .menu-tab:hover, .main-pull-tab:hover {
         background-color: grey;
     }
+    
+    .resource-menu-tab {
+        border-top: 1px solid white;
+    }
+    
+    .main-pull-tab {
+        width: $plant-side-tab-width;
+        height: $plant-panel-height;
+        border-left: 1px solid white;
+    }
+    
   
     .menu-panel-body {
         height: $plant-panel-height;
         width: $plant-panel-width;
-        border-radius: 0 0 5px 0;
         border-width: 0;
+        border-radius: 0;
+    }
+    
+    .plantHover {
+        img {
+            border: 4px solid $main-background;
+        }
     }
 }

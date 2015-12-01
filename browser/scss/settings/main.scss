@@ -1,20 +1,32 @@
 .settings-modal {
-	margin-top: 80px;
+    color: white;
+	margin-top: 50px;
 	.modal-body {
-		height: 300px;
+		height: 400px;
 	}
 	.modal-header {
 		h2 {
-			margin-left: 1em;
+			margin-left: 10px;
 		}
 	}
 	.modal-body-container {
 		position: relative;
 		top: 50%;
 		transform: translateY(-50%);
+		.row {
+			margin-bottom: 30px;
+		}
+		#random-regions {
+			margin-bottom: 0;
+		}
 	}
 	.right-column {
 		text-align: right;
+		.game-name-container {
+			width: 75%;
+			display: block;
+			float: right;
+		}
 		li {
 			cursor: pointer;
 		}

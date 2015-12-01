@@ -1,62 +1,76 @@
-var router = require('express').Router();
+var _ = require('lodash');
+var Promise = require('bluebird');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-var firebaseHelper = require("../../../../firebase");
+var router = require('express').Router();
+// var firebaseHelper = require("../../../../firebase");
 
-var fbRef = firebaseHelper.base();
+// var fbRef = firebaseHelper.base();
 
 var Grid = mongoose.model('Grid');
-var User = mongoose.model('User');
+var Game = mongoose.model('Game');
+var Player = mongoose.model('Player');
 
 // Current URL: 'api/grid/before/:gridId'
 
-router.get('/', function (req, res, next) {
-    if(req.grid) res.status(200).json(req.grid);
+router.get('/', function (req, res) {
+  res.json(req.grid);
 });
 
 router.post('/join', function (req, res, next) {
-    req.grid.addUser(req.user)
-        .then(function (grid) {
-            res.json(grid);
-        }).catch(next);
+  console.log(req.grid);
+  Player.create({ user: req.user, color: req.grid.availableColors[0] })
+    .then(function (newPlayer) {
+      return req.grid.addPlayer(newPlayer);
+    })
+    .then(function (grid) {
+      res.sendStatus(201);
+    })
+    .catch(next);
 });
 
 router.post('/leave', function (req, res, next) {
-    req.grid.removeUser(req.user)
-        .then(function (grid) {
-            res.json(grid);
-        })
-        .catch(next);
+  console.log('here')
+  req.grid.removePlayer(req.user)
+    .then(function (grid) {
+      res.sendStatus(201);
+    })
+    .catch(next);
 });
 
 router.put('/start', function(req, res, next) {
-     
-     require('../../../../game/init')(req.body)
-        .then(function (newGame) {
-            // req.grid.state = new PlantState(newGame);
-            req.grid.game = req.grid.state.go();
-            return req.grid.save();
-        })
-        .then(function(grid){
-            res.status(200).end();
-        })
-        .catch(next);
+  var gridToUsePromise, gridToUse;
+
+  if (req.grid.randomRegions) gridToUsePromise = Grid.makeRandomRegions(req.grid.players.length);
+  else gridToUsePromise = Promise.resolve(req.grid);
+
+  gridToUsePromise
+    .then(function (grid) {
+      gridToUse = grid;
+      return Game.create({});
+    })
+    .then(function (newGame) {
+      return newGame.init(gridToUse.map, gridToUse.players, gridToUse.regions)
+    })
+    .then(function (initializedGame) {
+      req.grid.game = initializedGame;
+      return req.grid.save();
+    })
+    .then(function (savedGrid) {
+      return savedGrid.init();
+    })
+    .then(function () {
+        res.status(200).end();
+    })
+    .catch(next);
 });
  
- router.put('/changeColor', function(req, res, next){
-     User.findById(req.body.userId)
-        .then(function(user){
-            user.color = req.body.color;
-            return user.save();
-        })
-        .then(function(){
-            return Grid.populate(req.grid, 'users');
-        })
-        .then(function(updatedGrid){
-            updatedGrid.save();
-            res.status(200).end();
-        })
-        .catch(next);
+router.put('/color', function(req, res, next){
+  Player.findOne({ user: req.body.userId })
+    .then(function (foundPlayer) {
+      return req.grid.switchColor(foundPlayer, req.body.color);
+    })
+    .catch(next);
 });
 
 module.exports = router;

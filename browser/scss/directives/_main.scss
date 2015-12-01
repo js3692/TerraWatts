@@ -1,13 +1,29 @@
-.glyphicon-flash {
-        margin-left: 41px;
-        margin-top: 4px;
-        color: white;
-        font-size: 20px;
+.glyphicon-user,
+.glyphicon-off,
+.glyphicon-comment,
+.glyphicon-oil,
+.glyphicon-triangle-right,
+.glyphicon-triangle-left {
+    font-size: 20px;
+    margin-left: 5px;
+    margin-top: 37px;
+    color: white;
 }
 
-.glyphicon-user, .glyphicon-off, .glyphicon-comment  {
-        font-size: 20px;
-        margin-left: 5px;
-        margin-top: 37px;
-        color: white;
-    }
+.glyphicon-off, .glyphicon-oil {
+    margin-top: 45px;
+}
+
+.glyphicon-oil {
+    margin-left: 4px;
+}
+
+.glyphicon-triangle-right {
+    margin-left: 6px;
+    margin-top: 102px;
+}
+
+.glyphicon-triangle-left {
+    margin-left: 4px;
+    margin-top: 102px;
+}

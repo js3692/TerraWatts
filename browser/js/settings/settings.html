@@ -5,14 +5,33 @@
 	<div class="modal-body-container">
 		<div class="row">
 			<div class="col-sm-6 left-column">
-				<h5>Choose a Map: </h5>
-				<br>
-				<br>
-				<h5>Set Maximum Number Of Players:</h5>
-				<br>
-				<br>
-				<h5>Select The Regions To Play In:</h5>
+				<h5>Your color:</h5>
 			</div>
+			<div class="col-sm-6 right-column">
+				<div class="btn-group" uib-dropdown uib-keyboard-nav>
+		      <button type="button" class="btn btn-default btn-block" uib-dropdown-toggle ng-style="{ 'color': dropdownColor[gameSettings.color] }">
+						<span class="glyphicon glyphicon-home"></span>{{ gameSettings.color }}&nbsp;&nbsp;<span class="caret"></span>
+		      </button>
+		      <ul class="uib-dropdown-menu" role="menu" aria-labelledby="simple-btn-keyboard-nav" style="min-width: 0; width: 110px;">
+	          <li role="menuitem" ng-repeat="choice in colorChoices"><a ng-click="selectColor(choice)" ng-style="{ 'color': dropdownColor[choice] }"><span class="glyphicon glyphicon-home"></span>{{ choice }}</a></li>
+		      </ul>
+		    </div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6 left-column">
+        <h5>Game name:</h5>
+			</div>
+			<div class="col-sm-6 right-column">
+        <div class="game-name-container">
+            <input type="text" class="form-control" ng-model="gameSettings.name" placeholder="e.g. Let's Netflix and Chill"/>
+        </div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6 left-column">
+				<h5>Map:</h5>
+	    </div>
 			<div class="col-sm-6 right-column">
 		    <div class="btn-group" uib-dropdown uib-keyboard-nav>
 		      <button type="button" class="btn btn-default btn-block" uib-dropdown-toggle>
@@ -26,9 +45,13 @@
 	          </li>
 		      </ul>
 		    </div>
-		    <br>
-		    <br>
-		    <br>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6 left-column">
+				<h5>Maximum number of players:</h5>
+			</div>
+			<div class="col-sm-6 right-column">
 		    <div class="btn-group" uib-dropdown uib-keyboard-nav>
 		      <button type="button" class="btn btn-default btn-block" uib-dropdown-toggle>
 						{{ gameSettings.numPlayers }}&nbsp;&nbsp;<span class="caret"></span>
@@ -37,21 +60,37 @@
 	          <li role="menuitem" ng-repeat="choice in numPlayersChoices"><a ng-click="selectNumPlayers(choice)">{{ choice }}</a></li>
 		      </ul>
 		    </div>
-		    <br>
-		    <br>
-		    <br>
+			</div>
+		</div>
+		<div class="row" style="margin-bottom: 0;">
+			<div class="col-sm-6 left-column">
+				<h5>Select your regions:</h5>
+			</div>
+			<div class="col-sm-6 right-column">
 		    <div class="btn-group">
-	        <label class="btn btn-default" ng-repeat="region in regions" ng-model="checked[region]" uib-btn-checkbox>{{ region }}</label>
+	        <label class="btn btn-default" ng-repeat="region in regions" ng-model="checked[region]" uib-btn-checkbox ng-disabled="gameSettings.makeRandom">{{ region }}</label>
 			  </div>
 			</div>
 		</div>
-
+		<div class="row" id="random-regions">
+			<div class="col-sm-6 left-column">
+			</div>
+			<div class="col-sm-6 right-column">
+			  <div class="checkbox">
+			    <label>
+			      <input type="checkbox" ng-model="gameSettings.makeRandom"> Play with random regions
+			    </label>
+			  </div>
+			</div>
+		</div>
 	</div>
+	<br>
+	<br>
 </div>
 <div class="modal-footer">
 	<div class="row">
 		<div class="col-sm-offset-8 col-sm-2" style="padding-right: 5px;">
-		  <button class="btn btn-success btn-block" type="button" ng-click="ok(gameSettings)">Create</button>
+		  <button class="btn btn-success btn-block" type="button" ng-disabled="!gameSettings.name" ng-click="ok(gameSettings)">Create</button>
 		</div>
 		<div class="col-sm-2" style="padding-left: 5px;">
 		  <button class="btn btn-info btn-block" type="button" ng-click="cancel()">Cancel</button>
