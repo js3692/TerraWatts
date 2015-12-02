@@ -1,7 +1,9 @@
 var _ = require('lodash');
+var Promise = require('bluebird');
+
 var mongoose = require('mongoose');
-var Promise = require('bluebird')
 mongoose.Promise = Promise;
+
 var Player = mongoose.model('Player');
 var Auction = mongoose.model('Auction');
 

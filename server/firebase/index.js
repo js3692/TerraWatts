@@ -1,5 +1,5 @@
-var Firebase = require('firebase'),
-    gridHash = {},
+var Firebase = require('firebase')
+var gridHash = {},
     baseUrl = "https://amber-torch-6713.firebaseio.com/";
 
 module.exports = {

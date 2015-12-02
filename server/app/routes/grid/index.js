@@ -34,14 +34,12 @@ router.post('/', function (req, res, next) {
           .populate('players');
     })
     .then(function(grid){
-        console.log(grid, 'grid');
         res.status(201).json(grid);
     })
     .catch(next);
 });
 
 router.param('gridId', function(req, res, next, gridId){
-    
   Grid.findById(gridId)
     .populate('players game state')
     .then(function (grid) {

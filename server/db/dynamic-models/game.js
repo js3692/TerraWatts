@@ -1,9 +1,7 @@
 'use strict';
-var _ = require('lodash');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-var Region = mongoose.model('Region');
 var Plant = mongoose.model('Plant');
 var City = mongoose.model('City');
 var Connection = mongoose.model('Connection');
@@ -82,8 +80,6 @@ schema.methods.initialize = function (map, players, selectedRegions) {
   }
 
   var self = this;
-
-  
 
   return City.find({ countryCode: countryCode[map], region: { $in: selectedRegions } })
     .then(function (citiesInPlay) {
