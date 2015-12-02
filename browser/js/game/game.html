@@ -1,5 +1,9 @@
 <div>
-    <plant-panel resources="gridGame.resourceMarket" plant-market="gridGame.plantMarket" player="me()"></plant-panel>
+    <plant-panel resources="gridGame.resourceMarket" 
+                 plant-market="gridGame.plantMarket" 
+                 player="me()"
+                 auction="grid.state.auction"
+                 players="grid.players"></plant-panel>
     <side-panel players="grid.players" 
                 active-player="activePlayer"
                 turn-order="gridGame.turnOrder"></side-panel>

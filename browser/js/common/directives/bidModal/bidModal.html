@@ -2,9 +2,18 @@
   <plant plant="plant">
   </plant>
   <hr>
+  <div ng-show="auction">
+      {{ auction.bid }}
+      <div ng-repeat="player in playersInAuction">
+        <span ng-style="{ color: player.color }"
+              ng-class="{ 'active-player': isActivePlayer(player) }">
+            {{ player.user.username }}
+        </span>
+      </div>
+  </div>
   <h2> Make a bid </h2>
   <div>
-    <bid ng-model="bid" start="plant.rank"></bid>
+    <bid ng-model="bid" start="auction.bid || plant.rank"></bid>
   </div>
   <hr>
   <div>
