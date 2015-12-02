@@ -7,9 +7,8 @@ var Region = mongoose.model('Region');
 var Player = mongoose.model('Player');
 var Game = mongoose.model('Game');
 var State = mongoose.model('State');
-var _ = require('lodash');
-var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 var schema = new mongoose.Schema({
   // Below are game ENVIRONMENT settings
@@ -72,6 +71,8 @@ var schema = new mongoose.Schema({
 schema.plugin(deepPopulate, {
   whitelist: [
     'players.user',
+    'players.cities',
+    'players.plants',
     'game.cities',
     'game.connections',
     'game.plantMarket',
@@ -91,48 +92,48 @@ schema.set('toObject', { virtuals: true });
 schema.set('toJSON', { virtuals: true });
 
 schema.post('save', function (grid) {
-    
+  if(grid.players.length > 0) {
+    grid.constructor
+      .populate(grid, 'game state players auction')
+      .then(function (populatedGrid){
+        populatedGrid.deepPopulate([
+          'players.user',
+          'players.cities',
+          'players.plants',
+          'game.cities',
+          'game.connections',
+          'game.plantMarket',
+          'game.plantDeck',
+          'game.discardedPlants',
+          'game.stepThreePlants'
+        ], function(err, deepPopulatedGrid) {
+          if(err) throw err;
+          // This is mainly for '/join' and '/leave' of players
+          firebaseHelper
+            .getConnection(deepPopulatedGrid.key)
+            .update({
+                'players': deepPopulatedGrid.players.map(player => player.toObject())
+            });
 
-    // POPULATE FIELDS BEFORE SENDING
-    if(grid.players.length > 0) {
-      grid.constructor
-        .populate(grid, 'game state players auction')
-        .then(function(grid){
-          grid.deepPopulate([
-            'players.user',
-            'game.cities',
-            'game.connections',
-            'game.plantMarket',
-            'game.plantDeck',
-            'game.discardedPlants',
-            'game.stepThreePlants'
-          ], function(err, populatedGrid) {
-            // This is mainly for '/join' and '/leave' of players
+          // This means the game was initialized and started
+          if(deepPopulatedGrid.game) {
+
             firebaseHelper
-              .getConnection(populatedGrid.key)
+              .getConnection(deepPopulatedGrid.key)
               .update({
-                  "players": populatedGrid.players.map(player => player.toObject())
+                'game': deepPopulatedGrid.game.toObject()
               });
 
-            // This means the game was initialized and started
-            if(populatedGrid.game) {
+            firebaseHelper
+              .getConnection(deepPopulatedGrid.key)
+              .update({
+                'state': deepPopulatedGrid.state.toObject()
+              });
+            }
 
-              firebaseHelper
-                .getConnection(populatedGrid.key)
-                .update({
-                  'game': populatedGrid.game.toObject()
-                });
-
-              firebaseHelper
-                .getConnection(populatedGrid.key)
-                .update({
-                  'state': populatedGrid.state.toObject()
-                });
-              }
-
-          })
         })
-    }
+      })
+  }
 });
 
 //schema.methods.saveHistory = function () {
@@ -217,8 +218,12 @@ schema.methods.initialize = function () {
     })
 };
 
-schema.method.continue = function () {
-  // this.state.continue(update, game)
+schema.method.continue = function (update) {
+  var self = this;
+  return this.state.continue(update, this.game)
+    .then(function () {
+      return self.save();
+    })
 };
 
 mongoose.model('Grid', schema);

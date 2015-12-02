@@ -2,11 +2,7 @@ var Promise = require('bluebird');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 var router = require('express').Router();
-// var firebaseHelper = require("../../../../firebase");
 
-// var fbRef = firebaseHelper.base();
-
-var Grid = mongoose.model('Grid');
 var Game = mongoose.model('Game');
 var Player = mongoose.model('Player');
 
@@ -17,7 +13,6 @@ router.get('/', function (req, res) {
 });
 
 router.post('/join', function (req, res, next) {
-    console.log('in her', req.grid)
   Player.create({ user: req.user, color: req.grid.availableColors[0] })
     .then(function (newPlayer) {
       return req.grid.addPlayer(newPlayer);
@@ -37,10 +32,7 @@ router.post('/leave', function (req, res, next) {
 });
 
 router.put('/start', function(req, res, next) {
-  var gridToUsePromise, gridToUse;
-
-//  if (req.grid.randomRegions) gridToUsePromise = req.grid.makeRandomRegions(req.grid.players.length);
-//  else gridToUsePromise = Promise.resolve(req.grid);
+  var gridToUse;
   
   Promise.resolve(req.grid.randomRegions ? req.grid.makeRandomRegions(req.grid.players.length) : req.grid)
     .then(function (grid) {
