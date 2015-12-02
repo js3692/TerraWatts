@@ -78,3 +78,42 @@ module.exports = {
 	city: [canBuyCities, canAffordCities],
 	bureaucracy: [hasResources]
 }
+
+module.exports = {
+	global: [{
+		func: isActive,
+		message: 'You are not the active player'
+	},
+	{
+		func: isCorrectPhase,
+		message: 'Request coming from wrong phase'
+	}],
+	plant: [{
+		func: plantIsAvailable,
+		message: 'This plant is not available'
+	},
+	{
+		func: canAffordBid,
+		message: 'You cannot afford this bid'
+	}],
+	resource: [{
+		func: canHoldResources,
+		message: 'Your plants cannot fit those resources'
+	},
+	{
+		func: canAffordResources,
+		message: 'You cannot afford the resources'
+	}],
+	city: [{
+		func: canBuyCities,
+		message: 'Some of those cities are unavailable'
+	},
+	{
+		func: canAffordCities,
+		message: 'You cannot afford those cities'
+	}],
+	bureaucracy: [{
+		func: hasResources,
+		message: 'You do not have enough resources'
+	}],
+}

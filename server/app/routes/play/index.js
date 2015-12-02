@@ -19,20 +19,17 @@ router.param('gridId', function(req, res, next, gridId){
 });
 
 router.post('/continue/:gridId', function (req, res, next) {
-
-	var passedGlobalValidations = validations.global.every(function(validationFunc) {
-		return validationFunc(req.body, req.grid);
-	});
-
-	var passedSpecificValidations = validations[req.body.phase].every(function(validationFunc) {
-		return validationFunc(req.body, req.grid);
+	var isValid = true;
+	var validationsToUse = validations.global.concat(validations[req.body.phase]);
+	validationsToUse.forEach(function (validation) {
+		if (isValid && !validation.func(req.body, req.grid)) {
+			isValid = false;
+			var err = new Error(validation.message);
+			err.status = 400;
+			next(err);
+		}
 	})
-
-	if (!passedGlobalValidations || !passedSpecificValidations) {
-        var err = new Error('Game validation(s) failed');
-        err.status = 400;
-		next(err);
-	} else {
+	if (isValid) {
         req.grid.continue(req.body)
             .then(function () {
                 res.sendStatus(201);
