@@ -75,6 +75,7 @@ schema.plugin(deepPopulate, {
     'players.plants',
     'game.cities',
     'game.connections',
+    'game.connections.cities',
     'game.plantMarket',
     'game.plantDeck',
     'game.discardedPlants',
@@ -102,6 +103,7 @@ schema.post('save', function (grid) {
           'players.plants',
           'game.cities',
           'game.connections',
+          'game.connections.cities',
           'game.plantMarket',
           'game.plantDeck',
           'game.discardedPlants',
@@ -117,7 +119,6 @@ schema.post('save', function (grid) {
 
           // This means the game was initialized and started
           if(deepPopulatedGrid.game) {
-
             firebaseHelper
               .getConnection(deepPopulatedGrid.key)
               .update({
