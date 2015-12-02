@@ -3,7 +3,8 @@ app.directive('sidePanel', function(SliderFactory){
         restrict: 'E',
         templateUrl: 'js/common/directives/sidePanel/sidePanel.html',
         scope: {
-            players: '='
+            players: '=',
+            activePlayer: '='
         },
         link: function(scope, elem, attrs){
             scope.open = SliderFactory.slideOut.bind(null, 'right');

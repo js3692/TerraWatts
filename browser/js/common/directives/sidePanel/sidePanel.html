@@ -1,6 +1,9 @@
 <div ng-click="open()" class="menu-panel-body panel panel-default right-slider right-slider-pull">
     <div class="panel-body">
-        <player player="player" ng-repeat="player in players"></player>
+        <player player="player"
+                active="activePlayer === player._id" 
+                ng-repeat="player in players">
+        </player>
     </div>
 </div>
 <div class="right-slider right-slider-pull menu-tab" ng-click="open()"><span class="glyphicon glyphicon-user"></span></div>

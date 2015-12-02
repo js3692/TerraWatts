@@ -4,7 +4,8 @@ app.directive('plantPanel', function(SliderFactory, $uibModal){
         templateUrl: "js/common/directives/plantPanel/plantPanel.html",
         scope: {
             plantMarket: '=',
-            resources: '='
+            resources: '=',
+            player: '='
         },
         link: function(scope, elem, attrs){   
             scope.plantsTrueResourcesFalse = true;
@@ -60,6 +61,9 @@ app.directive('plantPanel', function(SliderFactory, $uibModal){
                     resolve: {
                       plant: function () {
                         return plant;
+                      },
+                      player: function(){
+                        return scope.player;      
                       }
                     }
                 });   
