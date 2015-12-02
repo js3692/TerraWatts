@@ -77,6 +77,12 @@ schema.pre('save', function (next) {
     .getConnectionToPlayers(this.key)
     .set(this.players.toObject());
 
+  firebaseHelper
+    .getConnection
+    .set({
+      "players": this.players.toObject()
+    })
+
   // This means the game was initizlied and started
   if(this.game) {
     this.history.push(this.game.toObject());
