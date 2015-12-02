@@ -7,7 +7,7 @@ var numResidents = require('../utils/3_city_phase/numResidents.js');
 function isActive(update, grid) {
 	if(grid.state.phase === 'bureaucracy') return true;
 	var activePlayer = grid.state.activePlayer;
-	if (grid.auction) activePlayer = grid.auction.activePlayer;
+	if (grid.state.auction) activePlayer = grid.state.auction.activePlayer;
 	return activePlayer.equals(update.player._id);
 }
 
@@ -17,7 +17,7 @@ function isCorrectPhase(update, grid) {
 
 // plant
 function cannotPassFirstTurn(update, grid) {
-	return update.data !== 'pass' || grid.game.turn > 1;
+	return !!grid.state.auction || update.data !== 'pass' || grid.game.turn > 1;
 }
 
 function plantIsAvailable(update, grid) {

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var _ = require('lodash');
+//var State = mongoose.model('State');
 
 var schema = new mongoose.Schema({
 	plant: {
@@ -54,10 +55,15 @@ schema.methods.go = function() {
 				bid: this.bid
 			}
 		};
-		return this.plantState.transaction(result);
+        return mongoose.model('State').findById(this.plantState)
+            .then(function (foundState) {
+                return foundState.transaction(result);
+            })
+        
 	} else {
+            console.log(self,'self')
 		this.remainingPlayers.forEach(function (player, i) {
-			if (player.color === self.highestBidder.color) {
+			if (player.equals(self.highestBidder)) {
 				self.activePlayer = self.remainingPlayers[(i+1)%self.remainingPlayers.length]
 			}
 		})
@@ -66,16 +72,16 @@ schema.methods.go = function() {
 }
 // update has player and bid
 schema.methods.continue = function(update) {
-	var player = _.find(this.remainingPlayers, function (p) {
-		return p.color === update.player.color;
-	})
-	if (update.bid === 'pass' || update.bid <= this.bid) {
-		this.remainingPlayers = this.remainingPlayers.filter(function (p) {
-			return p.color !== player.color;
+	console.log('auctions continue has been called')
+    var player = update.player;
+    console.log('found player', player);
+	if (update.data === 'pass' || update.data.bid <= this.bid) {
+		this.remainingPlayers = this.remainingPlayers.filter(function (playerId) {
+			return !playerId.equals(player._id);
 		})
 	} else {
-		this.highestBidder = player;
-		this.bid = update.bid;
+		this.highestBidder = player._id;
+		this.bid = update.data.bid;
 	}
 	return this.go();
 }
