@@ -8,7 +8,17 @@ var Grid = mongoose.model('Grid');
 
 var validations = require('../../../db/validations');
 
-router.post('/continue', function (req, res, next) {
+router.param('gridId', function(req, res, next, gridId){
+  Grid.findById(gridId)
+    .populate('players game state')
+    .then(function (grid) {
+      req.grid = grid;
+      next();
+    })
+    .catch(next);
+});
+
+router.post('/continue/:gridId', function (req, res, next) {
 
 	var passedGlobalValidations = validations.global.every(function(validationFunc) {
 		return validationFunc(req.body, req.grid);
@@ -31,15 +41,6 @@ router.post('/continue', function (req, res, next) {
 		});
 });
 
-// router.param('gridId', function(req, res, next, gridId){
-//   Grid.findById(gridId)
-//     .populate('players game state')
-//     .then(function (grid) {
-//       req.grid = grid;
-//       next();
-//     })
-//     .catch(next);
-// });
 
 // router.use('/plant/:gridId', require('./1_plant_phase'));
 

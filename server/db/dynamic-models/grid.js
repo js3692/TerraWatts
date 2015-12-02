@@ -219,7 +219,7 @@ schema.methods.initialize = function () {
     })
 };
 
-schema.method.continue = function (update) {
+schema.methods.continue = function (update) {
   var self = this;
   return this.state.continue(update, this.game)
     .then(function () {
