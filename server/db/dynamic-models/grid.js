@@ -133,10 +133,6 @@ schema.post('save', function (grid) {
           })
         })
     }
-      
-      
-
-  
 });
 
 //schema.methods.saveHistory = function () {

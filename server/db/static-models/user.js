@@ -30,9 +30,6 @@ var schema = new mongoose.Schema({
     },
     google: {
         id: String
-    },
-    color: {
-        type: String
     }
 });
 
