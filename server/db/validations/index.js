@@ -79,14 +79,6 @@ function hasResources(update) {
 }
 
 module.exports = {
-	global: [isActive, isCorrectPhase],
-	plant: [plantIsAvailable, canAffordBid],
-	resource: [canHoldResources, canAffordResources],
-	city: [canBuyCities, canAffordCities],
-	bureaucracy: [hasResources]
-}
-
-module.exports = {
 	global: [{
 		func: isActive,
 		message: 'You are not the active player'
@@ -126,5 +118,5 @@ module.exports = {
 	bureaucracy: [{
 		func: hasResources,
 		message: 'You do not have enough resources'
-	}],
+	}]
 }

@@ -51,7 +51,6 @@ router.post('/continue/:gridId', function (req, res, next) {
                 res.sendStatus(201);
             });
     }
-
 });
 
 

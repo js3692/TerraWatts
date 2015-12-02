@@ -61,18 +61,8 @@ schema.methods.go = function (game) {
 	}
 }
 
-/* 
-update is an object with two keys: player and data
-data is different depending on the phase:
-	resource: data is the wishlist object
-	city: data is an array of cities to buy
-	plant: data is 'pass', or {plant: plant, price: price}
-		price is opening bid, or result of auction
-	endofturn: data is an array of plants being powered
-*/
-
 schema.methods.continue = function(update, game) {
-	console.log('continue has been called');
+	console.log('state continue has been called');
     if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
 		return this.transaction(update, game);
 	} else {
