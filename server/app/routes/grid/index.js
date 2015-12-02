@@ -18,6 +18,11 @@ router.post('/', function (req, res, next) {
       randomRegions: req.body.makeRandom,
       regions: req.body.checkedRegions
     })
+    .then(function (grid) {
+      grid.key = fbRef.push(grid.toObject()).key();
+      fbRef.child(grid.key).update({ "key": grid.key });
+      return grid.save();
+    })
     .then(function (createdGrid) {
       return Player.create({ user: req.user, color: req.body.color })
         .then(function (newPlayer) {
@@ -25,18 +30,18 @@ router.post('/', function (req, res, next) {
         });
     })
     .then(function (grid) {
-      return Grid.populate(grid, 'players');
+      return Grid.findById(grid._id)
+          .populate('players');
     })
-    .then(function (grid) {
-      grid.key = fbRef.push(grid.toObject()).key();
-      fbRef.child(grid.key).update({ "key": grid.key });
-      res.status(201).json(grid);
-      return grid.save();
+    .then(function(grid){
+        console.log(grid, 'grid');
+        res.status(201).json(grid);
     })
     .catch(next);
 });
 
 router.param('gridId', function(req, res, next, gridId){
+    
   Grid.findById(gridId)
     .populate('players game state')
     .then(function (grid) {

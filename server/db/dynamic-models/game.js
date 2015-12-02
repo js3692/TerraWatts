@@ -39,7 +39,7 @@ var schema = new mongoose.Schema({
     type: Object,
     default: { coal: 24, oil: 15, trash: 6, nuke: 2 }
   },
-  resouceBank: {
+  resourceBank: {
     type: Object,
     default: { coal: 0, oil: 9, trash: 18, nuke: 10 }
   },
@@ -64,7 +64,7 @@ var schema = new mongoose.Schema({
   }]
 });
 
-schema.methods.init = function (map, players, selectedRegions) {
+schema.methods.initialize = function (map, players, selectedRegions) {
   function grabObjectId (documents) {
     return documents.map(function (doc) {
       return doc._id;
@@ -83,11 +83,9 @@ schema.methods.init = function (map, players, selectedRegions) {
 
   var self = this;
 
-  var regions = selectedRegions.map(function(region) {
-    return region.regionId;
-  })
+  
 
-  return City.find({ countryCode: countryCode[map], region: { $in: regions } })
+  return City.find({ countryCode: countryCode[map], region: { $in: selectedRegions } })
     .then(function (citiesInPlay) {
       citiesInPlay = grabObjectId(citiesInPlay);
       self.cities = citiesInPlay;

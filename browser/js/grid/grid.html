@@ -18,9 +18,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="user in grid.users">
-                  <td> {{user.username}} </td>
-                  <td> <div ng-style="{ background: user.color }" class="color-square"></div> </td>
+                <tr ng-repeat="player in grid.players">
+                  <td> {{player.user.username}} </td>
+                  <td> <div ng-style="{ background: player.color }" class="color-square"></div> </td>
                 </tr>
               </tbody>
             </table>

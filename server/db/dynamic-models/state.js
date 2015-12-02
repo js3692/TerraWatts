@@ -42,7 +42,7 @@ var schema = new mongoose.Schema({
 	}
 });
 
-schema.methods.init = function(game) {
+schema.methods.initialize = function(game) {
 	if(this.phase === 'resource' && game.turn === 1) {
 		game.turnOrder = determineTurnOrder(game.turnOrder);
 	}
@@ -85,7 +85,7 @@ schema.methods.continue = function(update, game) {
 				bid: update.bid,
 				plantState: self
 			})
-			this.auction.init();
+			this.auction.initialize();
 			// for testing:
 			// return Promise.resolve(['auction', update.data.plant, update.data.bid]);
 		}
@@ -145,7 +145,7 @@ schema.methods.end = function(game) {
 		game.turnOrder = determineTurnOrder(game.turnOrder);
 	}
 	this.phase = phases[phases.indexOf(this.phase) + 1] || phases[0];
-	return this.init(game);
+	return this.initialize(game);
 }
 
 schema.methods.transaction = function(update, game) {

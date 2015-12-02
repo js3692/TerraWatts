@@ -30,7 +30,7 @@ var schema = new mongoose.Schema({
 	}
 })
 
-schema.methods.init = function() {
+schema.methods.initialize = function() {
 	this.remainingPlayers = this.plantState.remainingPlayers;
 	var numPlayers = this.remainingPlayers.length;
 	this.remainingPlayers.forEach(function (player) {

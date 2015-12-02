@@ -17,6 +17,7 @@ router.get('/', function (req, res) {
 });
 
 router.post('/join', function (req, res, next) {
+    console.log('in her', req.grid)
   Player.create({ user: req.user, color: req.grid.availableColors[0] })
     .then(function (newPlayer) {
       return req.grid.addPlayer(newPlayer);
@@ -38,20 +39,20 @@ router.post('/leave', function (req, res, next) {
 router.put('/start', function(req, res, next) {
   var gridToUsePromise, gridToUse;
 
-  if (req.grid.randomRegions) gridToUsePromise = Grid.makeRandomRegions(req.grid.players.length);
-  else gridToUsePromise = Promise.resolve(req.grid);
-
-  gridToUsePromise
+//  if (req.grid.randomRegions) gridToUsePromise = req.grid.makeRandomRegions(req.grid.players.length);
+//  else gridToUsePromise = Promise.resolve(req.grid);
+  
+  Promise.resolve(req.grid.randomRegions ? req.grid.makeRandomRegions(req.grid.players.length) : req.grid)
     .then(function (grid) {
       gridToUse = grid;
       return Game.create({});
     })
     .then(function (newGame) {
-      return newGame.init(gridToUse.map, gridToUse.players, gridToUse.regions)
+      return newGame.initialize(gridToUse.map, gridToUse.players, gridToUse.regions)
     })
     .then(function (initializedGame) {
       req.grid.game = initializedGame;
-      return req.grid.init();
+      return req.grid.initialize();
     })
     .then(function () {
         res.sendStatus(200);

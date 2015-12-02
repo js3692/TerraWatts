@@ -21,7 +21,7 @@ app.factory('FirebaseFactory', function($firebaseObject){
             var joinableGames = [];
             for(let gameKey in scope.games){
                 var gameObject = scope.games[gameKey]
-                if(gameObject && gameObject.key === gameKey && !gameObject.game) joinableGames.push(gameObject);  
+                if(gameObject && gameKey[0] === '-' && !gameObject.game) joinableGames.push(gameObject);  
             }
             return joinableGames;
         },
