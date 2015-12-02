@@ -3,6 +3,7 @@ app.controller('BidModalCtrl', function($scope, player, $uibModalInstance, plant
     $scope.plant = plant;
     
     $scope.bidForPlant = function(bid){
+        console.log(player,'player');
         var update = {
             phase: 'plant',
             player: player,

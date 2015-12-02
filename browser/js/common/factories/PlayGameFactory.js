@@ -1,5 +1,5 @@
 app.factory('PlayGameFactory', function ($http, $q) {
-    var baseUrl = '/api/grid/',
+    var baseUrl = '/api/play/continue/',
         gridId;
     
     function toData(response){
@@ -7,10 +7,9 @@ app.factory('PlayGameFactory', function ($http, $q) {
     }
     
     return {
-        continue: function(update, game){
-            var toSend = { update: update, game: game };
-            return $http.put(baseUrl + gridId)
-                .return(toData);
+        continue: function(update){
+            return $http.post(baseUrl + gridId, update)
+                .then(toData);
         },
         setGrid: function(_gridId){
             gridId = _gridId;

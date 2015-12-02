@@ -4,7 +4,8 @@ app.directive('bid', function () {
         templateUrl: 'js/common/directives/bid/bid.html',
         scope: {
             start: '=',
-            buttonColor: '='
+            buttonColor: '=',
+            bid: '=ngModel'
         },
         link: function (scope, elem, attrs) {
             scope.bid = scope.start;

@@ -29,16 +29,16 @@ router.post('/continue/:gridId', function (req, res, next) {
 	})
 
 	if (!passedGlobalValidations || !passedSpecificValidations) {
-		next(new Error({
-			message: 'Game validation(s) failed',
-			status: 400
-		}));
-	}
+        var err = new Error('Game validation(s) failed');
+        err.status = 400;
+		next(err);
+	} else {
+        req.grid.continue(req.body)
+            .then(function () {
+                res.sendStatus(201);
+            });
+    }
 
-	req.grid.continue(req.body)
-		.then(function () {
-			res.sendStatus(201);
-		});
 });
 
 
