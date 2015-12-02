@@ -7,9 +7,7 @@ module.exports = function drawPlant(game, state) {
 	} else {
 		game = initStepThree(game, state);
 	}
-    console.log(game.plantMarket, 'plantMarket')
 	game.plantMarket.sort(function (plant1, plant2) {
-        console.log(plant1, plant2)
 		return plant1.rank < plant2.rank ? -1 : 1;
 	});
 	return game;
