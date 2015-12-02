@@ -44,7 +44,7 @@ var schema = new mongoose.Schema({
 	}
 });
 
-schema.methods.initialize = function(game) {
+schema.methods.initialize = function (game) {
 	if(this.phase === 'resource' && game.turn === 1) {
 		game.turnOrder = determineTurnOrder(game.turnOrder);
 	}
@@ -59,7 +59,7 @@ schema.methods.go = function (game) {
 		this.activePlayer = this.remainingPlayers[0];
 		return Promise.all([this.save(), game.save()]);
 	}
-}
+};
 
 /* 
 update is an object with two keys: player and data
@@ -213,14 +213,14 @@ schema.methods.transaction = function(update, game) {
 		return self.go(game);
 	})
 	
-}
+};
 
-schema.methods.setRemainingPlayers = function(game) {
+schema.methods.setRemainingPlayers = function (game) {
 	if (this.phase === 'plant') return game.turnOrder.slice();
 	else return game.turnOrder.slice().reverse();
-}
+};
 
-schema.methods.removePlayer = function(player) {
+schema.methods.removePlayer = function (player) {
 	return this.remainingPlayers.filter(function (p) {
 		return p.color !== player.color;
 	})

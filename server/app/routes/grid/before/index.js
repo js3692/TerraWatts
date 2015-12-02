@@ -47,7 +47,7 @@ router.put('/start', function(req, res, next) {
       return req.grid.initialize();
     })
     .then(function () {
-        res.sendStatus(200);
+      res.sendStatus(200);
     })
     .catch(next);
 });
@@ -56,6 +56,9 @@ router.put('/color', function(req, res, next){
   Player.findOne({ user: req.body.userId })
     .then(function (foundPlayer) {
       return req.grid.switchColor(foundPlayer, req.body.color);
+    })
+    .then(function () {
+      res.sendStatus(200);
     })
     .catch(next);
 });
