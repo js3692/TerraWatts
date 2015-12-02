@@ -24,6 +24,7 @@ router.param('gridId', function(req, res, next, gridId){
           'game.discardedPlants',
           'game.stepThreePlants',
           'game.turnOrder',
+          'game.turnOrder.plants',
           'game.turnOrder.user',
           'state.auction'        
         ], function(err, deepPopulatedGrid) {

@@ -31,7 +31,7 @@ var schema = new mongoose.Schema({
 	}
 })
 
-schema.methods.initialize = function() {
+schema.methods.initialize = function(game) {
 	console.log('initing auction');
     var self = this;
     this.remainingPlayers = this.plantState.remainingPlayers;
@@ -42,10 +42,10 @@ schema.methods.initialize = function() {
 	this.remainingPlayers = this.remainingPlayers.sort(function (player1, player2) {
 		return player1.clockwise < player2.clockwise ? -1 : 1;
 	})
-	return this.go();
+	return this.go(game);
 }
 
-schema.methods.go = function() {
+schema.methods.go = function(game) {
     var self = this;
 	if (this.remainingPlayers.length === 1) {
 		var result = {
@@ -57,7 +57,7 @@ schema.methods.go = function() {
 		};
         return mongoose.model('State').findById(this.plantState)
             .then(function (foundState) {
-                return foundState.transaction(result);
+                return foundState.transaction(result, game);
             })
         
 	} else {
@@ -65,13 +65,14 @@ schema.methods.go = function() {
 		this.remainingPlayers.forEach(function (player, i) {
 			if (player.equals(self.highestBidder)) {
 				self.activePlayer = self.remainingPlayers[(i+1)%self.remainingPlayers.length]
+                console.log('changed activePlayer', self.activePlayer)
 			}
 		})
 		return this.save();	
 	}
 }
 // update has player and bid
-schema.methods.continue = function(update) {
+schema.methods.continue = function(update, game) {
 	console.log('auctions continue has been called')
     var player = update.player;
     console.log('found player', player);
@@ -83,7 +84,7 @@ schema.methods.continue = function(update) {
 		this.highestBidder = player._id;
 		this.bid = update.data.bid;
 	}
-	return this.go();
+	return this.go(game);
 }
 
 mongoose.model('Auction', schema);

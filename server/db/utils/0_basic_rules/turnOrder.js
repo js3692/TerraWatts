@@ -1,7 +1,3 @@
-//var mongoose = require('mongoose');
-//var Promise = require('bluebird');
-//var Player = mongoose.model('Player');
-
 function largestPlant(player) {
 	var ranks = player.plants.map(function(plant) {
 		return plant.rank;
@@ -18,13 +14,5 @@ function turnSort(player1, player2) {
 }
 
 module.exports = function determineTurnOrder(players) {
-//	var promises = playerIds.map(function(playerId) {
-//        return Player.findById(playerId)
-//    });
-//    return Promise.all(promises)
-//    .then(function(players) {
-//        return players.sort(turnSort);     
-//    })
-    return players.sort(turnSort);
-    
+    return players.sort(turnSort);  
 }
