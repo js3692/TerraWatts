@@ -54,10 +54,7 @@ router.put('/start', function(req, res, next) {
     })
     .then(function (initializedGame) {
       req.grid.game = initializedGame;
-      return req.grid.save();
-    })
-    .then(function (savedGrid) {
-      return savedGrid.init();
+      return req.grid.init();
     })
     .then(function () {
         res.status(200).end();
