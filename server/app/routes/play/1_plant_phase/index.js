@@ -7,6 +7,7 @@ var validations = require('../../../../db/validations');
 // Current URL: 'api/play/plant/:gridId'
 
 router.post('/continue', function (req, res, next) {
+
 	var isValid = true;
 
 	var validationsToUse = validations.global.concat(validations[req.body.phase]);
@@ -21,6 +22,7 @@ router.post('/continue', function (req, res, next) {
 	});
 
 	if (isValid) {
+		console.log('heyheyheyheyheyheyheyheyheyheyheyheyheyheyheyheyheyheyheyhey')
     req.grid.continue(req.body)
       .then(function () {
         res.sendStatus(201);
