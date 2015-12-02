@@ -4,9 +4,25 @@ app.directive('zoomMap', function($uibModal) {
 		replace: true,
 		template: '<div class="map"></div>',
 		scope: {
-			data: '='
+			game: '=',
+			grid: '=',
+			me: '=',
+			showCityBuyPanel: '=ngModel'
 		},
 		link: function(scope, element, attrs) {
+
+			var isActivePlayer = false;
+			var cityShoppingCart = [];
+
+			scope.$watch('me', function(me) {
+				if(me && me._id === scope.grid.state.activePlayer) {
+					console.log('me', me)
+					console.log("You're the player! And special!!!")
+					scope.showCityBuyPanel = true;
+					isActivePlayer = true;
+				}
+			})
+
 
 			var width = Math.max(960, window.innerWidth),
 			    height = Math.max(500, window.innerHeight);
@@ -29,7 +45,6 @@ app.directive('zoomMap', function($uibModal) {
 			    .on("zoom", zoomed);
 
 		    const initZoomScale = zoom.scale();
-
 
 			var cityPath = d3.geo.path()
 			    .pointRadius(zoom.scale()/800)
@@ -96,14 +111,16 @@ app.directive('zoomMap', function($uibModal) {
 				rightTowerHeight = rectDimension*0.6;
 
 
-			scope.$watch('data', function(newData, oldData) {
+			scope.$watch('game', function(newData, oldData) {
 				var cities = newData.cities,
 					connections = newData.connections;
 
 				if(cities && connections) {
+					console.log('cities', cities)
 					var revisedCities = cities.map(function(city) {
 						return cityType(city);
 					});
+					console.log('revisedCities', revisedCities)
 					var revisedConnections = connections.map(function(connection) {
 						return connectionType(connection);
 					});
@@ -233,6 +250,9 @@ app.directive('zoomMap', function($uibModal) {
 					.attr('y', function(d,i) {return cityCentroids[i][1] - cityHeight/2})
 					.on('click', function(d,i) {
 						console.log("You've clicked " + d.properties.name)
+						console.log('isActivePlayer', isActivePlayer)
+						if(isActivePlayer) cityShoppingCart.push(d.properties.id);
+						console.log('cityShoppingCart', cityShoppingCart)
 					});
 
 				leftRect
@@ -271,7 +291,8 @@ app.directive('zoomMap', function($uibModal) {
 					type: 'Feature',
 					properties: {
 						name: d.name,
-						region: d.region
+						region: d.region,
+						id: d.id
 					},
 					geometry: {
 						type: 'Point',

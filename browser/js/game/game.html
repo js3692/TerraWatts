@@ -3,5 +3,5 @@
     <side-panel players="grid.players"></side-panel>
     <chat-panel me="me.username" key="key"></chat-panel>
     <city-buy-panel ng-show='showCityBuyPanel'></city-buy-panel>
-    <zoom-map data='gridGame'></zoom-map>
+    <zoom-map game='gridGame' grid='grid' me='me()' ng-model='showCityBuyPanel' ></zoom-map>
 </div>
