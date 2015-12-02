@@ -1,4 +1,4 @@
-app.directive('zoomMap', function($parse) {
+app.directive('zoomMap', function($uibModal) {
 	return {
 		restrict: 'E',
 		replace: true,
@@ -101,8 +101,6 @@ app.directive('zoomMap', function($parse) {
 					connections = newData.connections;
 
 				if(cities && connections) {
-					console.log('cities', cities)
-					console.log('connections', connections)
 					var revisedCities = cities.map(function(city) {
 						return cityType(city);
 					});
@@ -144,6 +142,7 @@ app.directive('zoomMap', function($parse) {
 
 					cityBox = cityBoxSelection
 						.append('rect')
+						.attr('class', 'cityBox')
 						.attr('width', cityWidth)
 						.attr('height', cityHeight)
 						.attr('rx', 5)
