@@ -17,6 +17,7 @@ function isCorrectPhase(update, grid) {
 
 // plant
 function plantIsAvailable(update, grid) {
+    if(update.data === 'pass') return true;
 	var numAvail = grid.game.step < 3 ? 4 : 6;
 	var availablePlants = grid.game.plantMarket.slice(0, numAvail);
     var isAvailable = false;
@@ -27,6 +28,7 @@ function plantIsAvailable(update, grid) {
 }
 
 function canAffordBid(update) {
+    if(update.data === 'pass') return true;
 	return update.player.money >= update.data.bid;
 }
 

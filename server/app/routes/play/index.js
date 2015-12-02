@@ -11,9 +11,25 @@ var validations = require('../../../db/validations');
 router.param('gridId', function(req, res, next, gridId){
   Grid.findById(gridId)
     .populate('players game state')
-    .then(function (grid) {
-      req.grid = grid;
-      next();
+    .then(function(populatedGrid){
+        populatedGrid.deepPopulate([
+          'players.user',
+          'players.cities',
+          'players.plants',
+          'game.cities',
+          'game.connections',
+          'game.connections.cities',
+          'game.plantMarket',
+          'game.plantDeck',
+          'game.discardedPlants',
+          'game.stepThreePlants',
+          'game.turnOrder',
+          'game.turnOrder.user'
+        ], function(err, deepPopulatedGrid) {
+            if(err) next(err);
+              req.grid = deepPopulatedGrid;
+              next(); 
+        })
     })
     .catch(next);
 });

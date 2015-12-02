@@ -41,7 +41,7 @@ schema.methods.initialize = function() {
 	this.remainingPlayers = this.remainingPlayers.sort(function (player1, player2) {
 		return player1.clockwise < player2.clockwise ? -1 : 1;
 	})
-	this.go();
+	return this.go();
 }
 
 schema.methods.go = function() {
@@ -51,7 +51,7 @@ schema.methods.go = function() {
 			player: this.highestBidder,
 			data: {
 				plant: this.plant,
-				price: this.bid
+				bid: this.bid
 			}
 		};
 		return this.plantState.transaction(result);
