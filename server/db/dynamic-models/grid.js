@@ -61,34 +61,35 @@ var schema = new mongoose.Schema({
       default: false
   },
   history: {
-      type: []
+      type: [Object]
   },
 });
 
-// Only needed when there are virtuals
+// For the "id" virtual
 schema.set('toObject', { virtuals: true });
 schema.set('toJSON', { virtuals: true });
 
 schema.pre('save', function (next) {
-  
-  /* 
-      Pushes grid (minus grid history) into grid.
-  */
-  
-  // var gridSnapshot = _.omit(this.toObject(), ['history']);
+  // POPULATE FIELDS BEFORE SENDING
+
+  // This is mainly for '/join' and '/leave' of players
+  firebaseHelper
+    .getConnectionToPlayers(this.key)
+    .set(this.players.toObject());
+
+  // This means the game was initizlied and started
   if(this.game) {
     this.history.push(this.game.toObject());
 
     firebaseHelper
-      .getConnection(this.key) // ==> get connection to game
+      .getConnectiontoGame(this.key)
       .set(this.game.toObject());
+
+    firebaseHelper
+      .getConnectiontoState(this.key)
+      .set(this.state.toObject());
   }
-  
-  /* 
-      finds connection within connections hash
-      then updates firebase game object.
-  */
-  
+
   next();
 });
 
@@ -107,10 +108,7 @@ schema.methods.addPlayer = function (newPlayer) {
 
   if (this.players.length >= 6) throw new Error('The Game is already full');
 
-  // if (this.players.some(player => {
-  //   console.log(player);
-  //   return player.user.equals(newPlayer.user)
-  // })) return Promise.resolve(this);
+  if (this.players.some(player => player.user.equals(newPlayer.user))) throw new Error('The Player is already in the game')
 
   var colorIdx = this.availableColors.indexOf(newPlayer.color);
   this.availableColors.splice(colorIdx, 1);
@@ -123,7 +121,6 @@ schema.methods.addPlayer = function (newPlayer) {
 schema.methods.removePlayer = function (userId) {
   var self = this;
 
-  console.log(userId, 'skldjflks')
   return Player.findOne({ user: userId })
     .then(function (foundPlayer) {
     	var playerIdx = self.players.indexOf(foundPlayer._id);
@@ -175,7 +172,7 @@ schema.methods.init = function () {
 };
 
 schema.method.continue = function () {
-  
-}
+  // this.state.continue(update, game)
+};
 
 mongoose.model('Grid', schema);

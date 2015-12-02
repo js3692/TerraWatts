@@ -1,4 +1,3 @@
-var _ = require('lodash');
 var Promise = require('bluebird');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
@@ -18,21 +17,19 @@ router.get('/', function (req, res) {
 });
 
 router.post('/join', function (req, res, next) {
-  console.log(req.grid);
   Player.create({ user: req.user, color: req.grid.availableColors[0] })
     .then(function (newPlayer) {
       return req.grid.addPlayer(newPlayer);
     })
-    .then(function (grid) {
+    .then(function () {
       res.sendStatus(201);
     })
     .catch(next);
 });
 
 router.post('/leave', function (req, res, next) {
-  console.log('here')
   req.grid.removePlayer(req.user)
-    .then(function (grid) {
+    .then(function () {
       res.sendStatus(201);
     })
     .catch(next);
@@ -57,7 +54,7 @@ router.put('/start', function(req, res, next) {
       return req.grid.init();
     })
     .then(function () {
-        res.status(200).end();
+        res.sendStatus(200);
     })
     .catch(next);
 });

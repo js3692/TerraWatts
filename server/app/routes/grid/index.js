@@ -29,8 +29,8 @@ router.post('/', function (req, res, next) {
     })
     .then(function (grid) {
       grid.key = fbRef.push(grid.toObject()).key();
+      fbRef.child(grid.key).update({ "key": grid.key });
       res.status(201).json(grid);
-      console.log(grid);
       return grid.save();
     })
     .catch(next);
