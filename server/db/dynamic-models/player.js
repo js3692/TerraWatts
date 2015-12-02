@@ -13,6 +13,10 @@ var schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Plant'
   }],
+  cities: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'City'
+  }],
   money: {
     type: Number,
     default: 50
@@ -27,11 +31,7 @@ var schema = new mongoose.Schema({
   },
   clockwise: {
     type: Number
-  },
-  cities: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'City'
-  }]
+  }
 });
 
 mongoose.model('Player', schema);
