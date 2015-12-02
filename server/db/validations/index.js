@@ -8,7 +8,7 @@ function isActive(update, grid) {
 	if(grid.state.phase === 'bureaucracy') return true;
 	var activePlayer = grid.state.activePlayer;
 	if (grid.auction) activePlayer = grid.auction.activePlayer;
-	return update.player._id === activePlayer._id;
+	return activePlayer.equals(update.player._id);
 }
 
 function isCorrectPhase(update, grid) {
@@ -19,10 +19,11 @@ function isCorrectPhase(update, grid) {
 function plantIsAvailable(update, grid) {
 	var numAvail = grid.game.step < 3 ? 4 : 6;
 	var availablePlants = grid.game.plantMarket.slice(0, numAvail);
+    var isAvailable = false;
 	availablePlants.forEach(function (plant) {
-		if (plant._id === update.data.plant._id) return true;
+		if (plant.equals(update.data.plant._id)) isAvailable = true;
 	})
-	return false;
+	return isAvailable;
 }
 
 function canAffordBid(update) {

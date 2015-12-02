@@ -2,7 +2,7 @@
     <div class="panel-body">
         <player player="player"
                 active="activePlayer === player._id" 
-                ng-repeat="player in players">
+                ng-repeat="player in getTurnOrder()">
         </player>
     </div>
 </div>

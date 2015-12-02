@@ -31,10 +31,12 @@ var schema = new mongoose.Schema({
 })
 
 schema.methods.initialize = function() {
-	this.remainingPlayers = this.plantState.remainingPlayers;
+	console.log('initing auction');
+    var self = this;
+    this.remainingPlayers = this.plantState.remainingPlayers;
 	var numPlayers = this.remainingPlayers.length;
 	this.remainingPlayers.forEach(function (player) {
-		player.clockwise = (player.clockwise - highestBidder.clockwise + numPlayers) % numPlayers;
+		player.clockwise = (player.clockwise - self.highestBidder.clockwise + numPlayers) % numPlayers;
 	})
 	this.remainingPlayers = this.remainingPlayers.sort(function (player1, player2) {
 		return player1.clockwise < player2.clockwise ? -1 : 1;
@@ -43,6 +45,7 @@ schema.methods.initialize = function() {
 }
 
 schema.methods.go = function() {
+    var self = this;
 	if (this.remainingPlayers.length === 1) {
 		var result = {
 			player: this.highestBidder,
@@ -54,8 +57,8 @@ schema.methods.go = function() {
 		return this.plantState.transaction(result);
 	} else {
 		this.remainingPlayers.forEach(function (player, i) {
-			if (player.color === highestBidder.color) {
-				this.activePlayer = this.remainingPlayers[(i+1)%this.playersInAuction.length]
+			if (player.color === self.highestBidder.color) {
+				self.activePlayer = self.remainingPlayers[(i+1)%self.remainingPlayers.length]
 			}
 		})
 		return this.save();	

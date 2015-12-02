@@ -72,7 +72,8 @@ data is different depending on the phase:
 */
 
 schema.methods.continue = function(update, game) {
-	if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
+	console.log('continue has been called');
+    if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
 		return this.transaction(update, game);
 	} else {
 		if (update.data === 'pass') {
@@ -81,10 +82,12 @@ schema.methods.continue = function(update, game) {
 			return this.go(game)
 		} else {
 			// start an auction
+            console.log('starting an auction now');
 			var self = this;
 			this.auction = new Auction({
 				plant: update.plant,
 				bid: update.bid,
+                highestBidder: update.player,
 				plantState: self
 			})
 			this.auction.initialize();
