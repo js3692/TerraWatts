@@ -77,7 +77,7 @@ var seedConnections = function () {
     { cityNames: ['Santa Fe', 'Phoenix'], distance:18 },
     { cityNames: ['Santa Fe', 'Las Vegas'], distance: 27},
     { cityNames: ['Las Vegas', 'Phoenix'], distance: 15 },
-    { cityNames: ['Cheyenne', 'Boise'], distance:24 },
+    { cityNames: ['Cheyenne', 'Boise'], distance:21 },
     { cityNames: ['Billings', 'Boise'], distance:12 },
     { cityNames: ['Seattle', 'Billings'], distance:9 },
     { cityNames: ['Seattle', 'Boise'], distance:12 },
