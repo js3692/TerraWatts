@@ -101,6 +101,8 @@ app.directive('zoomMap', function($parse) {
 					connections = newData.connections;
 
 				if(cities && connections) {
+					console.log('cities', cities)
+					console.log('connections', connections)
 					var revisedCities = cities.map(function(city) {
 						return cityType(city);
 					});
