@@ -16,6 +16,10 @@ function isCorrectPhase(update, grid) {
 }
 
 // plant
+function cannotPassFirstTurn(update, grid) {
+	return update.data !== 'pass' || grid.game.turn > 1;
+}
+
 function plantIsAvailable(update, grid) {
     if(update.data === 'pass') return true;
 	var numAvail = grid.game.step < 3 ? 4 : 6;
@@ -92,6 +96,10 @@ module.exports = {
 		message: 'Request coming from wrong phase'
 	}],
 	plant: [{
+		func: cannotPassFirstTurn,
+		message: 'Cannot pass on the first turn'
+	},
+	{
 		func: plantIsAvailable,
 		message: 'This plant is not available'
 	},
