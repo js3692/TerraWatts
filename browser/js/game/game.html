@@ -1,6 +1,12 @@
 <div>
-    <plant-panel resources="gridGame.resourceMarket" plant-market="gridGame.plantMarket"></plant-panel>
-    <side-panel players="grid.players"></side-panel>
-    <chat-panel me="me.username" key="key"></chat-panel>
+    <plant-panel resources="gridGame.resourceMarket" 
+                 plant-market="gridGame.plantMarket" 
+                 player="me()"
+                 auction="grid.state.auction"
+                 players="grid.players"></plant-panel>
+    <side-panel players="grid.players" 
+                active-player="activePlayer"
+                turn-order="gridGame.turnOrder"></side-panel>
+    <chat-panel me="me().user.username" key="key"></chat-panel>
     <zoom-map data='gridGame'></zoom-map>
 </div>

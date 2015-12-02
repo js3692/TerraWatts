@@ -1,12 +1,15 @@
 var shuffle = require('../common/shuffle');
 
 module.exports = function drawPlant(game, state) {
-	if (game.plantDeck.length) {
-		game.plantMarket.push(game.plantDeck.shift());
+    if (game.plantDeck.length) {
+        var plant = game.plantDeck.shift();
+		game.plantMarket = game.plantMarket.concat(plant);
 	} else {
 		game = initStepThree(game, state);
 	}
+    console.log(game.plantMarket, 'plantMarket')
 	game.plantMarket.sort(function (plant1, plant2) {
+        console.log(plant1, plant2)
 		return plant1.rank < plant2.rank ? -1 : 1;
 	});
 	return game;

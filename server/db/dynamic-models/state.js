@@ -61,33 +61,32 @@ schema.methods.go = function (game) {
 	}
 };
 
-/* 
-update is an object with two keys: player and data
-data is different depending on the phase:
-	resource: data is the wishlist object
-	city: data is an array of cities to buy
-	plant: data is 'pass', or {plant: plant, price: price}
-		price is opening bid, or result of auction
-	endofturn: data is an array of plants being powered
-*/
-
 schema.methods.continue = function(update, game) {
-	if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
+	console.log('state continue has been called');
+    if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
 		return this.transaction(update, game);
 	} else {
 		if (update.data === 'pass') {
+            console.log('in pass')
 			this.remainingPlayers = this.removePlayer(update.player);
+            console.log(this.remainingPlayers);
 			this.numPasses++;
 			return this.go(game)
 		} else {
 			// start an auction
+            console.log('starting an auction now');
 			var self = this;
-			this.auction = new Auction({
-				plant: update.plant,
-				bid: update.bid,
+			var auction = new Auction({
+				plant: update.data.plant,
+				bid: update.data.bid,
+                highestBidder: update.player,
 				plantState: self
 			})
-			this.auction.initialize();
+			return auction.initialize()
+            .then(function (_auction) {
+                self.auction = _auction;
+                return self.save();
+            })
 			// for testing:
 			// return Promise.resolve(['auction', update.data.plant, update.data.bid]);
 		}
@@ -151,16 +150,17 @@ schema.methods.end = function(game) {
 }
 
 schema.methods.transaction = function(update, game) {
-	var self = this;
+    var self = this;
 	return Player.findById(update.player._id)
 	.then(function (player) {
+        console.log('database player', player)
 		self.remainingPlayers = self.removePlayer(player);
 		if (self.phase === 'plant') {
 			self.auction = null;
-			player.money -= update.data.price;
+			player.money -= update.data.bid;
 			var plantIndex;
 			game.plantMarket.forEach(function (plant,i) {
-				if (plant.rank === update.data.plant.rank) plantIndex = i;
+				if (plant.equals(update.data.plant._id)) plantIndex = i;
 			});
 			var plant = game.plantMarket.splice(plantIndex,1)[0];
 			player.plants.push(plant);
@@ -222,7 +222,7 @@ schema.methods.setRemainingPlayers = function (game) {
 
 schema.methods.removePlayer = function (player) {
 	return this.remainingPlayers.filter(function (p) {
-		return p.color !== player.color;
+		return !p.equals(player._id);
 	})
 };
 

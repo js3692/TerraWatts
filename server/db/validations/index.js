@@ -7,8 +7,8 @@ var numResidents = require('../utils/3_city_phase/numResidents.js');
 function isActive(update, grid) {
 	if(grid.state.phase === 'bureaucracy') return true;
 	var activePlayer = grid.state.activePlayer;
-	if (grid.auction) activePlayer = grid.auction.activePlayer;
-	return update.player._id.equals(activePlayer._id);
+	if (grid.state.auction) activePlayer = grid.state.auction.activePlayer;
+	return activePlayer.equals(update.player._id);
 }
 
 function isCorrectPhase(update, grid) {
@@ -16,16 +16,23 @@ function isCorrectPhase(update, grid) {
 }
 
 // plant
+function cannotPassFirstTurn(update, grid) {
+	return !!grid.state.auction || update.data !== 'pass' || grid.game.turn > 1;
+}
+
 function plantIsAvailable(update, grid) {
+    if(update.data === 'pass') return true;
 	var numAvail = grid.game.step < 3 ? 4 : 6;
 	var availablePlants = grid.game.plantMarket.slice(0, numAvail);
+    var isAvailable = false;
 	availablePlants.forEach(function (plant) {
-		if (plant._id.equals(update.data.plant._id)) return true;
+		if (plant.equals(update.data.plant._id)) isAvailable = true;
 	})
-	return false;
+	return isAvailable;
 }
 
 function canAffordBid(update) {
+    if(update.data === 'pass') return true;
 	return update.player.money >= update.data.bid;
 }
 
@@ -72,9 +79,44 @@ function hasResources(update) {
 }
 
 module.exports = {
-	global: [isActive, isCorrectPhase],
-	plant: [plantIsAvailable, canAffordBid],
-	resource: [canHoldResources, canAffordResources],
-	city: [canBuyCities, canAffordCities],
-	bureaucracy: [hasResources]
+	global: [{
+		func: isActive,
+		message: 'You are not the active player'
+	},
+	{
+		func: isCorrectPhase,
+		message: 'Request coming from wrong phase'
+	}],
+	plant: [{
+		func: cannotPassFirstTurn,
+		message: 'Cannot pass on the first turn'
+	},
+	{
+		func: plantIsAvailable,
+		message: 'This plant is not available'
+	},
+	{
+		func: canAffordBid,
+		message: 'You cannot afford this bid'
+	}],
+	resource: [{
+		func: canHoldResources,
+		message: 'Your plants cannot fit those resources'
+	},
+	{
+		func: canAffordResources,
+		message: 'You cannot afford the resources'
+	}],
+	city: [{
+		func: canBuyCities,
+		message: 'Some of those cities are unavailable'
+	},
+	{
+		func: canAffordCities,
+		message: 'You cannot afford those cities'
+	}],
+	bureaucracy: [{
+		func: hasResources,
+		message: 'You do not have enough resources'
+	}]
 }
