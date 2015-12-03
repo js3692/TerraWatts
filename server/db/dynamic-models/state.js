@@ -44,7 +44,7 @@ var schema = new mongoose.Schema({
 	}
 });
 
-schema.methods.initialize = function(game) {
+schema.methods.initialize = function (game) {
 	if(this.phase === 'resource' && game.turn === 1) {
 		game.turnOrder = determineTurnOrder(game.turnOrder);
 	}
@@ -60,10 +60,9 @@ schema.methods.go = function (game) {
         game.markModified('resourceMarket')
 		return Promise.all([this.save(), game.save()]);
 	}
-}
+};
 
 schema.methods.continue = function(update, game) {
-	console.log('state continue has been called');
     if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
 		if(update.data.plant) update.data.plant = update.data.plant._id;
         return this.transaction(update, game);
@@ -76,7 +75,6 @@ schema.methods.continue = function(update, game) {
 			return this.go(game)
 		} else {
 			// start an auction
-            console.log('starting an auction now');
 			var self = this;
 			var auction = new Auction({
 				plant: update.data.plant,
@@ -161,7 +159,6 @@ schema.methods.transaction = function(update, game) {
 			player.money -= update.data.bid;
 			var plantIndex;
 			game.plantMarket.forEach(function (plant,i) {
-                console.log(plant, update.data.plant, '++++++')
 				if (plant._id.equals(update.data.plant)) plantIndex = i;
 			});
 			var plant = game.plantMarket.splice(plantIndex,1)[0];
@@ -219,14 +216,14 @@ schema.methods.transaction = function(update, game) {
         return self.go(game);
 	})
 	
-}
+};
 
-schema.methods.setRemainingPlayers = function(game) {
+schema.methods.setRemainingPlayers = function (game) {
 	if (this.phase === 'plant') return game.turnOrder.slice();
 	else return game.turnOrder.slice().reverse();
-}
+};
 
-schema.methods.removePlayer = function(player) {
+schema.methods.removePlayer = function (player) {
 	return this.remainingPlayers.filter(function (p) {
 		return !p.equals(player._id);
 	})

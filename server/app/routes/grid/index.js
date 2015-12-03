@@ -24,7 +24,7 @@ router.post('/', function (req, res, next) {
       return grid.save();
     })
     .then(function (createdGrid) {
-      return Player.create({ user: req.user, color: req.body.color })
+      return Player.create({ user: req.user, color: req.body.color, clockwise: 0 })
         .then(function (newPlayer) {
           return createdGrid.addPlayer(newPlayer);
         });

@@ -1,4 +1,4 @@
-describe('AuthService', function () {
+xdescribe('AuthService', function () {
 
     beforeEach(module('Grid'));
 
