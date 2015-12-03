@@ -1,4 +1,4 @@
-app.directive('gameMap', function($parse) {
+app.directive('gameMap', function($parse, CityCart) {
 	return {
 		restrict: 'E',
 		replace: true,
@@ -6,8 +6,7 @@ app.directive('gameMap', function($parse) {
 		scope: {
 			game: '=',
 			grid: '=',
-			me: '=',
-			cityShoppingCart: '=ngModel'
+			me: '='
 		},
 		link: function(scope, element, attrs) {
 
@@ -250,8 +249,8 @@ app.directive('gameMap', function($parse) {
 					.on('click', function(d,i) {
 						console.log("You've clicked " + d.properties.name)
 						console.log('isActivePlayer', isActivePlayer)
-						if(isActivePlayer) scope.cityShoppingCart.push(d.properties.id);
-						console.log('cityShoppingCart', scope.cityShoppingCart)
+						if(isActivePlayer) CityCart.push(d.properties);
+						console.log('cityCart', CityCart)
 					});
 
 				leftRect

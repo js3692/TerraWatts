@@ -175,23 +175,17 @@ schema.methods.transaction = function(update, game) {
 		        game.resourceMarket[resource] -= wishlist[resource];
 		        player.resources[resource] += wishlist[resource];
 	    	}
-            console.log('after transaction', game, player)
 		} else if (self.phase === 'city') {
-			var citiesToAdd = update.data;
-			player.money -= cityPrice(citiesToAdd, game, player);
-			player.cities = player.cities.concat(citiesToAdd);
+			var citiesToAdd = update.data.citiesToAdd;
+			player.money -= cityPrice(game, citiesToAdd, player);
+			citiesToAdd.forEach(function (city) {
+				player.cities.push(city.id);
+			})
 			// remove plant from market if necessary
 			while (player.cities.length >= game.plantMarket[0].rank) {
 				game.discardedPlants.push(game.plantMarket.shift());
 				game = drawPlant(game);
 			}
-			// add the player to each city
-			citiesToAdd.forEach(function (cityToAdd) {
-				var city = _.find(game.cities, function (c) {
-					return c._id.equals(cityToAdd._id);
-				});
-				city.players.push(player);
-			})
 		} else if (self.phase === 'bureaucracy') {
 			var plantsToPower = update.data;
 			var totalCapacity = 0;

@@ -1,6 +1,7 @@
 var _ = require('lodash');
 
 module.exports = function totalConnectionCost(citiesToAdd, network, cities, connections) {
+	network = network || [];
 	var networkCopy = network.slice();
 	var citiesToAddCopy = citiesToAdd.slice();
 	var cost = 0;
@@ -8,18 +9,16 @@ module.exports = function totalConnectionCost(citiesToAdd, network, cities, conn
 		var distances = citiesToAddCopy.map(function(city) {
 			return cheapestDistanceTo(city, networkCopy, cities, connections)
 		});
-		console.log('distances', distances);
 		var cheapest = Math.min.apply(null, distances);
 		var cheapestIndex = distances.indexOf(cheapest);
 		cost += cheapest;
 		networkCopy.push(citiesToAddCopy.splice(cheapestIndex,1)[0]);
-		console.log('networkCopy', networkCopy);
 	}
 	return cost;
 }
 
 function cheapestDistanceTo(destination, network, cities, connections) {
-	if(!network.length) return 0;
+	if(!network || !network.length) return 0;
 
 	var data = cities.map(function(city) {
 		return {
@@ -28,7 +27,7 @@ function cheapestDistanceTo(destination, network, cities, connections) {
 			visited: false
 		}
 	})
-
+	
 	var currentNode = _.find(data, function(node) {
 		return !node.distance;
 	})
@@ -48,7 +47,7 @@ function cheapestDistanceTo(destination, network, cities, connections) {
 
 function containsCity(cities, city) {
 	return !!_.find(cities, function(c) {
-		return city._id.equals(c.id);
+		return city._id.equals(c);
 	})
 }
 
@@ -77,7 +76,7 @@ function directConnection(node1, node2, connections) {
 
 function getNode(city, data) {
 	return _.find(data, function(node) {
-		return node.city._id.equals(city.id);
+		return node.city._id.equals(city);
 	})
 }
 
