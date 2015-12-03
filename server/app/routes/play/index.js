@@ -9,7 +9,7 @@ var Grid = mongoose.model('Grid');
 // Current URL: 'api/play'
 
 router.use(function (req, res, next) {
-	if(req.body.player.user === req.user.id) next();
+	if(req.body.player.user._id === req.user.id) next();
 	else {
 		var err = new Error('Hey, you are not the player who just made the move');
 		err.status = 403;
@@ -67,5 +67,12 @@ router.post('/continue/:gridId', function (req, res, next) {
       });
   }
 });
+
+router.post('/choose/:gridId', function (req, res, next) {
+  req.grid.continue(req.body)
+  .then(function() {
+    res.sendStatus(201);
+  })
+})
 
 module.exports = router;
