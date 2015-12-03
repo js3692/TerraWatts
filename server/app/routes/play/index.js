@@ -68,4 +68,11 @@ router.post('/continue/:gridId', function (req, res, next) {
   }
 });
 
+router.post('/choose/:gridId', function (req, res, next) {
+  req.grid.continue(req.body)
+  .then(function() {
+    res.sendStatus(201);
+  })
+})
+
 module.exports = router;
