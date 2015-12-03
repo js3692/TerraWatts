@@ -25,7 +25,7 @@ var supertest = require('supertest');
 var app = require('../../../server/app');
 
 describe('Play Route: ', function () {
-	var baseUrl = '/api/play/';
+	var baseUrl = '/api/play/continue/';
 
 	beforeEach('Establish DB connection', function (done) {
     if (mongoose.connection.db) return done();
@@ -231,7 +231,7 @@ describe('Play Route: ', function () {
         Plant.findOne({ rank: 4 })
           .then(function (plantFour) {
             agentsByTurnOrder[0]
-              .post('/api/play/plant/' + gridId + '/continue')
+              .post(baseUrl + gridId)
               .send({
                 phase: 'plant',
                 player: playersByTurnOrder[0],
@@ -283,7 +283,7 @@ describe('Play Route: ', function () {
         Plant.findOne({ rank: 4 })
           .then(function (plantFour) {
             agentsByTurnOrder[1]
-              .post('/api/play/plant/' + gridId + '/continue')
+              .post(baseUrl + gridId)
               .send({
                 phase: 'plant',
                 player: playersByTurnOrder[1],
@@ -335,7 +335,7 @@ describe('Play Route: ', function () {
         Plant.findOne({ rank: 4 })
           .then(function (plantFour) {
             agentsByTurnOrder[0]
-              .post('/api/play/plant/' + gridId + '/continue')
+              .post(baseUrl + gridId)
               .send({
                 phase: 'plant',
                 player: playersByTurnOrder[0],
@@ -389,7 +389,7 @@ describe('Play Route: ', function () {
         Plant.findOne({ rank: 5 })
           .then(function (plantFive) {
             agentsByTurnOrder[0]
-              .post('/api/play/plant/' + gridId + '/continue')
+              .post(baseUrl + gridId)
               .send({
                 phase: 'plant',
                 player: playersByTurnOrder[0],

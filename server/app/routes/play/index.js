@@ -2,9 +2,11 @@ var router = require('express').Router();
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-// Current URL: 'api/play'
+var validations = require('../../../db/validations');
 
 var Grid = mongoose.model('Grid');
+
+// Current URL: 'api/play'
 
 router.use(function (req, res, next) {
 	if(req.body.player.user === req.user.id) next();
@@ -43,12 +45,27 @@ router.param('gridId', function(req, res, next, gridId){
     .catch(next);
 });
 
-router.use('/plant/:gridId', require('./1_plant_phase'));
+router.post('/continue/:gridId', function (req, res, next) {
 
-router.use('/resource/:gridId', require('./2_resource_phase'));
+  var isValid = true;
 
-router.use('/city/:gridId', require('./3_city_phase'));
+  var validationsToUse = validations.global.concat(validations[req.body.phase]);
 
-router.use('/bureaucracy/:gridId', require('./4_bureaucracy_phase'));
+  validationsToUse.forEach(function (validation) {
+    if (isValid && !validation.func(req.body, req.grid)) {
+      isValid = false;
+      var err = new Error(validation.message);
+      err.status = 400;
+      next(err);
+    }
+  });
+
+  if (isValid) {
+    req.grid.continue(req.body)
+      .then(function () {
+        res.sendStatus(201);
+      });
+  }
+});
 
 module.exports = router;
