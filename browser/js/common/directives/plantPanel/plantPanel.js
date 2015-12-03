@@ -48,6 +48,9 @@ app.directive('plantPanel', function(SliderFactory, $uibModal){
                         },
                         resourceColors: function () {
                             return scope.resourceColors;
+                        },
+                        player: function(){
+                            return scope.player;
                         }
 
                     }

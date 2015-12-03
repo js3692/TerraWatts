@@ -82,6 +82,7 @@ schema.plugin(deepPopulate, {
     'game.stepThreePlants',
     'game.turnOrder',
     'game.turnOrder.user',
+    'game.turnOrder.plants',
     'state.auction'
   ],
   populate: {
@@ -235,7 +236,9 @@ schema.methods.continue = function (update) {
     })
   }
   return this.state.continue(update, this.game)
-    .then(function () {
+    .then(function (whatContinueReturns) {
+      console.log('what continue returns!!!!!!', whatContinueReturns)
+      self.game = whatContinueReturns[1];
       return self.save();
     })
 };
