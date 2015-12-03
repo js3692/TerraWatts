@@ -47,6 +47,7 @@ function canAffordResources(update, grid) {
 
 // city
 function canBuyCities(update, grid) {
+	console.log(update)
 	var canBuy = true;
 	update.data.citiesToAdd.forEach(function (city) {
 		if (numResidents(city, grid.game.turnOrder) >= grid.game.step) canBuy = false;

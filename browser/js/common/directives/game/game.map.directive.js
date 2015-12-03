@@ -7,12 +7,12 @@ app.directive('gameMap', function($parse) {
 			game: '=',
 			grid: '=',
 			me: '=',
-			showCityBuyPanel: '=ngModel'
+			cityShoppingCart: '=ngModel'
 		},
 		link: function(scope, element, attrs) {
 
 			var isActivePlayer = false;
-			var cityShoppingCart = [];
+			scope.cityShoppingCart = [];
 
 			scope.$watch('me', function(me) {
 				if(me && me._id === scope.grid.state.activePlayer) {
@@ -250,8 +250,8 @@ app.directive('gameMap', function($parse) {
 					.on('click', function(d,i) {
 						console.log("You've clicked " + d.properties.name)
 						console.log('isActivePlayer', isActivePlayer)
-						if(isActivePlayer) cityShoppingCart.push(d.properties.id);
-						console.log('cityShoppingCart', cityShoppingCart)
+						if(isActivePlayer) scope.cityShoppingCart.push(d.properties.id);
+						console.log('cityShoppingCart', scope.cityShoppingCart)
 					});
 
 				leftRect
