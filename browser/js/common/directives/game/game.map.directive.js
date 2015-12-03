@@ -136,6 +136,17 @@ app.directive('gameMap', function($parse) {
 							console.log("You've clicked " + d.properties.name)
 							if(isActivePlayer) cityShoppingCart.push(d.properties.id);
 							console.log('cityShoppingCart', cityShoppingCart)
+
+							d3.select('#slot10Towers' + i + ' #leftTower')
+								.attr('height', leftTowerHeight)
+
+							d3.select('#slot10Towers' + i + ' #midTower')
+								.attr('height', midTowerHeight)
+
+							d3.select('#slot10Towers' + i + ' #rightTower')
+								.attr('height', rightTowerHeight)
+
+
 						});
 
 					cityVector = cityGroups
@@ -200,8 +211,8 @@ app.directive('gameMap', function($parse) {
 
 							var slot10Towers = d3.select(this)
 								.append('g')
-								.attr('id', 'slot10Towers')
-								.each(function(d,i) {
+								.attr('id', function(d,j) { return 'slot10Towers' + i; })
+								.each(function(d,j) {
 									d3.select(this)
 										.append('rect')
 										.attr('id', 'leftTower')
@@ -209,7 +220,7 @@ app.directive('gameMap', function($parse) {
 										.attr('stroke', 'black')
 										.attr('stroke-width', '1px')
 										.attr('width', rectDimension*.25)
-										.attr('height', rectDimension*.4)
+										// .attr('height', rectDimension*.4)
 										.attr('x', cityBoxBuffer + rectDimension/10)
 										.attr('y', cityBoxYOffset + rectDimension - leftTowerHeight);
 									d3.select(this)
@@ -219,7 +230,7 @@ app.directive('gameMap', function($parse) {
 										.attr('stroke', 'black')
 										.attr('stroke-width', '1px')
 										.attr('width', rectDimension*.3)
-										.attr('height', rectDimension*.8)
+										// .attr('height', rectDimension*.8)
 										.attr('x', cityBoxBuffer + rectDimension*(7/20))
 										.attr('y', cityBoxYOffset + rectDimension - midTowerHeight);
 									d3.select(this)
@@ -229,15 +240,15 @@ app.directive('gameMap', function($parse) {
 										.attr('stroke', 'black')
 										.attr('stroke-width', '1px')
 										.attr('width', rectDimension*.25)
-										.attr('height', rectDimension*.6)
+										// .attr('height', rectDimension*.6)
 										.attr('x', cityBoxBuffer + rectDimension*(13/20))
 										.attr('y', cityBoxYOffset + rectDimension - rightTowerHeight);
 								});
 
 							var slot15Towers = d3.select(this)
 								.append('g')
-								.attr('id', 'slot15Towers')
-								.each(function(d,i) {
+								.attr('id', function(d,j) { return 'slot15Towers' + i; })
+								.each(function(d,j) {
 									d3.select(this)
 										.append('rect')
 										.attr('id', 'leftTower')
@@ -245,7 +256,7 @@ app.directive('gameMap', function($parse) {
 										.attr('stroke', 'black')
 										.attr('stroke-width', '1px')
 										.attr('width', rectDimension*.25)
-										.attr('height', rectDimension*.4)
+										// .attr('height', rectDimension*.4)
 										.attr('x', 2*cityBoxBuffer + rectDimension/10 + rectDimension)
 										.attr('y', cityBoxYOffset + rectDimension - leftTowerHeight);
 									d3.select(this)
@@ -255,7 +266,7 @@ app.directive('gameMap', function($parse) {
 										.attr('stroke', 'black')
 										.attr('stroke-width', '1px')
 										.attr('width', rectDimension*.3)
-										.attr('height', rectDimension*.8)
+										// .attr('height', rectDimension*.8)
 										.attr('x', 2*cityBoxBuffer + rectDimension*(7/20) + rectDimension)
 										.attr('y', cityBoxYOffset + rectDimension - midTowerHeight);
 									d3.select(this)
@@ -265,15 +276,15 @@ app.directive('gameMap', function($parse) {
 										.attr('stroke', 'black')
 										.attr('stroke-width', '1px')
 										.attr('width', rectDimension*.25)
-										.attr('height', rectDimension*.6)
+										// .attr('height', rectDimension*.6)
 										.attr('x', 2*cityBoxBuffer + rectDimension*(13/20) + rectDimension)
 										.attr('y', cityBoxYOffset + rectDimension - rightTowerHeight);
 								});
 
 							var slot20Towers = d3.select(this)
 								.append('g')
-								.attr('id', 'slot20Towers')
-								.each(function(d,i) {
+								.attr('id', function(d,j) { return 'slot20Towers' + i; })
+								.each(function(d,j) {
 									d3.select(this)
 										.append('rect')
 										.attr('id', 'leftTower')
@@ -281,7 +292,7 @@ app.directive('gameMap', function($parse) {
 										.attr('stroke', 'black')
 										.attr('stroke-width', '1px')
 										.attr('width', rectDimension*.25)
-										.attr('height', rectDimension*.4)
+										// .attr('height', rectDimension*.4)
 										.attr('x', 3*cityBoxBuffer + rectDimension/10 + 2*rectDimension)
 										.attr('y', cityBoxYOffset + rectDimension - leftTowerHeight);
 									d3.select(this)
@@ -291,7 +302,7 @@ app.directive('gameMap', function($parse) {
 										.attr('stroke', 'black')
 										.attr('stroke-width', '1px')
 										.attr('width', rectDimension*.3)
-										.attr('height', rectDimension*.8)
+										// .attr('height', rectDimension*.8)
 										.attr('x', 3*cityBoxBuffer + rectDimension*(7/20) + 2*rectDimension)
 										.attr('y', cityBoxYOffset + rectDimension - midTowerHeight);
 									d3.select(this)
@@ -301,7 +312,7 @@ app.directive('gameMap', function($parse) {
 										.attr('stroke', 'black')
 										.attr('stroke-width', '1px')
 										.attr('width', rectDimension*.25)
-										.attr('height', rectDimension*.6)
+										// .attr('height', rectDimension*.6)
 										.attr('x', 3*cityBoxBuffer + rectDimension*(13/20) + 2*rectDimension)
 										.attr('y', cityBoxYOffset + rectDimension - rightTowerHeight);
 								});
