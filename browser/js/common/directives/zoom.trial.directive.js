@@ -200,64 +200,21 @@ app.directive('zoomMap', function($parse) {
 
 					towers.draw(revisedCities, citiesCollection);
 
-
-					// for(var key in towers) {
-					// 	if(Array.isArray(towers[key])) {
-					// 		if(towers[key].indexOf('left') > -1) {
-					// 			console.log('IN')
-					// 			towers.key
-					// 				.attr('width', leftTowerWidth)
-					// 				.attr('height', leftTowerHeight)
-					// 		}
-					// 	}
-					// }
-
-					towers.leftTower10
-						.attr('width', leftTowerWidth)
-						.attr('height', leftTowerHeight)
-
-
-					towers.midTower10
-						.attr('width', midTowerWidth)
-						.attr('height', midTowerHeight)
-
-
-					towers.rightTower10
-						.attr('width', rightTowerWidth)
-						.attr('height', rightTowerHeight)
-
-
-					towers.leftTower15
-						.attr('width', leftTowerWidth)
-						.attr('height', leftTowerHeight)
-
-
-					towers.midTower15
-						.attr('width', midTowerWidth)
-						.attr('height', midTowerHeight)
-
-
-					towers.rightTower15
-						.attr('width', rightTowerWidth)
-						.attr('height', rightTowerHeight)
-
-					towers.leftTower20
-						.attr('width', leftTowerWidth)
-						.attr('height', leftTowerHeight)
-
-
-					towers.midTower20
-						.attr('width', midTowerWidth)
-						.attr('height', midTowerHeight)
-
-
-					towers.rightTower20
-						.attr('width', rightTowerWidth)
-						.attr('height', rightTowerHeight)
-
-
-
-
+					for(var key in towers) {
+						if(key.indexOf('left') > -1) {
+							towers[key]
+								.attr('width', leftTowerWidth)
+								.attr('height', leftTowerHeight)
+						} else if(key.indexOf('mid') > -1) {
+							towers[key]
+								.attr('width', midTowerWidth)
+								.attr('height', midTowerHeight)
+						} else if(key.indexOf('right') > -1) {
+							towers[key]
+								.attr('width', rightTowerWidth)
+								.attr('height', rightTowerHeight)
+						}
+					}
 
 					
 					zoomed();
