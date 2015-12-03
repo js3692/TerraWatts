@@ -6,6 +6,15 @@ mongoose.Promise = require('bluebird');
 
 var Grid = mongoose.model('Grid');
 
+router.use(function (req, res, next) {
+	if(req.body.player.user === req.user.id) next();
+	else {
+		var err = new Error('Hey, you are not the player who just made the move');
+		err.status = 403;
+		next(err);
+	}
+})
+
 router.param('gridId', function(req, res, next, gridId){
   Grid.findById(gridId)
     .populate('players game state')
