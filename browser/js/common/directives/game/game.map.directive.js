@@ -1,4 +1,4 @@
-app.directive('zoomMap', function($parse) {
+app.directive('gameMap', function($parse) {
 	return {
 		restrict: 'E',
 		replace: true,
