@@ -11,6 +11,7 @@ app.directive('sidePanel', function(SliderFactory){
             
             //match players to turn order.
 //            scope.getTurnOrder = function() {
+//                console.log(scope.turnOrder, 'scope.turnOrder')
 //                if(scope.turnOrder && scope.players){
 //                    return scope.turnOrder.map(function(turn){
 //                        for(var i = 0; i < scope.players.length; i++){

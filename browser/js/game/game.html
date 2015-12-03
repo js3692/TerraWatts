@@ -1,12 +1,5 @@
 <div>
-
-    <plant-panel resources="gridGame.resourceMarket" plant-market="gridGame.plantMarket"></plant-panel>
-    <side-panel players="grid.players"></side-panel>
-    <chat-panel me="me.username" key="key"></chat-panel>
-    <city-buy-panel ng-show='showCityBuyPanel'></city-buy-panel>
     <game-map game='gridGame' grid='grid' me='me()' ng-model='showCityBuyPanel'></game-map>
-<!--
-=======
     <plant-panel resources="gridGame.resourceMarket" 
                  plant-market="gridGame.plantMarket" 
                  player="me()"
@@ -18,6 +11,4 @@
     <chat-panel me="me().user.username" key="key"></chat-panel>
     <zoom-map game='gridGame' grid='grid' me='me()' ng-model='cityShoppingCart'></zoom-map>
     <city-buy-panel player="me()" citiesToBuy="cityShoppingCart"></city-buy-panel>
->>>>>>> ef961a7c497740a61073031fe475d7793f0af99f
--->
 </div>
