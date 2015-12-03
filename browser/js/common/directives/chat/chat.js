@@ -24,7 +24,7 @@ app.directive('chat', function(FirebaseFactory){
             
             chatRef.on('child_added', function(snapshot){
                 var message = snapshot.val();
-                scope.chatHistory.push(message);
+                scope.chatHistory.push(message); //doesn't firebase do this automatically? idk - G&N
             });
         }
     }

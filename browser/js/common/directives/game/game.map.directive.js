@@ -1,4 +1,4 @@
-app.directive('gameMap', function($parse) {
+app.directive('gameMap', function($parse) { //this is large - G&N
 	return {
 		restrict: 'E',
 		replace: true,
@@ -25,7 +25,7 @@ app.directive('gameMap', function($parse) {
 			var width = Math.max(960, window.innerWidth),
 			    height = Math.max(500, window.innerHeight);
 
-			var tile = d3.geo.tile()
+			var tile = d3.geo.tile() //d3 factory, maybe? this is a lot - G&N
 			    .size([width, height]);
 
 			var projection = d3.geo.mercator()
@@ -96,7 +96,7 @@ app.directive('gameMap', function($parse) {
 				rightTowerWidth = rectDimension*0.25,
 				rightTowerHeight = rectDimension*0.6;
 
-			function cityType(d) {
+			function cityType(d) { //d? 
 				return {
 					type: 'Feature',
 					properties: {name: d.name, region: d.region, id: d.id},
@@ -123,7 +123,7 @@ app.directive('gameMap', function($parse) {
 			}
 
 
-			scope.$watch('game', function(game) {
+			scope.$watch('game', function(game) { //factory, again - G&N
 				if(game.cities && game.connections) {
 					var revisedCities = game.cities.map(function(city) { return cityType(city); });
 					var revisedConnections = game.connections.map(function(connection) { return connectionType(connection); });

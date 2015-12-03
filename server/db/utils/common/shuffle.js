@@ -1,4 +1,4 @@
-module.exports = function shuffle(array) {
+module.exports = function shuffle(array) { //_.shuffle ?
   var newArray = array.slice();
   var copy = [], n = newArray.length, i;
   while (n) {

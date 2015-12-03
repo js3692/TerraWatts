@@ -8,7 +8,7 @@ app.controller('GameCtrl', function($scope, FirebaseFactory, thePlayer, gridId, 
         $scope.activePlayer = state && state.activePlayer;
     });
     
-    $scope.me = function() {
+    $scope.me = function() { //vs auth.getloggedinuser? 
         var players = $scope.grid.players;
         if(players){
             for(var i = 0; i < players.length; i++){

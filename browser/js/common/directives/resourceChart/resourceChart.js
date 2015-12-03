@@ -24,14 +24,14 @@ app.directive('bars', function ($parse) {
                     .style("width", function (d) {
                         return (d.value/24)*94 + "%";
                     })
-                    .style("background-color", function(d){
+                    .style("background-color", function(d){ // d => d.color
                         return d.color;
                     })
                     .style("box-sizing", function(){
                         return "border-box";
                     })
                     .text(function (d) {
-                        return d.type + ': ' + d.value;
+                        return d.type + ': ' + d.value; //d => d.type + ':' + d.value
                     });
             })
         }

@@ -37,7 +37,7 @@ app.directive('plantPanel', function(SliderFactory, $uibModal){
             };
 
             scope.buyResources = function () {
-                var modalInstance = $uibModal.open({
+                var modalInstance = $uibModal.open({ //consider centralized modal factory - G&N , maybe
                     animation: true,
                     templateUrl: 'js/common/directives/resourceModal/resourceModal.html',
                     controller: 'ResourceModalCtrl',

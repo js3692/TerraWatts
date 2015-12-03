@@ -5,7 +5,7 @@ app.directive('bid', function () {
         scope: {
             start: '=',
             buttonColor: '=',
-            bid: '=ngModel'
+            bid: '=ngModel' //what's this? - G&N
         },
         link: function (scope, elem, attrs) {
             scope.bid = scope.start;

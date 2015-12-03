@@ -51,9 +51,9 @@ app.directive('bargraph', function($parse) {
 
 				if(players) {
 
-					console.log('players', players)
+					console.log('players', players) //rm - G&N
 
-					console.log('players arr', players.map(function(d) { return d.user.username }))
+					console.log('players arr', players.map(function(d) { return d.user.username })) //rm - G&N
 
 					x.domain(players.map(function(d) { return d.user.username }));
 					y.domain([0, d3.max(players, function(d) { return d.numCities })]);
