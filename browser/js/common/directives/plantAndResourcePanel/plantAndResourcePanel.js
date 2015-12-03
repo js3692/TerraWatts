@@ -8,6 +8,7 @@ app.directive('plantAndResourcePanel', function(SliderFactory, PlayGameFactory, 
             players: '='
         },
         link: function(scope, elem, attrs){   
+            
             scope.getPlantMarket = PlayGameFactory.getPlantMarket;
             scope.getResourceMarket = PlayGameFactory.getResourceMarket;
             scope.plantsTrueResourcesFalse = true;

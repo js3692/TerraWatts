@@ -1,71 +1,41 @@
+
+
 game-action-panel {
+    $game-action-box-bottom: 200px;
+    $game-action-box-left: 200px;
+    $game-action-panel-width: 700px;
+    $game-action-panel-height: 200px;   
+        
     width:0;
     height:0;
     position: fixed;
-    top: $chat-box-position;
-    left: calc(-#{$chat-panel-width});
+    bottom: $game-action-box-bottom;
+    left: $game-action-box-left;
     z-index: 200;
-    div {
-        border-radius: 0;
-    }
-    .chat-slider {
+
+    .game-action-slider {
         background-color: $main-background;
         opacity: .8;
         -webkit-transition: width 2s, height 2s, background-color 1s, -webkit-transform .25s;
         transition: width 2s, height 2s, background-color 1s, transform .25s;
-        -webkit-transform: translateX(calc(#{$chat-panel-width}));
-        transform: translateX(calc(#{$chat-panel-width}));
+//        -webkit-transform: translateX(calc(#{$game-action-panel-width}));
+//        transform: translateX(calc(#{$game-action-panel-width}));
     }
 
-    .chat-slider-pull {
+    .game-action-slider-pull {
         -webkit-transform: translateX(0);
         transform: translateX(0);
     }
-    
-    .menu-tab {
-        width: $chat-tab-width;
-        height: $chat-tab-height;
-        border-radius: 0 5px 5px 0;
-        border-left: 1px solid white;
-        position: fixed;
-        top: $chat-box-position;
-        left: 0;
-    }
+
     .menu-tab:hover {
         background-color: grey;
     }
+
     .menu-panel-body {
-        height: $chat-panel-height;
-        width: $chat-panel-width;
-        border-radius: 0 0 5px 0;
+        height: $game-action-panel-height;
+        width: $game-action-panel-width;
+        border-radius: 5px 5px 0 0;
         border-width: 0;
-        .chat-body,
-        form {
-            width: 95%;
-            margin: 0 auto;
-            border: 1px solid black;
-            overflow-y: scroll;
-            padding-bottom: 0px;
-            input {
-                height: 10%;
-            }
-        }
-        .message {
-            height: 10%;
-            color: white;
-        }
-        .chat-body {
-            height: 70%;
-            border-radius: 3px;
-            color: white;
-        }
-        form {
-            color: black;
-            border-radius: 4px;
-        }
     }
     
-    chat {
-        padding: 1px;
-    }
 }

@@ -13,6 +13,9 @@ app.factory('SliderFactory', function(){
                 slider.toggleClass(triangleBase + rightTriangle);
                 slider.toggleClass(triangleBase + leftTriangle);
             }
+        },
+        plantToAction: function(plant){
+            plant.addClass('make-invisible');
         }
     };
 }); 

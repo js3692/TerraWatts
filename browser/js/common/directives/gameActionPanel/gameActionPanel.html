@@ -2,6 +2,9 @@
      class="menu-panel-body
             panel 
             panel-default
-            plant-slider
-            plant-slider-pull">
+            game-action-slider
+            game-action-slider-pull">
+    <div ng-if="getPlantToBidOn()">
+        <plant rank="{{ getPlantToBidOn().rank }}"></plant>
+    </div>
 </div>

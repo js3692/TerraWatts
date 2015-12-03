@@ -4,7 +4,8 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory, $q) {
         gridId,
         gridKey,
         grid,
-        me;    
+        me,
+        plantToBidOn;    
 
     function toData(response){
         return response.data;
@@ -56,6 +57,12 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory, $q) {
         },
         getResourceMarket: function(){
             if(grid && grid.game) return grid.game.resourceMarket;  
+        },
+        setPlantToBidOn: function(plant){
+            plantToBidOn = plant;  
+        },
+        getPlantToBidOn: function(){
+            return plantToBidOn;
         },
         bid: {}
     };
