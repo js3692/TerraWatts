@@ -234,19 +234,19 @@ schema.methods.continue = function (update) {
       self.game = whatContinueReturns[1];
       return self.save();
     })
-  }
-  if(this.state.auction) {
+  } else if(this.state.auction) {
     return this.state.auction.continue(update, this.game)
     .then(function () {
         return self.save();
     })
-  }
-  return this.state.continue(update, this.game)
+  } else {
+    return this.state.continue(update, this.game)
     .then(function (whatContinueReturns) {
-      console.log('what continue returns!!!!!!', whatContinueReturns)
-      self.game = whatContinueReturns[1];
+      if(whatContinueReturns.length) self.game = whatContinueReturns[1];
+      console.log('!!!!!!!!!!!!!!!!', self.game);
       return self.save();
     })
+  }
 };
 
 mongoose.model('Grid', schema);
