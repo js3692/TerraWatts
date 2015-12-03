@@ -62,7 +62,6 @@ schema.methods.go = function (game) {
 };
 
 schema.methods.continue = function(update, game) {
-	console.log('state continue has been called');
     if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
 		if(update.data.plant) update.data.plant = update.data.plant._id;
         return this.transaction(update, game);
@@ -75,7 +74,6 @@ schema.methods.continue = function(update, game) {
 			return this.go(game)
 		} else {
 			// start an auction
-            console.log('starting an auction now');
 			var self = this;
 			var auction = new Auction({
 				plant: update.data.plant,
@@ -160,7 +158,6 @@ schema.methods.transaction = function(update, game) {
 			player.money -= update.data.bid;
 			var plantIndex;
 			game.plantMarket.forEach(function (plant,i) {
-                console.log(plant, update.data.plant, '++++++')
 				if (plant._id.equals(update.data.plant)) plantIndex = i;
 			});
 			var plant = game.plantMarket.splice(plantIndex,1)[0];

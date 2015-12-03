@@ -22,7 +22,6 @@ router.post('/continue', function (req, res, next) {
 	});
 
 	if (isValid) {
-		console.log('heyheyheyheyheyheyheyheyheyheyheyheyheyheyheyheyheyheyheyhey')
     req.grid.continue(req.body)
       .then(function () {
         res.sendStatus(201);

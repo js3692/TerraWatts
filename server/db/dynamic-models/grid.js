@@ -228,7 +228,6 @@ schema.methods.initialize = function () {
 schema.methods.continue = function (update) {
   var self = this;
   if(this.state.auction) {
-    console.log('about to call auctions continue');
     return this.state.auction.continue(update, this.game)
     .then(function () {
         return self.save();
