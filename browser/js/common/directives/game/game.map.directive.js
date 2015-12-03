@@ -96,11 +96,11 @@ app.directive('gameMap', function($parse) { //this is large - G&N
 				rightTowerWidth = rectDimension*0.25,
 				rightTowerHeight = rectDimension*0.6;
 
-			function cityType(d) { //d? 
+			function cityType(city) { //city? 
 				return {
 					type: 'Feature',
-					properties: {name: d.name, region: d.region, id: d.id},
-					geometry: {type: 'Point', coordinates: [d.location[1], d.location[0]]}
+					properties: {name: city.name, region: city.region, id: city.id},
+					geometry: {type: 'Point', coordinates: [city.location[1], city.location[0]]}
 				}
 			}
 

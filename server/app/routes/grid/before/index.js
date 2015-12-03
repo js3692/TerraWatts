@@ -13,7 +13,7 @@ router.get('/', function (req, res) {
 });
 
 router.post('/join', function (req, res, next) {//what is a clockwise
-  Player.create({ user: req.user, color: req.grid.availableColors[0], clockwise: req.grid.players.length }) //possible race condition? - G&(N)
+  Player.create({ user: req.user, color: req.grid.availableColors[0], clockwise: req.grid.players.length }) //possible race condition? - G&(N) - nevermind - probably - ok
     .then(function (newPlayer) {
       return req.grid.addPlayer(newPlayer);
     })

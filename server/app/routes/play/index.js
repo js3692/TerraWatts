@@ -19,7 +19,7 @@ router.use(function (req, res, next) {
 
 router.param('gridId', function(req, res, next, gridId){
   Grid.findById(gridId)
-    .populate('players game state') //findById(gridId).deepPopulate(~things~).then
+    .populate('players game state') //findById(gridId).deepPopulate('players.user players.cities players.plants game.cities game').then
     .then(function(populatedGrid){
         populatedGrid.deepPopulate([
           'players.user',
