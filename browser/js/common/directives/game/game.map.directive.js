@@ -66,7 +66,7 @@ app.directive('gameMap', function($parse) {
 				.attr('fill', 'grey');
 
 			var citiesCollection = svg.append("g")
-				.attr('class', 'Cities');
+				.attr('class', 'citiesCollection');
 
 			var connectionDistVector,
 				connectionVector,
@@ -133,10 +133,43 @@ app.directive('gameMap', function($parse) {
 
 					// connectionVector.datum({type: "FeatureCollection", features: revisedConnections});
 					
-					cityVector = citiesCollection.selectAll("path")
+					// cityVector = citiesCollection.selectAll("path")
+					// 	.data(revisedCities)
+					// 	.enter()
+					// 	.append('path');
+
+
+
+
+					cityVector = citiesCollection.selectAll('g')
 						.data(revisedCities)
 						.enter()
-						.append('path');
+						.append('g')
+						.attr('id', function(d,i) { return 'city' + i; })
+						.each(function(d,i) {
+							d3.select('#city' + i)
+								.append('path')
+								.attr('id', function(d,i) { return 'cityPath' + i; });
+
+							cityBox = d3.select('#city' + i)
+								.append('rect')
+								.attr('class', 'cityBox')
+								.attr('width', cityWidth)
+								.attr('height', cityHeight)
+								.attr('rx', 5)
+								.attr('ry', 5)
+								.attr('opacity', 0.8)
+								.attr('id', function(d,i) { return 'cityBox' + i; });
+
+						});
+
+					// cityVector
+					// 	.each(function(d,i) {
+					// 		d3.select('#city' + i)
+					// 		.append('path')
+					// 		.attr('id', function(d,i) { return 'cityPath' + i; })
+					// 	});
+
 
 					connectionVector = connectionCollection.selectAll('path')
 						.data(revisedConnections)
@@ -162,18 +195,25 @@ app.directive('gameMap', function($parse) {
 						.attr("font-family", "sans-serif")
 						.attr("fill", "white");
 
+
+
+
 					var cityBoxSelection = citiesCollection.selectAll('rect')
 						.data(revisedCities)
 						.enter();
 
-					cityBox = cityBoxSelection
-						.append('rect')
-						.attr('class', 'cityBox')
-						.attr('width', cityWidth)
-						.attr('height', cityHeight)
-						.attr('rx', 5)
-						.attr('ry', 5)
-						.attr('opacity', 0.8);
+					// cityBox = cityBoxSelection
+						// .append('rect')
+						// .attr('class', 'cityBox')
+						// .attr('width', cityWidth)
+						// .attr('height', cityHeight)
+						// .attr('rx', 5)
+						// .attr('ry', 5)
+						// .attr('opacity', 0.8);
+
+
+
+
 
 					leftRect = cityBoxSelection
 						.append('rect')
@@ -243,16 +283,32 @@ app.directive('gameMap', function($parse) {
 						return 10;
 					});
 
-				cityBox
-					// .attr("transform", function(d,i) {return "translate(" + cityCentroids[i] + ")"})
-					.attr('x', function(d,i) {return cityCentroids[i][0] - cityWidth/2})
-					.attr('y', function(d,i) {return cityCentroids[i][1] - cityHeight/2})
-					.on('click', function(d,i) {
-						console.log("You've clicked " + d.properties.name)
-						console.log('isActivePlayer', isActivePlayer)
-						if(isActivePlayer) cityShoppingCart.push(d.properties.id);
-						console.log('cityShoppingCart', cityShoppingCart)
-					});
+				// cityBox
+				// 	// .attr("transform", function(d,i) {return "translate(" + cityCentroids[i] + ")"})
+				// 	.attr('x', function(d,i) {return cityCentroids[i][0] - cityWidth/2})
+				// 	.attr('y', function(d,i) {return cityCentroids[i][1] - cityHeight/2})
+				// 	.on('click', function(d,i) {
+				// 		console.log("You've clicked " + d.properties.name)
+				// 		console.log('isActivePlayer', isActivePlayer)
+				// 		if(isActivePlayer) cityShoppingCart.push(d.properties.id);
+				// 		console.log('cityShoppingCart', cityShoppingCart)
+				// 	});
+
+				console.log('cityVector', cityVector)
+
+				cityVector.selectAll('g')
+					.each(function(d,i) {
+						d3.select('#city' + i)
+							.selectAll('path')
+							.attr('thing', 'thing')
+							// .select('#cityBox' + i)
+							// 	.selectAll('rect')
+							// 	.attr('x', function(d,i) {return cityCentroids[i][0] - cityWidth/2})
+							// 	.attr('y', function(d,i) {return cityCentroids[i][1] - cityHeight/2})
+
+
+					})
+				
 
 				leftRect
 					.attr('x', function(d,i) {return cityCentroids[i][0] - 1.5*rectDimension - cityBoxBuffer})
