@@ -6,14 +6,18 @@ app.config(function($stateProvider){
 		resolve: {
             gridId: function ($stateParams, PlayGameFactory) {
                 var gridId = $stateParams.id;
-                PlayGameFactory.setGrid(gridId);
+                PlayGameFactory.setGridId(gridId);
                 return gridId;
             },
-            key: function($stateParams) {
-                return $stateParams.key;  
+            key: function($stateParams, PlayGameFactory) {
+                var gridKey = $stateParams.key;
+                PlayGameFactory.setKey(gridKey);
+                return gridKey;  
             },
-            thePlayer: function(AuthService) {
-				return AuthService.getLoggedInUser();
+            thePlayer: function(AuthService, PlayGameFactory) {
+                var player = AuthService.getLoggedInUser();
+                PlayGameFactory.setPlayer(player);
+				return player;
 			}
 		},
     data: {

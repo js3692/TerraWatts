@@ -4,8 +4,6 @@ app.directive('plant', function(){
         templateUrl: "js/common/directives/plant/plant.html",
         scope: {
             plant:'='
-        },
-        link: function(scope, elem, attrs){ 
         }
     }
 }); 

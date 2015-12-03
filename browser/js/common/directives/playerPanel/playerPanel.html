@@ -1,8 +1,7 @@
-<div ng-click="open()" class="menu-panel-body panel panel-default right-slider right-slider-pull">
+<div class="menu-panel-body panel panel-default right-slider right-slider-pull">
     <div class="panel-body">
         <player player="player"
-                active="activePlayer === player._id" 
-                ng-repeat="player in turnOrder">
+                ng-repeat="player in getTurnOrder()">
         </player>
     </div>
 </div>

@@ -8,12 +8,11 @@
            ng-class="{ plantHover: hover }"
            ng-mouseover="hover = $index < 4" 
            ng-mouseleave="hover=false"
-           ng-repeat="plant in plantMarket" 
+           ng-repeat="plant in getPlantMarket()" 
            ng-click="bidFor(plant)"
-           plant="plant"
-           player="player">
+           plant="plant">
     </plant>
-    <bars data="resources" 
+    <bars data="getResourceMarket()" 
           resource-colors="resourceColors"
           ng-hide="plantsTrueResourcesFalse"
           ng-click="buyResources()">
