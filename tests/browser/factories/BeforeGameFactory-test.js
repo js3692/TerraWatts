@@ -1,4 +1,4 @@
-describe('BeforeGameFactory', function(){
+xdescribe('BeforeGameFactory', function(){
     beforeEach(module('Grid'));
     
     var $httpBackend, BeforeGameFactory;

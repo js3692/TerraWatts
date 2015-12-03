@@ -4,8 +4,10 @@ app.config(function($stateProvider){
 		controller: 'GameCtrl',
 		templateUrl: 'js/game/game.html',
 		resolve: {
-            gridId: function ($stateParams) {
-                return $stateParams.id;
+            gridId: function ($stateParams, PlayGameFactory) {
+                var gridId = $stateParams.id;
+                PlayGameFactory.setGrid(gridId);
+                return gridId;
             },
             key: function($stateParams) {
                 return $stateParams.key;  

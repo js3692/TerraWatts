@@ -2,51 +2,70 @@ var router = require('express').Router();
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-// Current URL: 'api/play'
+var validations = require('../../../db/validations');
 
 var Grid = mongoose.model('Grid');
 
-var validations = require('../../../db/validations');
+// Current URL: 'api/play'
 
-router.post('/continue', function (req, res, next) {
-
-	var passedGlobalValidations = validations.global.every(function(validationFunc) {
-		return validationFunc(req.body, req.grid);
-	});
-
-	var passedSpecificValidations = validations[req.body.phase].every(function(validationFunc) {
-		return validationFunc(req.body, req.grid);
-	})
-
-	if (!passedGlobalValidations || !passedSpecificValidations) {
-		next(new Error({
-			message: 'Game validation(s) failed',
-			status: 400
-		}));
+router.use(function (req, res, next) {
+	if(req.body.player.user === req.user.id) next();
+	else {
+		var err = new Error('Hey, you are not the player who just made the move');
+		err.status = 403;
+		next(err);
 	}
+})
 
-	req.grid.continue(req.body)
-		.then(function () {
-			res.sendStatus(201);
-		});
+router.param('gridId', function(req, res, next, gridId){
+  Grid.findById(gridId)
+    .populate('players game state')
+    .then(function(populatedGrid){
+        populatedGrid.deepPopulate([
+          'players.user',
+          'players.cities',
+          'players.plants',
+          'game.cities',
+          'game.connections',
+          'game.connections.cities',
+          'game.plantMarket',
+          'game.plantDeck',
+          'game.discardedPlants',
+          'game.stepThreePlants',
+          'game.turnOrder',
+          'game.turnOrder.plants',
+          'game.turnOrder.user',
+          'state.auction'        
+        ], function(err, deepPopulatedGrid) {
+            if(err) next(err);
+              req.grid = deepPopulatedGrid;
+              next(); 
+        })
+    })
+    .catch(next);
 });
 
-// router.param('gridId', function(req, res, next, gridId){
-//   Grid.findById(gridId)
-//     .populate('players game state')
-//     .then(function (grid) {
-//       req.grid = grid;
-//       next();
-//     })
-//     .catch(next);
-// });
+router.post('/continue/:gridId', function (req, res, next) {
 
-// router.use('/plant/:gridId', require('./1_plant_phase'));
+  var isValid = true;
 
-// router.use('/resource/:gridId', require('./2_resource_phase'));
+  var validationsToUse = validations.global.concat(validations[req.body.phase]);
 
-// router.use('/city/:gridId', require('./3_city_phase'));
+  validationsToUse.forEach(function (validation) {
+    if (isValid && !validation.func(req.body, req.grid)) {
+      isValid = false;
+      var err = new Error(validation.message);
+      err.status = 400;
+      next(err);
+    }
+  });
 
-// router.use('/bureaucracy/:gridId', require('./4_bureaucracy_phase'));
+  if (isValid) {
+    req.grid.continue(req.body)
+      .then(function () {
+        res.sendStatus(201);
+      });
+  }
+});
 
 module.exports = router;

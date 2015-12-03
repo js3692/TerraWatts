@@ -1,8 +1,9 @@
 var shuffle = require('../common/shuffle');
 
 module.exports = function drawPlant(game, state) {
-	if (game.plantDeck.length) {
-		game.plantMarket.push(game.plantDeck.shift());
+    if (game.plantDeck.length) {
+        var plant = game.plantDeck.shift();
+		game.plantMarket = game.plantMarket.concat(plant);
 	} else {
 		game = initStepThree(game, state);
 	}

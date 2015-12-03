@@ -4,7 +4,10 @@ app.directive('plantPanel', function(SliderFactory, $uibModal){
         templateUrl: "js/common/directives/plantPanel/plantPanel.html",
         scope: {
             plantMarket: '=',
-            resources: '='
+            resources: '=',
+            player: '=',
+            auction: '=',
+            players: '='
         },
         link: function(scope, elem, attrs){   
             scope.plantsTrueResourcesFalse = true;
@@ -38,7 +41,7 @@ app.directive('plantPanel', function(SliderFactory, $uibModal){
                     animation: true,
                     templateUrl: 'js/common/directives/resourceModal/resourceModal.html',
                     controller: 'ResourceModalCtrl',
-                    size: 'sm',
+                    size: undefined,
                     resolve: {
                         resources: function () {
                             return scope.resources;
@@ -56,10 +59,19 @@ app.directive('plantPanel', function(SliderFactory, $uibModal){
                     animation: true,
                     templateUrl: 'js/common/directives/bidModal/bidModal.html',
                     controller: 'BidModalCtrl',
-                    size: 'sm',
+                    size: 'lg',
                     resolve: {
                       plant: function () {
                         return plant;
+                      },
+                      player: function(){
+                        return scope.player;      
+                      },
+                      auction: function(){
+                        return scope.auction;
+                      },
+                      players: function(){
+                        return scope.players;
                       }
                     }
                 });   

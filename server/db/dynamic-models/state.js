@@ -44,7 +44,7 @@ var schema = new mongoose.Schema({
 	}
 });
 
-schema.methods.initialize = function(game) {
+schema.methods.initialize = function (game) {
 	if(this.phase === 'resource' && game.turn === 1) {
 		game.turnOrder = determineTurnOrder(game.turnOrder);
 	}
@@ -59,35 +59,33 @@ schema.methods.go = function (game) {
 		this.activePlayer = this.remainingPlayers[0];
 		return Promise.all([this.save(), game.save()]);
 	}
-}
-
-/* 
-update is an object with two keys: player and data
-data is different depending on the phase:
-	resource: data is the wishlist object
-	city: data is an array of cities to buy
-	plant: data is 'pass', or {plant: plant, price: price}
-		price is opening bid, or result of auction
-	endofturn: data is an array of plants being powered
-*/
+};
 
 schema.methods.continue = function(update, game) {
-	if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
-		return this.transaction(update, game);
+    if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
+		if(update.data.plant) update.data.plant = update.data.plant._id;
+        return this.transaction(update, game);
 	} else {
 		if (update.data === 'pass') {
+            console.log('in pass')
 			this.remainingPlayers = this.removePlayer(update.player);
+            console.log(this.remainingPlayers);
 			this.numPasses++;
 			return this.go(game)
 		} else {
 			// start an auction
 			var self = this;
-			this.auction = new Auction({
-				plant: update.plant,
-				bid: update.bid,
+			var auction = new Auction({
+				plant: update.data.plant,
+				bid: update.data.bid,
+                highestBidder: update.player,
 				plantState: self
 			})
-			this.auction.initialize();
+			return auction.initialize(game)
+            .then(function (_auction) {
+                self.auction = _auction;
+                return self.save();
+            })
 			// for testing:
 			// return Promise.resolve(['auction', update.data.plant, update.data.bid]);
 		}
@@ -151,16 +149,16 @@ schema.methods.end = function(game) {
 }
 
 schema.methods.transaction = function(update, game) {
-	var self = this;
-	return Player.findById(update.player._id)
+    var self = this;
+	return Player.findById(update.player._id || update.player)
 	.then(function (player) {
 		self.remainingPlayers = self.removePlayer(player);
 		if (self.phase === 'plant') {
 			self.auction = null;
-			player.money -= update.data.price;
+			player.money -= update.data.bid;
 			var plantIndex;
 			game.plantMarket.forEach(function (plant,i) {
-				if (plant.rank === update.data.plant.rank) plantIndex = i;
+				if (plant._id.equals(update.data.plant)) plantIndex = i;
 			});
 			var plant = game.plantMarket.splice(plantIndex,1)[0];
 			player.plants.push(plant);
@@ -213,16 +211,16 @@ schema.methods.transaction = function(update, game) {
 		return self.go(game);
 	})
 	
-}
+};
 
-schema.methods.setRemainingPlayers = function(game) {
+schema.methods.setRemainingPlayers = function (game) {
 	if (this.phase === 'plant') return game.turnOrder.slice();
 	else return game.turnOrder.slice().reverse();
-}
+};
 
-schema.methods.removePlayer = function(player) {
+schema.methods.removePlayer = function (player) {
 	return this.remainingPlayers.filter(function (p) {
-		return p.color !== player.color;
+		return !p.equals(player._id);
 	})
 };
 

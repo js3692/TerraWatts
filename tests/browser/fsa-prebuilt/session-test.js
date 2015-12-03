@@ -1,4 +1,4 @@
-describe('Session Service', function () {
+xdescribe('Session Service', function () {
 
     beforeEach(module('Grid'));
 

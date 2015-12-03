@@ -79,7 +79,10 @@ schema.plugin(deepPopulate, {
     'game.plantMarket',
     'game.plantDeck',
     'game.discardedPlants',
-    'game.stepThreePlants'
+    'game.stepThreePlants',
+    'game.turnOrder',
+    'game.turnOrder.user',
+    'state.auction'
   ],
   populate: {
     'players.user': {
@@ -107,7 +110,10 @@ schema.post('save', function (grid) {
           'game.plantMarket',
           'game.plantDeck',
           'game.discardedPlants',
-          'game.stepThreePlants'
+          'game.stepThreePlants',
+          'game.turnOrder',
+          'game.turnOrder.user',
+          'state.auction'
         ], function(err, deepPopulatedGrid) {
           if(err) throw err;
           // This is mainly for '/join' and '/leave' of players
@@ -219,8 +225,14 @@ schema.methods.initialize = function () {
     })
 };
 
-schema.method.continue = function (update) {
+schema.methods.continue = function (update) {
   var self = this;
+  if(this.state.auction) {
+    return this.state.auction.continue(update, this.game)
+    .then(function () {
+        return self.save();
+    })
+  }
   return this.state.continue(update, this.game)
     .then(function () {
       return self.save();

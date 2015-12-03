@@ -2,6 +2,7 @@ app.controller('GameCtrl', function($scope, FirebaseFactory, thePlayer, gridId, 
     
     $scope.key = key;
     $scope.grid = FirebaseFactory.getConnection(key);
+
     $scope.showCityBuyPanel = false;
 
     $scope.$watch('grid.state', function(state){

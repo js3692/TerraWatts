@@ -3,10 +3,9 @@ app.directive('player', function(){
         restrict: "E",
         templateUrl: 'js/common/directives/player/player.html',
         scope: {
-            player: '='
+            player: '=',
+            active: '='
         },
-        link: function(scope, elem, attrs){
-            
-        }
+        link: function(scope, elem, attrs){}
     }
 })
