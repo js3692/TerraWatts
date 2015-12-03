@@ -2,6 +2,9 @@ app.controller('GameCtrl', function($scope, FirebaseFactory, thePlayer, gridId, 
     
     $scope.key = key;
     $scope.grid = FirebaseFactory.getConnection(key);
+
+    $scope.showCityBuyPanel = false;
+
     $scope.$watch('grid.state', function(state){
         $scope.activePlayer = state && state.activePlayer;
     });
@@ -14,6 +17,6 @@ app.controller('GameCtrl', function($scope, FirebaseFactory, thePlayer, gridId, 
             }
         }
     };
-    
+
     $scope.gridGame = FirebaseFactory.getConnection(key + '/game');
 }); 
