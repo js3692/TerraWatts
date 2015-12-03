@@ -13,7 +13,8 @@ app.factory('PlayGameFactory', function ($http, $q) {
         },
         setGrid: function(_gridId){
             gridId = _gridId;
-        }
+        },
+        bid: {}
     };
     
 });
