@@ -16,7 +16,6 @@ app.directive('zoomMap', function($parse) {
 
 			scope.$watch('me', function(me) {
 				if(me && me._id === scope.grid.state.activePlayer) {
-					console.log('me', me)
 					console.log("You're the activePlayer! And special!!!")
 					scope.showCityBuyPanel = true;
 					isActivePlayer = true;
@@ -52,22 +51,17 @@ app.directive('zoomMap', function($parse) {
 			    .pointRadius(zoom.scale()/1600)
 			    .projection(projection);
 
-
 			var svg = d3.select(".map").append("svg")
 			    .attr("width", width)
 			    .attr("height", height);
 
-
 			var raster = svg.append("g")
 				.attr('class', 'Map Tiles');
 
+			var connectionCollection = svg.append("g")
+				.attr('class', 'Connections');
 
-			var connectionVector = svg.append("path")
-				.attr('class', 'Connections')
-				.attr('fill', 'none')
-				.attr('stroke', 'grey');
-
-			var connectionDists = svg.append("g")
+			var connectionDistCollection = svg.append("g")
 				.attr('class', 'Connection Distances')
 				.attr('fill', 'grey');
 
@@ -75,6 +69,7 @@ app.directive('zoomMap', function($parse) {
 				.attr('class', 'Cities');
 
 			var connectionDistVector,
+				connectionVector,
 				cityVector,
 				distText,
 				cityBox,
@@ -83,9 +78,6 @@ app.directive('zoomMap', function($parse) {
 				midRect,
 				rightRect,
 				cityText,
-				leftTower,
-				midTower,
-				rightTower,
 				distCentroids = {},
 				cityCentroids = {};
 
@@ -104,42 +96,63 @@ app.directive('zoomMap', function($parse) {
 				rightTowerWidth = rectDimension*0.25,
 				rightTowerHeight = rectDimension*0.6;
 
+			function cityType(d) {
+				return {
+					type: 'Feature',
+					properties: {name: d.name, region: d.region, id: d.id},
+					geometry: {type: 'Point', coordinates: [d.location[1], d.location[0]]}
+				}
+			}
+
+			function connectionDistType(d) {
+				var coordinates = [(d.cities[0].location[1]+d.cities[1].location[1])/2, (d.cities[0].location[0]+d.cities[1].location[0])/2];
+				return {
+					type: 'Feature',
+					properties: {distance: d.distance, cities: d.cities, cityNames: d.cityNames},
+					geometry: {type: 'Point', coordinates: coordinates}
+				}
+			}
+
+			function connectionType(d) {
+				var coordinates = [[d.cities[0].location[1], d.cities[0].location[0]], [d.cities[1].location[1], d.cities[1].location[0]]];
+				return {
+					type: 'Feature',
+					properties: {distance: d.distance, cities: d.cities, cityNames: d.cityNames},
+					geometry: {type: 'LineString', coordinates: coordinates}
+				}
+			}
 
 
-
-
-
-			scope.$watch('game', function(newData, oldData) {
-				var cities = newData.cities,
-					connections = newData.connections;
-
-				if(cities && connections) {
-					var revisedCities = cities.map(function(city) {
-						return cityType(city);
-					});
-					var revisedConnections = connections.map(function(connection) {
-						return connectionType(connection);
-					});
-					var revisedDistMarkers = connections.map(function(connection) {
-						return connectionDistType(connection);
-					});
+			scope.$watch('game', function(game) {
+				if(game.cities && game.connections) {
+					var revisedCities = game.cities.map(function(city) { return cityType(city); });
+					var revisedConnections = game.connections.map(function(connection) { return connectionType(connection); });
+					var revisedDistMarkers = game.connections.map(function(connection) { return connectionDistType(connection); });
 
 					svg.call(zoom);
 
+					// connectionVector.datum({type: "FeatureCollection", features: revisedConnections});
+					
 					cityVector = citiesCollection.selectAll("path")
 						.data(revisedCities)
 						.enter()
 						.append('path');
 
-					connectionVector.datum({type: "FeatureCollection", features: revisedConnections});
+					connectionVector = connectionCollection.selectAll('path')
+						.data(revisedConnections)
+						.enter()
+						.append('path')
+						.attr('id', function(d) { return d.properties.cityNames; })
+						.attr('fill', 'none')
+						.attr('stroke', 'grey');
 
-					connectionDistVector = connectionDists.selectAll("path")
+					connectionDistVector = connectionDistCollection.selectAll("path")
 						.data(revisedDistMarkers)
 						.enter()
 						.append('path')
 						.attr('id', function(d,i) { return "path_" + i; });
 
-					distText = connectionDists.selectAll('text')
+					distText = connectionDistCollection.selectAll('text')
 						.data(revisedDistMarkers)
 						.enter()
 						.append('text')
@@ -200,69 +213,24 @@ app.directive('zoomMap', function($parse) {
 
 					towers.draw(revisedCities, citiesCollection);
 
+					for(var key in towers) {
+						if(key.indexOf('left') > -1) {
+							towers[key]
+								.attr('width', leftTowerWidth)
+								.attr('height', leftTowerHeight)
+						} else if(key.indexOf('mid') > -1) {
+							towers[key]
+								.attr('width', midTowerWidth)
+								.attr('height', midTowerHeight)
+						} else if(key.indexOf('right') > -1) {
+							towers[key]
+								.attr('width', rightTowerWidth)
+								.attr('height', rightTowerHeight)
+						}
+					}
 
-					// for(var key in towers) {
-					// 	if(Array.isArray(towers[key])) {
-					// 		if(towers[key].indexOf('left') > -1) {
-					// 			console.log('IN')
-					// 			towers.key
-					// 				.attr('width', leftTowerWidth)
-					// 				.attr('height', leftTowerHeight)
-					// 		}
-					// 	}
-					// }
-
-					towers.leftTower10
-						.attr('width', leftTowerWidth)
-						.attr('height', leftTowerHeight)
-
-
-					towers.midTower10
-						.attr('width', midTowerWidth)
-						.attr('height', midTowerHeight)
-
-
-					towers.rightTower10
-						.attr('width', rightTowerWidth)
-						.attr('height', rightTowerHeight)
-
-
-					towers.leftTower15
-						.attr('width', leftTowerWidth)
-						.attr('height', leftTowerHeight)
-
-
-					towers.midTower15
-						.attr('width', midTowerWidth)
-						.attr('height', midTowerHeight)
-
-
-					towers.rightTower15
-						.attr('width', rightTowerWidth)
-						.attr('height', rightTowerHeight)
-
-					towers.leftTower20
-						.attr('width', leftTowerWidth)
-						.attr('height', leftTowerHeight)
-
-
-					towers.midTower20
-						.attr('width', midTowerWidth)
-						.attr('height', midTowerHeight)
-
-
-					towers.rightTower20
-						.attr('width', rightTowerWidth)
-						.attr('height', rightTowerHeight)
-
-
-
-
-
-					
 					zoomed();
 				}
-
 
 			}, true);
 
@@ -302,7 +270,6 @@ app.directive('zoomMap', function($parse) {
 					.attr('x', function(d,i) {return cityCentroids[i][0]})
 					.attr('y', function(d,i) {return cityCentroids[i][1] - textYOffset});
 
-
 				towers.leftTower10
 					.attr('x', function(d,i) {return cityCentroids[i][0] - rectDimension - cityBoxBuffer - 1.5*leftTowerWidth})
 					.attr('y', function(d,i) {return cityCentroids[i][1] + rectDimension/2 + cityBoxYOffset - leftTowerHeight});
@@ -314,7 +281,6 @@ app.directive('zoomMap', function($parse) {
 				towers.rightTower10
 					.attr('x', function(d,i) {return cityCentroids[i][0] - rectDimension - cityBoxBuffer - midTowerWidth/2 + rightTowerWidth})
 					.attr('y', function(d,i) {return cityCentroids[i][1] + rectDimension/2 + cityBoxYOffset - rightTowerHeight});
-
 
 				towers.leftTower15
 					.attr('x', function(d,i) {return cityCentroids[i][0] - 1.5*leftTowerWidth})
@@ -328,7 +294,6 @@ app.directive('zoomMap', function($parse) {
 					.attr('x', function(d,i) {return cityCentroids[i][0] - midTowerWidth/2 + rightTowerWidth})
 					.attr('y', function(d,i) {return cityCentroids[i][1] + rectDimension/2 + cityBoxYOffset - rightTowerHeight});
 
-
 				towers.leftTower20
 					.attr('x', function(d,i) {return cityCentroids[i][0] + rectDimension + cityBoxBuffer - 1.5*leftTowerWidth})
 					.attr('y', function(d,i) {return cityCentroids[i][1] + rectDimension/2 + cityBoxYOffset - leftTowerHeight});
@@ -341,77 +306,9 @@ app.directive('zoomMap', function($parse) {
 					.attr('x', function(d,i) {return cityCentroids[i][0] + rectDimension + cityBoxBuffer - midTowerWidth/2 + rightTowerWidth})
 					.attr('y', function(d,i) {return cityCentroids[i][1] + rectDimension/2 + cityBoxYOffset - rightTowerHeight});
 
-
-
-
 			}
-
-
-			function cityType(d) {
-				return {
-					type: 'Feature',
-					properties: {
-						name: d.name,
-						region: d.region,
-						id: d.id
-					},
-					geometry: {
-						type: 'Point',
-						coordinates: [d.location[1], d.location[0]]
-					}
-				}
-			}
-
-			function connectionDistType(d) {
-				var firstLon = d.cities[0].location[1],
-					firstLat = d.cities[0].location[0],
-					secondLon = d.cities[1].location[1],
-					secondLat = d.cities[1].location[0];
-
-				var coordinates = [ (firstLon+secondLon)/2, (firstLat+secondLat)/2 ];
-
-				return {
-					type: 'Feature',
-					properties: {
-						distance: d.distance,
-						cities: d.cities,
-						cityNames: d.cityNames
-					},
-					geometry: {
-						type: 'Point',
-						coordinates: coordinates
-					}
-				}
-			}
-
-			function connectionType(d) {
-				var firstLon = d.cities[0].location[1],
-					firstLat = d.cities[0].location[0],
-					secondLon = d.cities[1].location[1],
-					secondLat = d.cities[1].location[0];
-
-				var coordinates = [
-					[firstLon, firstLat],
-					[secondLon, secondLat]
-				];
-
-				return {
-					type: 'Feature',
-					properties: {
-						distance: d.distance,
-						cities: d.cities,
-						cityNames: d.cityNames
-					},
-					geometry: {
-						type: 'LineString',
-						coordinates: coordinates
-					}
-				}
-			}
-
 
 			function zoomed() {
-
 				var tiles = tile
 			    	.scale(zoom.scale())
 			    	.translate(zoom.translate())
