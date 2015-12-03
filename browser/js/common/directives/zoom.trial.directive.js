@@ -16,8 +16,6 @@ app.directive('zoomMap', function($parse) {
 
 			scope.$watch('me', function(me) {
 				if(me && me._id === scope.grid.state.activePlayer) {
-					console.log('me', me)
-					console.log("You're the activePlayer! And special!!!")
 					scope.showCityBuyPanel = true;
 					isActivePlayer = true;
 				}
@@ -106,7 +104,11 @@ app.directive('zoomMap', function($parse) {
 
 
 
-
+			function cityType(d) {
+				d.type = 'Feature';
+				d.geometry = {type: 'Point', coordinates: [d.location[1], d.location[0]]};
+				return d;
+			}
 
 
 			scope.$watch('game', function(newData, oldData) {
@@ -114,8 +116,8 @@ app.directive('zoomMap', function($parse) {
 					connections = newData.connections;
 
 				if(cities && connections) {
-					var revisedCities = cities.map(function(city) {
-						return cityType(city);
+					cities.forEach(function(city) {
+						cityType(city);
 					});
 					var revisedConnections = connections.map(function(connection) {
 						return connectionType(connection);
@@ -127,7 +129,7 @@ app.directive('zoomMap', function($parse) {
 					svg.call(zoom);
 
 					cityVector = citiesCollection.selectAll("path")
-						.data(revisedCities)
+						.data(cities)
 						.enter()
 						.append('path');
 
@@ -150,7 +152,7 @@ app.directive('zoomMap', function($parse) {
 						.attr("fill", "white");
 
 					var cityBoxSelection = citiesCollection.selectAll('rect')
-						.data(revisedCities)
+						.data(cities)
 						.enter();
 
 					cityBox = cityBoxSelection
@@ -191,14 +193,14 @@ app.directive('zoomMap', function($parse) {
 
 					cityText = cityBoxSelection
 						.append('text')
-						.text(function(d) {return d.properties.name})
+						.text(function(d) {return d.name})
 						.attr("text-anchor", "middle")
 						.attr("font-family", "sans-serif")
 						.attr("font-size", textFontSize)
 						.attr("fill", "white");
 
 
-					towers.draw(revisedCities, citiesCollection);
+					towers.draw(cities, citiesCollection);
 
 					for(var key in towers) {
 						if(key.indexOf('left') > -1) {
@@ -232,14 +234,16 @@ app.directive('zoomMap', function($parse) {
 						return 10;
 					});
 
+				console.log('cityCentroids', cityCentroids)
+
 				cityBox
 					// .attr("transform", function(d,i) {return "translate(" + cityCentroids[i] + ")"})
 					.attr('x', function(d,i) {return cityCentroids[i][0] - cityWidth/2})
 					.attr('y', function(d,i) {return cityCentroids[i][1] - cityHeight/2})
 					.on('click', function(d,i) {
-						console.log("You've clicked " + d.properties.name)
+						console.log("You've clicked " + d.name)
 						console.log('isActivePlayer', isActivePlayer)
-						if(isActivePlayer) cityShoppingCart.push(d.properties.id);
+						if(isActivePlayer) cityShoppingCart.push(d._id);
 						console.log('cityShoppingCart', cityShoppingCart)
 					});
 
@@ -304,20 +308,7 @@ app.directive('zoomMap', function($parse) {
 			}
 
 
-			function cityType(d) {
-				return {
-					type: 'Feature',
-					properties: {
-						name: d.name,
-						region: d.region,
-						id: d.id
-					},
-					geometry: {
-						type: 'Point',
-						coordinates: [d.location[1], d.location[0]]
-					}
-				}
-			}
+			
 
 			function connectionDistType(d) {
 				var firstLon = d.cities[0].location[1],
@@ -378,14 +369,18 @@ app.directive('zoomMap', function($parse) {
 			    	.scale(zoom.scale() / 2 / Math.PI)
 			    	.translate(zoom.translate());
 		    	
+
 		    	cityVector
-		    		.attr('name', function(d) { return d.properties.name })
-		    		.attr('region', function(d) { return d.properties.region })
+		    		.attr('name', function(d) { return d.name })
+		    		.attr('region', function(d) { return d.region })
 					.attr('d', cityPath)
 					.attr('fill', 'none')
 					.each(function(d,i) {
+						console.log('cityPath.centroid(d)', cityPath.centroid(d))
 		    			cityCentroids[i] = cityPath.centroid(d);
 					});
+
+		    	console.log('cityCentroids', cityCentroids)
 
 		    	connectionVector
 			    	.attr('d', connectionPath);

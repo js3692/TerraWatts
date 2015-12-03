@@ -2,7 +2,7 @@
 
 	var towers = {};
 
-	towers.draw = function(revisedCities, citiesCollection) {
+	towers.draw = function(cities, citiesCollection) {
 
 		citiesCollection.append("g")
 			.attr('class', 'Towers');
@@ -21,7 +21,7 @@
 			.attr('class', 'Slot10MidTowers');
 
 		towers.leftTower10 = d3.select('.Slot10LeftTowers').selectAll('rect')
-			.data(revisedCities)
+			.data(cities)
 			.enter()
 			.append('rect')
 			.attr('id', 'leftTower')
@@ -30,7 +30,7 @@
 			.attr('stroke-width', '1px');
 
 		towers.midTower10 = d3.select('.Slot10MidTowers').selectAll('rect')
-			.data(revisedCities)
+			.data(cities)
 			.enter()
 			.append('rect')
 			.attr('id', 'midTower')
@@ -39,7 +39,7 @@
 			.attr('stroke-width', '1px');
 
 		towers.rightTower10 = d3.select('.Slot10RightTowers').selectAll('rect')
-			.data(revisedCities)
+			.data(cities)
 			.enter()
 			.append('rect')
 			.attr('id', 'rightTower')
@@ -62,7 +62,7 @@
 			.attr('class', 'Slot15MidTowers');
 
 		towers.leftTower15 = d3.select('.Slot15LeftTowers').selectAll('rect')
-			.data(revisedCities)
+			.data(cities)
 			.enter()
 			.append('rect')
 			.attr('id', 'leftTower')
@@ -71,7 +71,7 @@
 			.attr('stroke-width', '1px');
 
 		towers.midTower15 = d3.select('.Slot15MidTowers').selectAll('rect')
-			.data(revisedCities)
+			.data(cities)
 			.enter()
 			.append('rect')
 			.attr('id', 'midTower')
@@ -80,7 +80,7 @@
 			.attr('stroke-width', '1px');
 
 		towers.rightTower15 = d3.select('.Slot15RightTowers').selectAll('rect')
-			.data(revisedCities)
+			.data(cities)
 			.enter()
 			.append('rect')
 			.attr('id', 'rightTower')
@@ -103,7 +103,7 @@
 			.attr('class', 'Slot20MidTowers');
 
 		towers.leftTower20 = d3.select('.Slot20LeftTowers').selectAll('rect')
-			.data(revisedCities)
+			.data(cities)
 			.enter()
 			.append('rect')
 			.attr('id', 'leftTower')
@@ -112,7 +112,7 @@
 			.attr('stroke-width', '1px');
 
 		towers.midTower20 = d3.select('.Slot20MidTowers').selectAll('rect')
-			.data(revisedCities)
+			.data(cities)
 			.enter()
 			.append('rect')
 			.attr('id', 'midTower')
@@ -121,7 +121,7 @@
 			.attr('stroke-width', '1px');
 
 		towers.rightTower20 = d3.select('.Slot20RightTowers').selectAll('rect')
-			.data(revisedCities)
+			.data(cities)
 			.enter()
 			.append('rect')
 			.attr('id', 'rightTower')
