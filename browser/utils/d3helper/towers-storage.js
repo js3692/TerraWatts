@@ -2,132 +2,47 @@
 
 	var towers = {};
 
-	towers.draw = function(cities, citiesCollection) {
+	towers.draw = function(cities, cityGroup, rectDimension) {
 
-		citiesCollection.append("g")
-			.attr('class', 'Towers');
+		console.log('cityGroup', cityGroup)
 
-
-		d3.select('.Towers').append("g")
-			.attr('class', 'Slot10Towers');
-
-		d3.select('.Slot10Towers').append("g")
-			.attr('class', 'Slot10LeftTowers');
+		var slot10Towers = d3.select(cityGroup)
+			.append('g')
+			.attr('id', 'slot10Towers')
+			// .each(function(d,i) {
+			// 	d3.select('#slot10Towers')
+			// 		// .selectAll('rect')
+			// 		// .data(cities)
+			// 		// .enter()
+			// 		.append('rect')
+			// 		.attr('id', 'leftTower')
+			// 		.attr('fill', 'grey')
+			// 		.attr('stroke', 'black')
+			// 		.attr('stroke-width', '1px')
+			// 		// .attr('x', 100)
+			// 		// .attr('y', 100)
+			// 		.attr('width', rectDimension*.25)
+			// 		.attr('height', rectDimension*.4);
+			// })
 		
-		d3.select('.Slot10Towers').append("g")
-			.attr('class', 'Slot10RightTowers');
-
-		d3.select('.Slot10Towers').append("g")
-			.attr('class', 'Slot10MidTowers');
-
-		towers.leftTower10 = d3.select('.Slot10LeftTowers').selectAll('rect')
-			.data(cities)
-			.enter()
+		d3.select('#slot10Towers')
 			.append('rect')
 			.attr('id', 'leftTower')
 			.attr('fill', 'grey')
 			.attr('stroke', 'black')
-			.attr('stroke-width', '1px');
+			.attr('stroke-width', '1px')
+			.attr('width', rectDimension*.25)
+			.attr('height', rectDimension*.4);
 
-		towers.midTower10 = d3.select('.Slot10MidTowers').selectAll('rect')
-			.data(cities)
-			.enter()
-			.append('rect')
-			.attr('id', 'midTower')
-			.attr('fill', 'grey')
-			.attr('stroke', 'black')
-			.attr('stroke-width', '1px');
-
-		towers.rightTower10 = d3.select('.Slot10RightTowers').selectAll('rect')
-			.data(cities)
-			.enter()
-			.append('rect')
-			.attr('id', 'rightTower')
-			.attr('fill', 'grey')
-			.attr('stroke', 'black')
-			.attr('stroke-width', '1px');
-
-
-
-		d3.select('.Towers').append("g")
-			.attr('class', 'Slot15Towers');
-
-		d3.select('.Slot15Towers').append("g")
-			.attr('class', 'Slot15LeftTowers');
 		
-		d3.select('.Slot15Towers').append("g")
-			.attr('class', 'Slot15RightTowers');
 
-		d3.select('.Slot15Towers').append("g")
-			.attr('class', 'Slot15MidTowers');
+		var slot15Towers = d3.select(cityGroup)
+			.append('g')
+			.attr('id', 'slot15Towers');
 
-		towers.leftTower15 = d3.select('.Slot15LeftTowers').selectAll('rect')
-			.data(cities)
-			.enter()
-			.append('rect')
-			.attr('id', 'leftTower')
-			.attr('fill', 'grey')
-			.attr('stroke', 'black')
-			.attr('stroke-width', '1px');
-
-		towers.midTower15 = d3.select('.Slot15MidTowers').selectAll('rect')
-			.data(cities)
-			.enter()
-			.append('rect')
-			.attr('id', 'midTower')
-			.attr('fill', 'grey')
-			.attr('stroke', 'black')
-			.attr('stroke-width', '1px');
-
-		towers.rightTower15 = d3.select('.Slot15RightTowers').selectAll('rect')
-			.data(cities)
-			.enter()
-			.append('rect')
-			.attr('id', 'rightTower')
-			.attr('fill', 'grey')
-			.attr('stroke', 'black')
-			.attr('stroke-width', '1px');
-
-
-
-		d3.select('.Towers').append("g")
-			.attr('class', 'Slot20Towers');
-
-		d3.select('.Slot20Towers').append("g")
-			.attr('class', 'Slot20LeftTowers');
-		
-		d3.select('.Slot20Towers').append("g")
-			.attr('class', 'Slot20RightTowers');
-
-		d3.select('.Slot20Towers').append("g")
-			.attr('class', 'Slot20MidTowers');
-
-		towers.leftTower20 = d3.select('.Slot20LeftTowers').selectAll('rect')
-			.data(cities)
-			.enter()
-			.append('rect')
-			.attr('id', 'leftTower')
-			.attr('fill', 'grey')
-			.attr('stroke', 'black')
-			.attr('stroke-width', '1px');
-
-		towers.midTower20 = d3.select('.Slot20MidTowers').selectAll('rect')
-			.data(cities)
-			.enter()
-			.append('rect')
-			.attr('id', 'midTower')
-			.attr('fill', 'grey')
-			.attr('stroke', 'black')
-			.attr('stroke-width', '1px');
-
-		towers.rightTower20 = d3.select('.Slot20RightTowers').selectAll('rect')
-			.data(cities)
-			.enter()
-			.append('rect')
-			.attr('id', 'rightTower')
-			.attr('fill', 'grey')
-			.attr('stroke', 'black')
-			.attr('stroke-width', '1px');
+		var slot20Towers = d3.select(cityGroup)
+			.append('g')
+			.attr('id', 'slot20Towers');
 
 	}
 
