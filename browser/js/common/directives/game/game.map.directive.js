@@ -1,4 +1,4 @@
-app.directive('gameMap', function($parse) {
+app.directive('gameMap', function($parse, CityCart) {
 	return {
 		restrict: 'E',
 		replace: true,
@@ -6,13 +6,11 @@ app.directive('gameMap', function($parse) {
 		scope: {
 			game: '=',
 			grid: '=',
-			me: '=',
-			showCityBuyPanel: '=ngModel'
+			me: '='
 		},
 		link: function(scope, element, attrs) {
 
 			var isActivePlayer = false;
-			var cityShoppingCart = [];
 
 			scope.$watch('me', function(me) {
 				if(me && me._id === scope.grid.state.activePlayer) {
@@ -134,8 +132,6 @@ app.directive('gameMap', function($parse) {
 						.attr('id', function(d,i) { return 'city' + i; })
 						.on('click', function(d,i) {
 							console.log("You've clicked " + d.properties.name)
-							if(isActivePlayer) cityShoppingCart.push(d.properties.id);
-							console.log('cityShoppingCart', cityShoppingCart)
 
 							d3.select('#slot10Towers' + i + ' #leftTower')
 								.attr('height', leftTowerHeight)

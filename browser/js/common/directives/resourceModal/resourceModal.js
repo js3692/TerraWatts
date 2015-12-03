@@ -1,10 +1,18 @@
-app.controller('ResourceModalCtrl', function($scope, $uibModalInstance, resources, resourceColors){
+app.controller('ResourceModalCtrl', function($scope, player, $uibModalInstance, resources, resourceColors, PlayGameFactory){
     $scope.resources = resources;
     $scope.resourceColors = resourceColors;
     
-    $scope.buyResources = function(){
-        console.log($scope.bid);
+    $scope.buyResources = function(wishlist){
+        var update = {
+            phase: 'resource',
+            player: player,
+            data: {
+                wishlist: wishlist
+            }
+        };
+        PlayGameFactory.continue(update);
     }
+    
     $scope.ok = function () {
         $uibModalInstance.close();
     };

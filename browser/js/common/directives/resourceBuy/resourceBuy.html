@@ -1,0 +1,74 @@
+
+<div>
+    Coal
+    <div class="btn-group" role="group">
+        <button type="button" class="btn" ng-style="{ 'background-color': buttonColor }" ng-click="changeWish('coal',-1)" ng-disabled="isMin(wishlist.coal)">
+            <span class="glyphicon 
+                       glyphicon-minus">
+          </span>
+        </button>
+        <button type="button" class="btn btn-default">
+            <span>{{ wishlist.coal }}</span>
+        </button>
+        <button type="button" class="btn " ng-style="{ 'background-color': buttonColor }" ng-click="changeWish('coal', 1)" ng-disabled="isMax(wishlist.coal)">
+            <span class="glyphicon glyphicon-plus">
+          </span>
+        </button>
+    </div>
+</div>
+
+<div>
+    Oil
+    <div class="btn-group" role="group">
+
+        <button type="button" class="btn" ng-style="{ 'background-color': buttonColor }" ng-click="changeWish('oil', -1)" ng-disabled="isMin(wishlist.oil)">
+            <span class="glyphicon 
+                       glyphicon-minus">
+          </span>
+        </button>
+        <button type="button" class="btn btn-default">
+            <span>{{ wishlist.oil }}</span>
+        </button>
+        <button type="button" class="btn " ng-style="{ 'background-color': buttonColor }" ng-click="changeWish('oil', 1)" ng-disabled="isMax(wishlist.oil)">
+            <span class="glyphicon glyphicon-plus">
+          </span>
+        </button>
+    </div>
+</div>
+
+<div>
+    Trash
+    <div class="btn-group" role="group">
+        <button type="button" class="btn" ng-style="{ 'background-color': buttonColor }" ng-click="changeWish('trash', -1)" ng-disabled="isMin(wishlist.trash)">
+            <span class="glyphicon 
+                       glyphicon-minus">
+          </span>
+        </button>
+        <button type="button" class="btn btn-default">
+            <span>{{ wishlist.trash }}</span>
+        </button>
+        <button type="button" class="btn " ng-style="{ 'background-color': buttonColor }" ng-click="changeWish('trash', 1)" ng-disabled="isMax(wishlist.trash)">
+            <span class="glyphicon glyphicon-plus">
+          </span>
+        </button>
+    </div>
+</div>
+
+<div>
+    Nuke
+    <div class="btn-group" role="group">
+
+        <button type="button" class="btn" ng-style="{ 'background-color': buttonColor }" ng-click="changeWish('nuke', -1)" ng-disabled="isMin(wishlist.nuke)">
+            <span class="glyphicon 
+                       glyphicon-minus">
+          </span>
+        </button>
+        <button type="button" class="btn btn-default">
+            <span>{{ wishlist.nuke }}</span>
+        </button>
+        <button type="button" class="btn " ng-style="{ 'background-color': buttonColor }" ng-click="changeWish('nuke', 1)" ng-disabled="isMax(wishlist.nuke)">
+            <span class="glyphicon glyphicon-plus">
+          </span>
+        </button>
+    </div>
+</div>

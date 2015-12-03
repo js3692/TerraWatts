@@ -2,12 +2,9 @@
   <div class="glyphicon glyphicon-oil"></div>
   <hr>
   <h2> Buy some resources </h2>
-  <div ng-repeat="(resource, color) in resourceColors">
-    {{ resource }}
-    <bid start="0" ng-model="bid" button-color="color"></bid>
-  </div>
+  <resource-buy ng-model="wishlist"></resource-buy>
   <hr>
   <div>
-    <button class="btn btn-lg" ng-click="buyResources()">Submit</button>
+    <button class="btn btn-lg" ng-click="buyResources(wishlist)">Submit</button>
   </div>
 </div>

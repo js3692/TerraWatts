@@ -13,7 +13,7 @@ function priceOfOne(resourceType, market) {
 
 module.exports = function totalPrice(wishlist, market) {
 	var total = 0;
-	marketCopy = {};
+	var marketCopy = {};
 	for(var resource in market) {
 		marketCopy[resource] = market[resource];
 	}

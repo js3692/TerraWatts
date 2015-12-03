@@ -4,7 +4,6 @@
 require('./player');
 require('./game');
 require('./auction');
+require('./choice');
 require('./state');
 require('./grid');
-
-// require('./choice');
