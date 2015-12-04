@@ -1,0 +1,23 @@
+plant-action {
+    
+    hr {
+        border: 1px solid black;
+    }
+    h2 {
+        color: white;
+        text-align: center;
+        font-weight: 100;
+    }
+    >div {
+        padding-top: 10px;
+        text-align: center;
+    }
+    button.btn.btn-lg,
+    button.btn.btn-lg:hover {
+        color: white;
+        font-weight: 100;
+        background-color: $main-background;
+        margin-bottom: 5%;
+        border: 1px solid white;
+    }
+}

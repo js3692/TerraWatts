@@ -1,0 +1,19 @@
+<div>
+    <plant ng-if="plant || auctionPlant" rank="{{ auctionPlant ? auctionPlant.rank : plant.rank }}"></plant>
+        <div ng-hide="getAuction()">
+            <h2 ng-hide="plant">Pick A Plant</h2>
+            <bid start="::plant.rank" ng-model="bid" ng-show="plant"></bid>
+                <div>
+                    <button class="btn btn-lg" ng-show="plant" ng-click="pickPlant()">Pick This Plant</button>
+                    <button class="btn btn-lg" ng-show="plant" ng-click="pickAnotherPlant()">Pick Another</button>
+                    <button class="btn btn-lg" ng-click="pass()">Pass</button>
+                </div>
+        </div>
+        <div ng-if="shouldSeeAuctionButtons()">
+            <bid start="auction.bid + 1" ng-model="bid"></bid>
+            <div>
+                <button class="btn btn-lg" ng-click="bidFor(bid)">Bid</button>
+                <button class="btn btn-lg" ng-click="pass()">Pass</button>
+            </div>
+        </div>
+</div>

@@ -68,9 +68,9 @@ schema.methods.continue = function(update, game) {
         return this.transaction(update, game);
 	} else {
 		if (update.data === 'pass') {
-            console.log('in pass')
+            
 			this.remainingPlayers = this.removePlayer(update.player);
-            console.log(this.remainingPlayers);
+            
 			this.numPasses++;
 			return this.go(game)
 		} else {
@@ -168,14 +168,12 @@ schema.methods.transaction = function(update, game) {
 				// make player discard a plant
 			}
 		} else if (self.phase === 'resource') {
-            console.log('in resource transaction', update)
 			var wishlist = update.data.wishlist;
 			player.money -= resourcePrice(wishlist, game.resourceMarket);
 			for(var resource in wishlist) {
 		        game.resourceMarket[resource] -= wishlist[resource];
 		        player.resources[resource] += wishlist[resource];
 	    	}
-            console.log('after transaction', game, player)
 		} else if (self.phase === 'city') {
 			var citiesToAdd = update.data;
 			player.money -= cityPrice(citiesToAdd, game, player);
@@ -212,7 +210,6 @@ schema.methods.transaction = function(update, game) {
 		return player.save();
 	})
 	.then(function(savedPlayer) {
-		console.log('savedPlayer!!!!!!!!', savedPlayer)
         return self.go(game);
 	})
 	

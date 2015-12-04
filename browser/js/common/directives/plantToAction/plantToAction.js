@@ -1,4 +1,4 @@
-app.directive('plantToAction', function(SliderFactory, PlayGameFactory){
+app.directive('plantToAction', function(SliderFactory, PlayGameFactory, $rootScope){
     return {
         restrict: 'A',
         scope: {
@@ -6,10 +6,8 @@ app.directive('plantToAction', function(SliderFactory, PlayGameFactory){
         },
         link: function(scope, elem, attrs){
             elem.bind('click', function(event){
-                if(!elem.hasClass('make-invisible')) {
-                    SliderFactory.plantToAction(elem);   
-                    PlayGameFactory.setPlantToBidOn(scope.plant);
-                };
+                PlayGameFactory.setPlantToBidOn(scope.plant);
+                $rootScope.$digest();
             });
         }
     }
