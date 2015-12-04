@@ -15,11 +15,14 @@ app.directive('plantAction', function(PlayGameFactory){
             scope.pass = function(){
                 update.player = PlayGameFactory.getMe();
                 update.data = 'pass';
-                PlayGameFactory.continue(update);
-                /* 
-                    necessary for scope.pickPlant below --> can't set plant property on a string. 
-                */
-                update.data = {};
+                PlayGameFactory.continue(update)
+                    .then(function(){
+                        /* 
+                            necessary for scope.pickPlant below --> can't set plant property on a string. 
+                        */
+                        update.data = {};
+                    });
+                
             }
     
             scope.pickPlant = function(){

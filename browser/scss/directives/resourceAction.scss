@@ -1,0 +1,43 @@
+resource-action {
+    font-weight: 100;
+    color: white;
+    
+    .waiting-container {
+        box-sizing: border-box;
+        padding-top: 60px;
+        h2 {
+            font-weight: 100;
+            text-align: center;
+        }
+    }
+    
+    .row {
+        
+        tbody {
+            border-top: 2px solid transparent;    
+        }
+        
+        .table {
+            margin-left: 20px;
+        }
+    }
+    
+    .btn-col {
+        .btn-group {
+            margin-top: 60px;
+            margin-left: 35px;
+        }   
+    }
+    
+    
+    button.btn.btn-lg,
+    button.btn.btn-lg:hover {
+        color: white;
+        font-weight: 100;
+        background-color: $main-background;
+        margin-bottom: 5%;
+        border: 1px solid white;
+        text-align: center;
+    }
+    
+}
