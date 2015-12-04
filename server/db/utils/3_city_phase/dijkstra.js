@@ -8,12 +8,10 @@ module.exports = function totalConnectionCost(citiesToAdd, network, cities, conn
 		var distances = citiesToAddCopy.map(function(city) {
 			return cheapestDistanceTo(city, networkCopy, cities, connections)
 		});
-		console.log('distances', distances);
 		var cheapest = Math.min.apply(null, distances);
 		var cheapestIndex = distances.indexOf(cheapest);
 		cost += cheapest;
 		networkCopy.push(citiesToAddCopy.splice(cheapestIndex,1)[0]);
-		console.log('networkCopy', networkCopy);
 	}
 	return cost;
 }

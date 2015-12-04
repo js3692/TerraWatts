@@ -234,15 +234,15 @@ schema.methods.continue = function (update) {
   var self = this;
   if(this.state.auction) {
     return this.state.auction.continue(update, this.game)
-    .then(function () {
+      .then(function () {
         return self.save();
-    })
+      });
   } else {
     return this.state.continue(update, this.game)
-    .then(function (whatContinueReturns) {
-      if(whatContinueReturns.length) self.game = whatContinueReturns[1];
-      return self.save();
-    })
+      .then(function (whatContinueReturns) {
+        if(whatContinueReturns && whatContinueReturns.length) self.game = whatContinueReturns[1];
+        if(whatContinueReturns !== undefined) return self.save();
+      });
   }
 };
 
