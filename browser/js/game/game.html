@@ -1,8 +1,6 @@
 <div>
-    <game-map grid='grid' ng-model='showCityBuyPanel'></game-map>
-    <bargraph></bargraph>
-    <plant-panel resources="gridGame.resourceMarket" 
-                 plant-market="gridGame.plantMarket"
+   <game-map grid='grid' ng-model='showCityBuyPanel'></game-map>
+    <plant-and-resource-panel 
                  player="me()"
                  auction="grid.state.auction"
                  players="grid.players"></plant-and-resource-panel>
