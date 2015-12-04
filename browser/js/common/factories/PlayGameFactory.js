@@ -1,6 +1,6 @@
 app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     var baseUrl = '/api/play/continue/',
-        player,
+        user,
         gridId,
         gridKey,
         grid,
@@ -10,87 +10,94 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     function toData(response){
         return response.data;
     }
-    var factory = {};
+    var PGFactory = {};
     
-    factory.continue = function(update){
+    PGFactory.continue = function(update){
         return $http.post(baseUrl + gridId, update)
             .then(toData);
-    };
-    factory.setGridId = function(_gridId){
+    };  
+    
+    PGFactory.setGridId = function(_gridId){
         gridId = _gridId;
     };
-    factory.setKey = function(_gridKey){
+    
+    PGFactory.setKey = function(_gridKey){
         gridKey = _gridKey;
     };
-    factory.getKey = function(){
+    
+    PGFactory.getKey = function(){
         return gridKey;  
     };
-    factory.setPlayer = function(playerPromise){
-        playerPromise.then(function(_player){
-            player = _player;
+    
+    PGFactory.setUser = function(userPromise){
+        userPromise.then(function(_user){
+            user = _user;
         });
     };
-    factory.getGrid = function() {
+    
+    PGFactory.getGrid = function() {
         if(gridKey) grid = FirebaseFactory.getConnection(gridKey);
         return grid;   
     };
-    factory.getMe = function() {
+    
+    PGFactory.getMe = function() {
         if(me) return me;
         if(grid && grid.players) {
             var players = grid.players;
             for(var i = 0, len = players.length; i < len; i++) {
-                if(players[i].user._id === player._id) return me = players[i];
+                if(players[i].user._id === user._id) return me = players[i];
             }
         }
         return null;
     };
-    factory.getTurnOrder = function(){
+    
+    PGFactory.getTurnOrder = function(){
         if(grid && grid.game) {
             return grid.game.turnOrder;
         }
     };
     
-    factory.getActivePlayer = function(){
+    PGFactory.getActivePlayer = function(){
         if(grid && grid.state) return grid.state.activePlayer; 
     };
     
-    factory.getPlantMarket = function(){
+    PGFactory.getPlantMarket = function(){
             if(grid && grid.game) return grid.game.plantMarket;
     };
     
-    factory.getResourceMarket = function(){
+    PGFactory.getResourceMarket = function(){
         if(grid && grid.game) return grid.game.resourceMarket;  
     };
     
-    factory.setPlantToBidOn = function(plant){
+    PGFactory.setPlantToBidOn = function(plant){
         plantToBidOn = plant;  
     };
     
-    factory.getPlantToBidOn = function(){
+    PGFactory.getPlantToBidOn = function(){
         return plantToBidOn;
     };
     
-    factory.getGamePhase = function(){
+    PGFactory.getGamePhase = function(){
         if(grid && grid.state) return grid.state.phase;
     };
     
-    factory.iAmActivePlayer = function(){
-        var me = factory.getMe();
-        if(me) return me._id === factory.getActivePlayer();
+    PGFactory.iAmActivePlayer = function(){
+        var me = PGFactory.getMe();
+        if(me) return me._id === PGFactory.getActivePlayer();
     };
     
-    factory.iAmActiveAuctionPlayer = function(){
-        var auction = factory.getAuction();
-        if(auction) return auction.activePlayer._id === factory.getMe()._id;
+    PGFactory.iAmActiveAuctionPlayer = function(){
+        var auction = PGFactory.getAuction();
+        if(auction) return auction.activePlayer._id === PGFactory.getMe()._id;
     }
     
-    factory.getAuction = function(){
+    PGFactory.getAuction = function(){
         if(grid && grid.state) return grid.state.auction;
     };
 
-    factory.bid = {}
+    PGFactory.bid = {}
     
-    return factory;
+    return PGFactory;
     
     
 });

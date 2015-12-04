@@ -3,23 +3,22 @@ app.directive('bid', function () {
         restrict: 'E',
         templateUrl: 'js/common/directives/bid/bid.html',
         scope: {
-            start: '=',
             buttonColor: '=',
             bid: '=ngModel'
         },
         link: function (scope, elem, attrs) {
             
-            //everything needs to be inside functions because the data is not populated on page load
-            // bid & start are both necessary because start is bound to the plant rank (used one-way data binding);
+            attrs.$observe('start', function(start){
+                scope.bid = +start;
+            }); 
+            
             scope.getBid = function(){
-                scope.bid = scope.start;
-                return scope.start;
-            }
+                return scope.bid;
+            };
             
             scope.changeBid = function (quantity) {
-                scope.start += quantity;
-                scope.bid = scope.start;
-            }
+                scope.bid = Number(scope.bid) + quantity;
+            };
         }
     }
 })

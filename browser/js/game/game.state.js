@@ -14,10 +14,10 @@ app.config(function($stateProvider){
                 PlayGameFactory.setKey(gridKey);
                 return gridKey;  
             },
-            thePlayer: function(AuthService, PlayGameFactory) {
-                var player = AuthService.getLoggedInUser();
-                PlayGameFactory.setPlayer(player);
-				return player;
+            theUser: function(AuthService, PlayGameFactory) {
+                var user = AuthService.getLoggedInUser();
+                PlayGameFactory.setUser(user);
+				return user;
 			}
 		},
     data: {
