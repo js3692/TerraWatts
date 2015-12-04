@@ -1,11 +1,12 @@
 #resourceChart {
     width: 100%;
     height: 100%;
-    background: transparent;
-    padding: 3px;
 
     svg {
-        margin: auto;
+        // margin-top: 5px;
+        // margin-bottom: 5px;
+        // vertical-align: middle;
+        // display: inline-block;
     }
 
     .bar {
@@ -23,13 +24,15 @@
     .axis path,
     .axis line {
         fill: none;
-        stroke: #000;
+        // stroke: #000;
+        stroke: white;
         shape-rendering: crispEdges;
     }
 
     .y.axis path {
         display: none;
     }
+
 }
 
 

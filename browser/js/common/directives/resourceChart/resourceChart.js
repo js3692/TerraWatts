@@ -9,20 +9,23 @@ app.directive('bars', function ($parse) {
         },
         link: function (scope, element, attrs) {
 
-            var margin = {top: 20, right: 20, bottom: 20, left: 20},
+            var margin = {top: 20, right: 20, bottom: 0, left: 15},
                 width = 450 - margin.left - margin.right,
-                height = 225 - margin.top - margin.bottom,
-                yBuffer = 20;
+                height = 225 - margin.top - margin.bottom;
+                // width = 450,
+                // height = 225;
 
             var x = d3.scale.linear()
-                .range([width, 0]);
+                // .range([width, 0]);
+                .range([0, width]);
 
             var y = d3.scale.ordinal()
                 .rangeRoundBands([0, height], .1);
 
             var xAxis = d3.svg.axis()
                 .scale(x)
-                .orient('bottom');
+                // .orient('bottom');
+                .orient('top');
 
             var yAxis = d3.svg.axis()
                 .scale(y)
@@ -31,9 +34,12 @@ app.directive('bars', function ($parse) {
             var svg = d3.select('#resourceChart')
                 .append('svg')
                 .attr('class', 'resourceSVG')
-                .attr('width', width)
-                .attr('height', height)
-                .append('g');
+                // .attr('width', width)
+                // .attr('height', height)
+                .attr('width', 450)
+                .attr('height', 225)
+                .append('g')
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
             scope.$watch('data', function (data) {
@@ -50,18 +56,19 @@ app.directive('bars', function ($parse) {
 
                     svg.append('g')
                         .attr('class', 'x axis')
+                        .attr('fill', 'white')
                         .call(xAxis)
                         .append('text')
-                        .attr('transform', 'rotate(90)')
+                        .attr('transform', 'rotate(0)')
                         .attr('x', 6)
                         .attr('dx', '.71em')
                         .style('text-anchor', 'end')
-                        .text('TEXTICLES');
+                        .text('TEXT');
 
-                    svg.append('g')
-                        .attr('class', 'y axis')
-                        .attr("transform", "translate(0," + width + ")")
-                        .call(yAxis);
+                    // svg.append('g')
+                    //     .attr('class', 'y axis')
+                    //     .attr("transform", "translate(0," + width + ")")
+                    //     .call(yAxis);
 
                     svg.selectAll('.bar')
                         .data(resources)
@@ -69,23 +76,35 @@ app.directive('bars', function ($parse) {
                         .append('rect')
                         .attr('class', 'bar')
                         // .attr('x', function(d) { return x(d.value); })
+                        .attr('id', function(d,i) { return d.type; })
                         .attr('x', 0)
-                        .attr('width', function(d) { return width - x(d.value); })
-                        .attr('y', function(d) { return y(d.type); })
+                        .attr('width', function(d,i) {
+                            console.log('i width', width)
+                            console.log('i x(d.value)', x(d.value))
+                            // return width - x(d.value);
+                            return x(d.value);
+                        })
+                        .attr('y', function(d) {
+                            console.log('y(d.type)', y(d.type))
+                            return y(d.type)+5;
+                        })
                         .attr('height', y.rangeBand());
 
-                    svg.selectAll('.text')
-                        .data(resources)
-                        .enter()
-                        .append('text')
-                        .attr('class', 'text')
-                        .attr('x', function(d) { return width - x(d.value) - 3; })
-                        .attr('y', function(d) { return y(d.type); })
-                        .text(function(d) { return d.value; })
-                        .style('text-anchor', 'end')
-                        .attr("font-family", "sans-serif")
-                        .attr("font-size", 10)
-                        .attr("fill", "white")
+                    // svg.selectAll('.text')
+                    //     .data(resources)
+                    //     .enter()
+                    //     .append('text')
+                    //     .attr('class', 'text')
+                    //     .attr('x', function(d) { return width - x(d.value) - 3; })
+                    //     .attr('y', function(d) { return y(d.type); })
+                    //     .text(function(d) { return d.value; })
+                    //     .style('text-anchor', 'end')
+                    //     .attr("font-family", "sans-serif")
+                    //     .attr("font-size", 10)
+                    //     .attr("fill", "white")
+
+
+
 
 
 
