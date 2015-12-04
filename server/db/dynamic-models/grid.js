@@ -217,7 +217,7 @@ schema.methods.createGame = function () {
 
 schema.methods.initialize = function () {
   var self = this;
-  this.state = new State();
+  this.state = new State({key: this.key});
   return this.state.initialize(this.game)
     .then(function (savedStateAndGame) {
       self.state = savedStateAndGame[0];
