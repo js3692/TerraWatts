@@ -51,6 +51,7 @@ schema.methods.go = function (game) {
   var self = this;
 
 	if (this.remainingPlayers.length === 1) {
+
 		var result = {
 			player: this.highestBidder,
 			data: {
@@ -75,14 +76,16 @@ schema.methods.go = function (game) {
 // update has player and bid
 schema.methods.continue = function(update, game) {
   var player = update.player;
+
 	if (update.data === 'pass' || update.data.bid <= this.bid) {
 		this.remainingPlayers = this.remainingPlayers.filter(function (playerId) {
 			return !playerId.equals(player._id);
-		})
+		});
 	} else {
 		this.highestBidder = player._id;
 		this.bid = update.data.bid;
 	}
+
 	return this.go(game);
 }
 

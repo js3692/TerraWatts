@@ -324,7 +324,7 @@ describe('Play Route: ', function () {
           });
       });
 
-      it('should validate and proceed game with first player\'s decision to take plant 5', function (done) {
+      xit('should validate and proceed game with first player\'s decision to take plant 5', function (done) {
         Plant.findOne({ rank: 5 })
           .then(function (plantFive) {
             agentsByClockwiseOrder[nextTurnIdx]
@@ -378,7 +378,7 @@ describe('Play Route: ', function () {
 
 
 
-      it('should validate and proceed game with first player\'s decision to buy 2 coal', function (done) {
+      xit('should validate and proceed game with first player\'s decision to buy 2 coal', function (done) {
         agentsByTurnOrder[1]
           .post(baseUrl + gridId)
           .send({
@@ -402,7 +402,7 @@ describe('Play Route: ', function () {
           });
       });
 
-      it('should validate and proceed game with second player\'s decision to buy 2 coal', function (done) {
+      xit('should validate and proceed game with second player\'s decision to buy 2 coal', function (done) {
         agentsByTurnOrder[0]
           .post(baseUrl + gridId)
           .send({
@@ -435,7 +435,7 @@ describe('Play Route: ', function () {
           });
       });
 
-      it('should validate and proceed game with first player\'s decision to buy a city', function (done) {
+      xit('should validate and proceed game with first player\'s decision to buy a city', function (done) {
         City.find({ region: { $in: regionsInPlay } })
           .then(function (foundCities) {
             citiesInPlay = foundCities;
@@ -463,7 +463,7 @@ describe('Play Route: ', function () {
           })
       });
 
-      it('should validate and proceed game with second player\'s decision to buy a city', function (done) {
+      xit('should validate and proceed game with second player\'s decision to buy a city', function (done) {
         agentsByTurnOrder[0]
           .post(baseUrl + gridId)
           .send({
@@ -494,7 +494,7 @@ describe('Play Route: ', function () {
           });
       });
 
-      it('should validate and proceed game with second player\'s decision to power up his plant', function (done) {
+      xit('should validate and proceed game with second player\'s decision to power up his plant', function (done) {
         agentsByTurnOrder[0]
           .post(baseUrl + gridId)
           .send({
@@ -521,7 +521,7 @@ describe('Play Route: ', function () {
           });
       });
 
-      it('should validate and proceed game with second player\'s decision to power up his plant', function (done) {
+      xit('should validate and proceed game with second player\'s decision to power up his plant', function (done) {
         agentsByTurnOrder[1]
           .post(baseUrl + gridId)
           .send({
