@@ -221,7 +221,7 @@ schema.methods.createGame = function () {
 
 schema.methods.initialize = function () {
   var self = this;
-  this.state = new State();
+  this.state = new State({key: this.key});
   return this.state.initialize(this.game)
     .then(function (savedStateAndGame) {
       self.state = savedStateAndGame[0];
@@ -237,12 +237,13 @@ schema.methods.continue = function (update) {
     .then(function () {
         return self.save();
     })
-  }
-  return this.state.continue(update, this.game)
+  } else {
+    return this.state.continue(update, this.game)
     .then(function (whatContinueReturns) {
       if(whatContinueReturns.length) self.game = whatContinueReturns[1];
       return self.save();
     })
+  }
 };
 
 mongoose.model('Grid', schema);

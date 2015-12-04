@@ -8,10 +8,12 @@ module.exports = function totalConnectionCost(citiesToAdd, network, cities, conn
 		var distances = citiesToAddCopy.map(function(city) {
 			return cheapestDistanceTo(city, networkCopy, cities, connections)
 		});
+		console.log('distances', distances);
 		var cheapest = Math.min.apply(null, distances);
 		var cheapestIndex = distances.indexOf(cheapest);
 		cost += cheapest;
 		networkCopy.push(citiesToAddCopy.splice(cheapestIndex,1)[0]);
+		console.log('networkCopy', networkCopy);
 	}
 	return cost;
 }
@@ -46,7 +48,7 @@ function cheapestDistanceTo(destination, network, cities, connections) {
 
 function containsCity(cities, city) {
 	return !!_.find(cities, function(c) {
-		return c._id.equals(city._id)
+		return city._id.equals(c.id);
 	})
 }
 
@@ -75,7 +77,7 @@ function directConnection(node1, node2, connections) {
 
 function getNode(city, data) {
 	return _.find(data, function(node) {
-		return node.city._id.equals(city._id);
+		return node.city._id.equals(city.id);
 	})
 }
 

@@ -1,4 +1,4 @@
-app.directive('cityBuyPanel', function (PlayGameFactory) {
+app.directive('cityBuyPanel', function (PlayGameFactory, CityCart) {
     return {
         restrict: 'E',
         templateUrl: 'js/common/directives/cityBuy/cityBuy.html',
@@ -8,12 +8,12 @@ app.directive('cityBuyPanel', function (PlayGameFactory) {
         },
         link: function (scope, elem, attrs) {
         	scope.sendCities = function() {
- 	       	console.log(scope.citiesToBuy)
+ 	       	console.log(CityCart)
         		var update = {
         			player: scope.player,
         			phase: 'city',
         			data: {
-        				citiesToAdd: scope.citiesToBuy
+        				citiesToAdd: CityCart
         			}
         		}
         		PlayGameFactory.continue(update);
