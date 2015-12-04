@@ -89,23 +89,7 @@ schema.post('save', function (grid) {
     grid.constructor
       .populate(grid, 'game state players')
       .then(function (populatedGrid){
-        populatedGrid.deepPopulate([
-          'players.user',
-          'players.cities',
-          'players.plants',
-          'game.cities',
-          'game.connections',
-          'game.connections.cities',
-          'game.plantMarket',
-          'game.plantDeck',
-          'game.discardedPlants',
-          'game.stepThreePlants',
-          'game.turnOrder',
-          'game.turnOrder.user',
-          'state.auction',
-          'state.auction.activePlayer',
-          'state.auction.plant'    
-        ], function(err, deepPopulatedGrid) {
+        populatedGrid.deepPopulate(fieldsToPopulate, function(err, deepPopulatedGrid) {
           if(err) throw err;
           // This is mainly for '/join' and '/leave' of players
           firebaseHelper
@@ -127,7 +111,9 @@ schema.post('save', function (grid) {
               .update({
                 'state': deepPopulatedGrid.state.toObject()
               });
-            }
+          }
+
+          firebaseHelper.disconnect(deepPopulatedGrid.key);
 
         })
       })

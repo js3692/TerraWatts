@@ -68,22 +68,33 @@ schema.methods.log = function(message) {
 }
 
 schema.methods.initialize = function (game) {
+	var self = this;
 	if(this.phase === 'resource' && game.turn === 1) {
-		game.turnOrder = determineTurnOrder(game.turnOrder);
+		var playerIds = game.turnOrder.map(player => player._id);
+		return Player.find({ _id: { $in:  playerIds } }).populate('cities plants')
+			.then(function (foundPlayers) {
+				game.turnOrder = determineTurnOrder(foundPlayers).map(orderedPlayer => orderedPlayer._id);
+				self.numPasses = 0;
+				self.remainingPlayers = self.setRemainingPlayers(game);
+				return self.go(game);
+			});
+	} else {
+		this.numPasses = 0;
+		this.remainingPlayers = this.setRemainingPlayers(game);
+		return this.go(game);
 	}
-	this.numPasses = 0;
-	this.remainingPlayers = this.setRemainingPlayers(game);
-	return this.go(game);
 };
 
 schema.methods.go = function (game) {
+	
+	
 	if (!this.remainingPlayers.length) return this.end(game);
 
 	if (this.phase !== 'bureaucracy' || this.remainingPlayers.length === game.turnOrder.length) {
 		this.activePlayer = this.remainingPlayers[0];
     game.markModified('resourceMarket');
-
-		return Promise.all([this.save(), game.save()]);
+    game.markModified('turnOrder');
+		return Promise.all([this.save(), game.save()])
 	} else {
 		this.save();
 	}
@@ -94,8 +105,6 @@ schema.methods.continue = function(update, game) {
 
   if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
 		
-		if(update.data.plant) update.data.plant = update.data.plant._id;
-
 		return this.transaction(update, game);
 
 	} else {
@@ -193,6 +202,7 @@ schema.methods.transaction = function(update, game) {
 			self.remainingPlayers = self.removePlayer(player);
 
 			if (self.phase === 'plant') {
+
 				self.auction = null;
 				player.money -= update.data.bid;
 				
@@ -237,30 +247,35 @@ schema.methods.transaction = function(update, game) {
 				var totalCapacity = 0;
 
 				var hybridResourcesNeeded = 0;
-				plantsToPower.forEach(function (plant) {
-					totalCapacity += plant.capacity;
-					if (plant.resourceType !== 'hybrid') {
+
+				plantsToPower.forEach(function (plantToPower) {
+					totalCapacity += plantToPower.capacity;
+					if (plantToPower.resourceType !== 'hybrid') {
 						// move resources from player to bank
-						player.resources[plant.resourceType] -= plant.numResources;
-						game.resourceBank[plant.resourceType] += plant.numResources;
+						player.resources[plantToPower.resourceType] -= plantToPower.numResources;
+						game.resourceBank[plantToPower.resourceType] += plantToPower.numResources;
 					} else {
-						hybridResourcesNeeded += plant.numResources;
+						hybridResourcesNeeded += plantToPower.numResources;
 					}
 				});
 
 				//spend resources for hybrid plants
 				if(hybridResourcesNeeded) {
+					
 					var hybridOptions = [];
+					
 					for(var i = 0; i <= hybridResourcesNeeded; i++) {
 						hybridOptions.push({coal: i, oil: hybridResourcesNeeded - i});
 					}
+					
 					hybridOptions = hybridOptions.filter(function (option) {
 						var hasCoal = player.resources.coal >= option.coal;
 						var hasOil = player.resources.oil >= option.oil;
 						return hasCoal && hasOil;
 					})
-					var resourcesToUse = (hybridOptions.length === 1) ? 
-						hybridOptions[0] : update.choice.resourcesToUseForHybrids;
+					
+					var resourcesToUse = (hybridOptions.length === 1)? hybridOptions[0] : update.choice.resourcesToUseForHybrids;
+					
 					Object.keys(resourcesToUse).forEach(function (resource) {
 						player.resources[resource] -= resourcesToUse[resource];
 						game.resourceBank[resource] += resourcesToUse[resource];
