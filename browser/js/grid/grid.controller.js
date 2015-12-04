@@ -1,12 +1,12 @@
-app.controller('GridCtrl', function ($scope, $state, thePlayer, BeforeGameFactory, FirebaseFactory, gridId, key) {
+app.controller('GridCtrl', function ($scope, $state, theUser, BeforeGameFactory, FirebaseFactory, gridId, key) {
     $scope.grid = FirebaseFactory.getConnection(key);
     
-	$scope.me = thePlayer;
+	$scope.me = theUser;
     $scope.key = key;
     
-    $scope.selected = thePlayer.color;
+    $scope.selected = theUser.color;
     $scope.colors = ['purple', 'yellow', 'green', 'blue', 'red', 'black'];
-    $scope.changeColor = BeforeGameFactory.changeColor.bind(null, gridId, thePlayer._id)
+    $scope.changeColor = BeforeGameFactory.changeColor.bind(null, gridId, theUser._id)
     $scope.colorPicked = function(color){
         var players = $scope.grid.players;
         if(!players) return false;

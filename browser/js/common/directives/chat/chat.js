@@ -2,6 +2,9 @@ app.directive('chat', function(FirebaseFactory, PlayGameFactory){
     return {
         restrict: 'E',
         templateUrl: 'js/common/directives/chat/chat.html',
+        scope: {
+            me: '='
+        },
         link: function(scope, elem, attrs){
             
             scope.key = PlayGameFactory.getKey();
@@ -12,7 +15,7 @@ app.directive('chat', function(FirebaseFactory, PlayGameFactory){
             scope.addToChat = function(){
                 
                 chatRef.push({ 
-                    user: PlayGameFactory.getMe().user.username, 
+                    user: scope.me || PlayGameFactory.getMe().user.username, 
                     message: scope.message 
                 });
               

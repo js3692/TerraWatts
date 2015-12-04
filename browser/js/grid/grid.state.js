@@ -10,10 +10,10 @@ app.config(function ($stateProvider) {
       key: function($stateParams) {
                 return $stateParams.key;  
             },
-			thePlayer: function(AuthService) {
-				var player = AuthService.getLoggedInUser();
-                player.color = null;
-                return player;
+			theUser: function(AuthService) {
+				var user = AuthService.getLoggedInUser();
+                user.color = null;
+                return user;
 			}
 		},
     data: {

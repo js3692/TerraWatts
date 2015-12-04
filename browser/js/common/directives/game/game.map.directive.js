@@ -1,4 +1,4 @@
-app.directive('gameMap', function($parse, PlayGameFactory, CityCart) {
+app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 	return {
 		restrict: 'E',
 		replace: true,
@@ -112,7 +112,6 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCart) {
 
 			scope.$watch('grid', function(grid) {
 				if(grid.game) {
-					console.log('scope.grid', scope.grid)
 					var revisedCities = grid.game.cities.map(function(city) { return cityType(city); });
 					var revisedConnections = grid.game.connections.map(function(connection) { return connectionType(connection); });
 					var revisedDistMarkers = grid.game.connections.map(function(connection) { return connectionDistType(connection); });
@@ -125,8 +124,7 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCart) {
 						.append('g')
 						.attr('id', function(d,i) { return 'city' + i; })
 						.on('click', function(d,i) {
-							console.log("You've clicked " + d.properties.name)
-							CityCart.push(d.properties);
+							CityCartFactory.toggle(d.properties);
 							d3.select('#slot10Towers' + i + ' #leftTower')
 								.transition()
 								.duration(1000)

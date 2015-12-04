@@ -17,9 +17,6 @@ app.directive('plantAction', function(PlayGameFactory){
                 update.data = 'pass';
                 PlayGameFactory.continue(update)
                     .then(function(){
-                        /* 
-                            necessary for scope.pickPlant below --> can't set plant property on a string. 
-                        */
                         update.data = {};
                     });
                 

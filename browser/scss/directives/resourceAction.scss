@@ -1,4 +1,4 @@
-resource-action {
+resource-action, city-action {
     font-weight: 100;
     color: white;
     
@@ -40,4 +40,12 @@ resource-action {
         text-align: center;
     }
     
+}
+
+city-action {
+    .city-container {
+        padding: 20px 30px 0;
+        display: block;
+        float: left;
+    }
 }
