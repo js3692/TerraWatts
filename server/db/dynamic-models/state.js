@@ -15,7 +15,7 @@ var drawPlant =						require('../utils/1_plant_phase/drawPlant');
 var resourcePrice =				require('../utils/2_resource_phase/price');
 var cityPrice =						require('../utils/3_city_phase/price');
 var payments =						require('../utils/4_bureaucracy_phase/payments.js');
-
+var loseResources = require('../utils/1_plant_phase/loseResources');
 var plantSpaces = dONP.plantSpaces;
 var endGame = dONP.endGame;
 var stepTwo = dONP.stepTwo;
@@ -205,6 +205,7 @@ schema.methods.transaction = function(update, game) {
 				var plant = game.plantMarket.splice(plantIndex, 1)[0];
 
 				player.plants.push(plant);
+				loseResources(player, game);
 
 				game = drawPlant(game);
 				if (player.plants.length > plantSpaces[game.turnOrder.length]) {
