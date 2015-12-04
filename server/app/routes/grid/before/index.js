@@ -13,7 +13,7 @@ router.get('/', function (req, res) {
 });
 
 router.post('/join', function (req, res, next) {
-  Player.create({ user: req.user, color: req.grid.availableColors[0], clockwise: req.grid.players.length })
+  Player.create({ user: req.user, color: req.grid.availableColors[0] })
     .then(function (newPlayer) {
       return req.grid.addPlayer(newPlayer);
     })
