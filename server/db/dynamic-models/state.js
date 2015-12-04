@@ -1,3 +1,4 @@
+var Firebase = require('firebase');
 var Promise = require('bluebird');
 
 var mongoose = require('mongoose');
@@ -5,14 +6,15 @@ mongoose.Promise = Promise;
 
 var Player = mongoose.model('Player');
 var Auction = mongoose.model('Auction');
+// var Choice = mongoose.model('Choice');
 
 var masterRestockRates =	require('../utils/0_basic_rules/restock');
 var determineTurnOrder =	require('../utils/0_basic_rules/turnOrder');
-var dONP =								require('../utils/0_basic_rules/dependsOnNumPlayers.js');
-var drawPlant =						require('../utils/1_plant_phase/drawPlant');
-var resourcePrice =				require('../utils/2_resource_phase/price');
-var cityPrice =						require('../utils/3_city_phase/price');
-var payments =						require('../utils/4_bureaucracy_phase/payments.js');
+var dONP =					require('../utils/0_basic_rules/dependsOnNumPlayers.js');
+var drawPlant =				require('../utils/1_plant_phase/drawPlant');
+var resourcePrice =			require('../utils/2_resource_phase/price');
+var cityPrice =				require('../utils/3_city_phase/price');
+var payments =				require('../utils/4_bureaucracy_phase/payments.js');
 
 var plantSpaces = dONP.plantSpaces;
 var endGame = dONP.endGame;
@@ -42,8 +44,28 @@ var schema = new mongoose.Schema({
 	auction: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Auction'
+	},
+	choice: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Choice'
+	},
+	key: {
+		type: String
 	}
 });
+
+schema.virtual('chatKey').get(function() {
+	var baseUrl = "https://amber-torch-6713.firebaseio.com/";
+	return baseUrl + this.key + '/chat';
+})
+
+schema.methods.log = function(message) {
+	var fbRef = new Firebase(this.chatKey);
+	fbRef.push({
+		user: 'GRID GOD',
+		message: message
+	})
+}
 
 schema.methods.initialize = function (game) {
 	if(this.phase === 'resource' && game.turn === 1) {
@@ -221,8 +243,7 @@ schema.methods.transaction = function(update, game) {
 		})
 		.then(function() {
 			return self.go(game);
-		})
-	
+		});
 };
 
 schema.methods.setRemainingPlayers = function (game) {
