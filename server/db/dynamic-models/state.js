@@ -236,16 +236,36 @@ schema.methods.transaction = function(update, game) {
 				var plantsToPower = update.data.plantsToPower;
 				var totalCapacity = 0;
 
-				plantsToPower.forEach(function (plantToPower) {
-					totalCapacity += plantToPower.capacity;
-					if (plantToPower.resourceType === 'hybrid') {
-						// transition to hybrid choice state
-					} else {
+				var hybridResourcesNeeded = 0;
+				plantsToPower.forEach(function (plant) {
+					totalCapacity += plant.capacity;
+					if (plant.resourceType !== 'hybrid') {
 						// move resources from player to bank
-						player.resources[plantToPower.resourceType] -= plantToPower.numResources;
-						game.resourceBank[plantToPower.resourceType] += plantToPower.numResources;
+						player.resources[plant.resourceType] -= plant.numResources;
+						game.resourceBank[plant.resourceType] += plant.numResources;
+					} else {
+						hybridResourcesNeeded += plant.numResources;
 					}
 				});
+
+				//spend resources for hybrid plants
+				if(hybridResourcesNeeded) {
+					var hybridOptions = [];
+					for(var i = 0; i <= hybridResourcesNeeded; i++) {
+						hybridOptions.push({coal: i, oil: hybridResourcesNeeded - i});
+					}
+					hybridOptions = hybridOptions.filter(function (option) {
+						var hasCoal = player.resources.coal >= option.coal;
+						var hasOil = player.resources.oil >= option.oil;
+						return hasCoal && hasOil;
+					})
+					var resourcesToUse = (hybridOptions.length === 1) ? 
+						hybridOptions[0] : update.choice.resourcesToUseForHybrids;
+					Object.keys(resourcesToUse).forEach(function (resource) {
+						player.resources[resource] -= resourcesToUse[resource];
+						game.resourceBank[resource] += resourcesToUse[resource];
+					})
+				}
 
 				player.numPowered = Math.min(player.cities.length, totalCapacity);
 				player.money += payments[player.numPowered];

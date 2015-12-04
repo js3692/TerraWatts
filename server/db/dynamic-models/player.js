@@ -31,6 +31,9 @@ var schema = new mongoose.Schema({
   },
   clockwise: {
     type: Number
+  },
+  numPowered: {
+    type: Number
   }
 });
 
