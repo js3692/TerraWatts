@@ -230,16 +230,16 @@ schema.methods.continue = function (update) {
   var self = this;
   if(this.state.auction) {
     return this.state.auction.continue(update, this.game)
-    .then(function () {
+      .then(function () {
         return self.save();
-    })
+      });
+  } else {
+    return this.state.continue(update, this.game)
+      .then(function (whatContinueReturns) {
+        if(whatContinueReturns && whatContinueReturns.length) self.game = whatContinueReturns[1];
+        if(whatContinueReturns !== undefined) return self.save();
+      });
   }
-  return this.state.continue(update, this.game)
-    .then(function (whatContinueReturns) {
-      console.log('what continue returns!!!!!!', whatContinueReturns)
-      self.game = whatContinueReturns[1];
-      return self.save();
-    })
 };
 
 mongoose.model('Grid', schema);

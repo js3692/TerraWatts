@@ -11,6 +11,7 @@ require('../../../server/db/dynamic-models');
 var User = mongoose.model('User');
 var Grid = mongoose.model('Grid');
 var Game = mongoose.model('Game');
+var City = mongoose.model('City');
 var Player = mongoose.model('Player');
 var State = mongoose.model('State');
 var Plant = mongoose.model('Plant');
@@ -25,12 +26,16 @@ var supertest = require('supertest');
 var app = require('../../../server/app');
 
 describe('Play Route: ', function () {
-	var baseUrl = '/api/play/continue/';
+  var baseUrl = '/api/play/continue/';
+  var fieldsToDeepPopulate = ['players.user', 'players.cities', 'players.plants',
+  'game.cities', 'game.connections.cities', 'game.plantMarket', 'game.plantDeck',
+  'game.discardedPlants', 'game.stepThreePlants', 'game.turnOrder.user',
+  'game.turnOrder.plants', 'state.auction'];
 
-	beforeEach('Establish DB connection', function (done) {
+  beforeEach('Establish DB connection', function (done) {
     if (mongoose.connection.db) return done();
-		mongoose.connect(dbURI, done);
-	});
+    mongoose.connect(dbURI, done);
+  });
 
   after('Clear test database', function (done) {
     Player.remove()
@@ -48,47 +53,47 @@ describe('Play Route: ', function () {
       }).catch(done);
   });
 
-  it('testing if tests test well', function () {
-    console.log('Here until another describe is written');
+  it('Dummy to enable beforeEach && after middlewares', function (done) {
+    done();
   })
 
   describe('Game should be set up properly for each number of players: ', function () {
-  	var purpleAgent = supertest.agent(app);
-  	var yellowAgent = supertest.agent(app);
-  	var greenAgent = supertest.agent(app);
-  	var blueAgent = supertest.agent(app);
-  	var redAgent = supertest.agent(app);
-  	var blackAgent = supertest.agent(app);
+    var purpleAgent = supertest.agent(app);
+    var yellowAgent = supertest.agent(app);
+    var greenAgent = supertest.agent(app);
+    var blueAgent = supertest.agent(app);
+    var redAgent = supertest.agent(app);
+    var blackAgent = supertest.agent(app);
 
-  	var purpleUser = { username: 'Bush', email: 'bush@gmail.com', password: 'potus' };
-  	var yellowUser = { username: 'Clinton', email: 'clinton@gmail.com', password: 'potus' };
-  	var greenUser = { username: 'BushSr', email: 'bushsr@gmail.com', password: 'potus' };
-  	var blueUser = { username: 'Reagan', email: 'reagan@gmail.com', password: 'potus' };
-  	var redUser = { username: 'Carter', email: 'carter@gmail.com', password: 'potus' };
-  	var blackUser = { username: 'Ford', email: 'ford@gmail.com', password: 'potus' };
+    var purpleUser = { username: 'Bush', email: 'bush@gmail.com', password: 'potus' };
+    var yellowUser = { username: 'Clinton', email: 'clinton@gmail.com', password: 'potus' };
+    var greenUser = { username: 'BushSr', email: 'bushsr@gmail.com', password: 'potus' };
+    var blueUser = { username: 'Reagan', email: 'reagan@gmail.com', password: 'potus' };
+    var redUser = { username: 'Carter', email: 'carter@gmail.com', password: 'potus' };
+    var blackUser = { username: 'Ford', email: 'ford@gmail.com', password: 'potus' };
 
     var firebaseKey;
 
-  	before('Create all users and log them all in', function (done) {
-  		function login (superagent, userinfo) {
-  			return new Promise(function (resolve, reject) {
-  				superagent.post('/login').send(userinfo).end(function (err, res) {
-  					if (err) reject(err);
-  					else resolve(res.body);
-  				});
-  			});
-  		}
+    before('Create all users and log them all in', function (done) {
+      function login (superagent, userinfo) {
+        return new Promise(function (resolve, reject) {
+          superagent.post('/login').send(userinfo).end(function (err, res) {
+            if (err) reject(err);
+            else resolve(res.body);
+          });
+        });
+      }
 
       User.create(purpleUser, yellowUser, greenUser, blueUser, redUser, blackUser)
         .then(function () {
-      		return Promise.all([
-      			login(purpleAgent, _.omit(purpleUser, 'email')),
-      			login(yellowAgent, _.omit(yellowUser, 'email')),
-      			login(greenAgent, _.omit(greenUser, 'email')),
-      			login(blueAgent, _.omit(blueUser, 'email')),
-      			login(redAgent, _.omit(redUser, 'email')),
-      			login(blackAgent, _.omit(blackUser, 'email'))
-      		]);
+          return Promise.all([
+            login(purpleAgent, _.omit(purpleUser, 'email')),
+            login(yellowAgent, _.omit(yellowUser, 'email')),
+            login(greenAgent, _.omit(greenUser, 'email')),
+            login(blueAgent, _.omit(blueUser, 'email')),
+            login(redAgent, _.omit(redUser, 'email')),
+            login(blackAgent, _.omit(blackUser, 'email'))
+          ]);
         })
         .then(function () {
           done();
@@ -96,21 +101,23 @@ describe('Play Route: ', function () {
         .catch(done);
     });
 
-  	after('Delete all users', function (done) {
-  		var usernames = [purpleUser, yellowUser, greenUser, blueUser, redUser, blackUser].map(function (user) {
-  			return user.username;
-  		});
-  		User.remove({ username: { $in: usernames } })
-  			.then(function () {
+    after('Delete all users', function (done) {
+      var usernames = [purpleUser, yellowUser, greenUser, blueUser, redUser, blackUser].map(function (user) {
+        return user.username;
+      });
+      User.remove({ username: { $in: usernames } })
+        .then(function () {
           baseRef.child(firebaseKey).remove();
-  				done();
-  			}).catch(done);
-  	});
+          done();
+        }).catch(done);
+    });
 
-  	describe('2 player game', function () {
-      var gridId, playersByTurnOrder;
+    describe('2 player game', function () {
+      var gridId, playersByTurnOrder, playersByClockwiseOrder;
       var agentsByTurnOrder = [];
-      var agentsByJoinOrder = [purpleAgent, greenAgent];
+      var agentsByClockwiseOrder = [purpleAgent, greenAgent];
+      var nextTurnIdx;
+      var regionsInPlay, citiesInPlay;
 
       it('should instantiate the game properly', function (done) {
         purpleAgent
@@ -190,39 +197,24 @@ describe('Play Route: ', function () {
           .end(function (err, res) {
             if (err) done(err);
 
-            return Grid.findById(gridId).populate('players game state')
-              .then(function (populatedGrid) {
-                populatedGrid.deepPopulate([
-                  // 'players.user',
-                  // 'players.cities',
-                  // 'players.plants',
-                  // 'game.cities',
-                  // 'game.connections',
-                  // 'game.connections.cities',
-                  'game.plantMarket',
-                  'game.plantDeck',
-                  // 'game.discardedPlants',
-                  // 'game.stepThreePlants',
-                  'game.turnOrder',
-                  // 'game.turnOrder.user',
-                  'state.auction'
-                ], function(error, deepPopulatedGrid) {
-                    if(error) done(error);
-                    expect(deepPopulatedGrid.availableColors.indexOf('purple')).to.equal(-1)
-                    expect(deepPopulatedGrid.availableColors.indexOf('green')).to.equal(-1)
-                    expect(deepPopulatedGrid.players.length).to.equal(2);
-                    expect(deepPopulatedGrid.game.plantMarket.length).to.equal(8);
-                    expect(deepPopulatedGrid.game.plantDeck.length).to.equal(26);
-                    expect(deepPopulatedGrid.state.phase).to.equal('plant');
-                    expect(deepPopulatedGrid.state.remainingPlayers.length).to.equal(2);
-                    expect(deepPopulatedGrid.game.turnOrder[0]._id.equals(deepPopulatedGrid.state.activePlayer)).to.be.true;
+            return Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+              .then(function (deepPopulatedGrid) {
+                expect(deepPopulatedGrid.availableColors.indexOf('purple')).to.equal(-1)
+                expect(deepPopulatedGrid.availableColors.indexOf('green')).to.equal(-1)
+                expect(deepPopulatedGrid.players.length).to.equal(2);
+                expect(deepPopulatedGrid.game.plantMarket.length).to.equal(8);
+                expect(deepPopulatedGrid.game.plantDeck.length).to.equal(26);
+                expect(deepPopulatedGrid.state.phase).to.equal('plant');
+                expect(deepPopulatedGrid.state.remainingPlayers.length).to.equal(2);
+                expect(deepPopulatedGrid.game.turnOrder[0]._id.equals(deepPopulatedGrid.state.activePlayer)).to.be.true;
 
-                    deepPopulatedGrid.game.turnOrder.forEach(function (player) {
-                      agentsByTurnOrder.push(agentsByJoinOrder[player.clockwise]);
-                    });
-                    playersByTurnOrder = deepPopulatedGrid.game.turnOrder;
-                    done();
+                deepPopulatedGrid.game.turnOrder.forEach(function (player) {
+                  agentsByTurnOrder.push(agentsByClockwiseOrder[player.clockwise]);
                 });
+                playersByTurnOrder = deepPopulatedGrid.game.turnOrder;
+                playersByClockwiseOrder = deepPopulatedGrid.players;
+
+                done();
               }).catch(done);
           });
       });
@@ -231,7 +223,7 @@ describe('Play Route: ', function () {
         Plant.findOne({ rank: 4 })
           .then(function (plantFour) {
             agentsByTurnOrder[0]
-              .post(baseUrl + gridId)
+              .post('/api/play/continue/' + gridId)
               .send({
                 phase: 'plant',
                 player: playersByTurnOrder[0],
@@ -244,36 +236,20 @@ describe('Play Route: ', function () {
               .end(function (err, res) {
                 if (err) done(err);
 
-                return Grid.findById(gridId).populate('players game state')
-                  .then(function(populatedGrid){
-                    populatedGrid.deepPopulate([
-                      'players.user',
-                      'players.cities',
-                      // 'players.plants',
-                      // 'game.cities',
-                      // 'game.connections',
-                      // 'game.connections.cities',
-                      // 'game.plantMarket',
-                      // 'game.plantDeck',
-                      // 'game.discardedPlants',
-                      // 'game.stepThreePlants',
-                      'game.turnOrder',
-                      'game.turnOrder.user',
-                      'state.auction'
-                    ], function(error, deepPopulatedGrid) {
-                        if(error) done(error);
-                        expect(!!deepPopulatedGrid.state.auction).to.be.true;
-                        expect(deepPopulatedGrid.state.auction.bid).to.equal(4);
-                        expect(deepPopulatedGrid.state.auction.remainingPlayers.length).to.equal(2);
-                        expect(deepPopulatedGrid.state.auction.highestBidder.equals(playersByTurnOrder[0]._id)).to.be.true;
+                Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+                  .then(function (deepPopulatedGrid) {
+                    expect(!!deepPopulatedGrid.state.auction).to.be.true;
+                    expect(deepPopulatedGrid.state.auction.bid).to.equal(4);
+                    expect(deepPopulatedGrid.state.auction.remainingPlayers.length).to.equal(2);
+                    expect(deepPopulatedGrid.state.auction.highestBidder.equals(playersByTurnOrder[0]._id)).to.be.true;
 
-                        var highestBidderId = deepPopulatedGrid.state.auction.highestBidder;
-                        var highestBidderIdx = _.findIndex(deepPopulatedGrid.players, player => player._id.equals(highestBidderId));
-                        var nextPlayerIndex = (highestBidderIdx + 1) % 2;
-                        expect(deepPopulatedGrid.state.auction.activePlayer.equals(deepPopulatedGrid.players[nextPlayerIndex]._id)).to.be.true;
+                    var highestBidderId = deepPopulatedGrid.state.auction.highestBidder;
+                    var highestBidderIdx = _.findIndex(deepPopulatedGrid.players, player => player._id.equals(highestBidderId));
+                    var nextPlayerIndex = (highestBidderIdx + 1) % 2;
+                    expect(deepPopulatedGrid.state.auction.activePlayer.equals(deepPopulatedGrid.players[nextPlayerIndex]._id)).to.be.true;
 
-                        done();
-                    })
+                    nextTurnIdx = (_.findIndex(deepPopulatedGrid.players, player => player.clockwise === deepPopulatedGrid.game.turnOrder[0].clockwise) + 1) % 2;
+                    done();
                   }).catch(done);
               });
           });
@@ -282,11 +258,11 @@ describe('Play Route: ', function () {
       it('should validate and proceed game with second player\'s move', function (done) {
         Plant.findOne({ rank: 4 })
           .then(function (plantFour) {
-            agentsByTurnOrder[1]
+            agentsByClockwiseOrder[nextTurnIdx]
               .post(baseUrl + gridId)
               .send({
                 phase: 'plant',
-                player: playersByTurnOrder[1],
+                player: playersByClockwiseOrder[nextTurnIdx],
                 data: {
                   plant: plantFour.toObject(),
                   bid: 6
@@ -296,35 +272,20 @@ describe('Play Route: ', function () {
               .end(function (err, res) {
                 if (err) done(err);
 
-                return Grid.findById(gridId).populate('players game state')
-                  .then(function(populatedGrid){
-                    populatedGrid.deepPopulate([
-                      'players.user',
-                      'players.cities',
-                      // 'players.plants',
-                      // 'game.cities',
-                      // 'game.connections',
-                      // 'game.connections.cities',
-                      // 'game.plantMarket',
-                      // 'game.plantDeck',
-                      // 'game.discardedPlants',
-                      // 'game.stepThreePlants',
-                      'game.turnOrder',
-                      'game.turnOrder.user',
-                      'state.auction'
-                    ], function(error, deepPopulatedGrid) {
-                        if(error) done(error);
-                        expect(!!deepPopulatedGrid.state.auction).to.be.true;
-                        expect(deepPopulatedGrid.state.auction.bid).to.equal(6);
-                        expect(deepPopulatedGrid.state.auction.remainingPlayers.length).to.equal(2);
-                        expect(deepPopulatedGrid.state.auction.highestBidder.equals(playersByTurnOrder[1]._id)).to.be.true;
+                Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+                  .then(function (deepPopulatedGrid) {
+                    expect(!!deepPopulatedGrid.state.auction).to.be.true;
+                    expect(deepPopulatedGrid.state.auction.bid).to.equal(6);
+                    expect(deepPopulatedGrid.state.auction.remainingPlayers.length).to.equal(2);
+                    expect(deepPopulatedGrid.state.auction.highestBidder.equals(playersByTurnOrder[1]._id)).to.be.true;
 
-                        var highestBidderId = deepPopulatedGrid.state.auction.highestBidder;
-                        var highestBidderIdx = _.findIndex(deepPopulatedGrid.players, player => player._id.equals(highestBidderId));
-                        var nextPlayerIndex = (highestBidderIdx + 1) % 2;
-                        expect(deepPopulatedGrid.state.auction.activePlayer.equals(deepPopulatedGrid.players[nextPlayerIndex]._id)).to.be.true;
-                        done();
-                    })
+                    var highestBidderId = deepPopulatedGrid.state.auction.highestBidder;
+                    var highestBidderIdx = _.findIndex(deepPopulatedGrid.players, player => player._id.equals(highestBidderId));
+                    var nextPlayerIndex = (highestBidderIdx + 1) % 2;
+                    expect(deepPopulatedGrid.state.auction.activePlayer.equals(deepPopulatedGrid.players[nextPlayerIndex]._id)).to.be.true;
+
+                    nextTurnIdx = (nextTurnIdx + 1) % 2;
+                    done();
                   }).catch(done);
               });
           });
@@ -332,67 +293,45 @@ describe('Play Route: ', function () {
       });
 
       it('should validate and proceed game with first player\'s decision to pass', function (done) {
-        Plant.findOne({ rank: 4 })
-          .then(function (plantFour) {
-            agentsByTurnOrder[0]
-              .post(baseUrl + gridId)
-              .send({
-                phase: 'plant',
-                player: playersByTurnOrder[0],
-                data: 'pass'
-              })
-              .expect(201)
-              .end(function (err, res) {
-                if (err) done(err);
+        agentsByClockwiseOrder[nextTurnIdx]
+          .post(baseUrl + gridId)
+          .send({
+            phase: 'plant',
+            player: playersByClockwiseOrder[nextTurnIdx],
+            data: 'pass'
+          })
+          .expect(201)
+          .end(function (err, res) {
+            if (err) done(err);
+            Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+              .then(function (deepPopulatedGrid) {
+                expect(deepPopulatedGrid.game.plantMarket.length).to.equal(8);
+                expect(_.findIndex(deepPopulatedGrid.game.plantMarket, plant => plant.rank === 4)).to.equal(-1);
+                expect(deepPopulatedGrid.game.plantMarket.every(function (plant, idx, arr) {
+                  if(idx === 0) return true;
+                  return plant.rank > arr[idx - 1].rank;
+                })).to.be.true;
 
-                return Grid.findById(gridId).populate('players game state')
-                  .then(function(populatedGrid){
-                    populatedGrid.deepPopulate([
-                      // 'players.user',
-                      // 'players.cities',
-                      'players.plants',
-                      // 'game.cities',
-                      // 'game.connections',
-                      // 'game.connections.cities',
-                      'game.plantMarket',
-                      'game.plantDeck',
-                      // 'game.discardedPlants',
-                      // 'game.stepThreePlants',
-                      'game.turnOrder',
-                      'game.turnOrder.user',
-                      'state.auction'
-                    ], function(error, deepPopulatedGrid) {
-                        if(error) done(error);
+                var greenIdx = _.findIndex(deepPopulatedGrid.players, player => player._id.equals(playersByTurnOrder[1]._id));
+                expect(deepPopulatedGrid.players[greenIdx].money).to.equal(44);
+                expect(deepPopulatedGrid.players[greenIdx].plants[0].rank).to.equal(4);
 
-                        expect(deepPopulatedGrid.game.plantMarket.length).to.equal(8);
-                        expect(_.findIndex(deepPopulatedGrid.game.plantMarket, plant => plant.rank === 4)).to.equal(-1);
-                        expect(deepPopulatedGrid.game.plantMarket.every(function (plant, idx, arr) {
-                          if(idx === 0) return true;
-                          return plant.rank > arr[idx - 1].rank;
-                        })).to.be.true;
+                expect(deepPopulatedGrid.state.activePlayer.equals(playersByTurnOrder[0]._id)).to.equal.true;
+                expect(deepPopulatedGrid.state.remainingPlayers).to.not.include(playersByTurnOrder[1]._id);
 
-                        var greenIdx = _.findIndex(deepPopulatedGrid.players, player => player._id.equals(playersByTurnOrder[1]._id));
-                        expect(deepPopulatedGrid.players[greenIdx].money).to.equal(44);
-                        expect(deepPopulatedGrid.players[greenIdx].plants[0].rank).to.equal(4);
-
-                        expect(deepPopulatedGrid.state.activePlayer.equals(playersByTurnOrder[0]._id)).to.equal.true;
-                        expect(deepPopulatedGrid.state.remainingPlayers).to.not.include(playersByTurnOrder[1]._id);
-
-                        done();
-                    })
-                  }).catch(done);
-              });
+                done();
+              }).catch(done);
           });
       });
 
       it('should validate and proceed game with first player\'s decision to take plant 5', function (done) {
         Plant.findOne({ rank: 5 })
           .then(function (plantFive) {
-            agentsByTurnOrder[0]
+            agentsByClockwiseOrder[nextTurnIdx]
               .post(baseUrl + gridId)
               .send({
                 phase: 'plant',
-                player: playersByTurnOrder[0],
+                player: playersByClockwiseOrder[nextTurnIdx],
                 data: {
                   plant: plantFive.toObject(),
                   bid: 5
@@ -402,52 +341,205 @@ describe('Play Route: ', function () {
               .end(function (err, res) {
                 if (err) done(err);
 
-                Grid.findById(gridId).populate('players game state')
-                  .then(function(populatedGrid){
-                    populatedGrid.deepPopulate([
-                      // 'players.user',
-                      // 'players.cities',
-                      'players.plants',
-                      // 'game.cities',
-                      // 'game.connections',
-                      // 'game.connections.cities',
-                      'game.plantMarket',
-                      'game.plantDeck',
-                      // 'game.discardedPlants',
-                      // 'game.stepThreePlants',
-                      'game.turnOrder',
-                      'game.turnOrder.user',
-                      'state.auction'
-                    ], function(error, deepPopulatedGrid) {
-                        if(error) done(error);
+                Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+                  .then(function (deepPopulatedGrid) {
+                    expect(deepPopulatedGrid.game.plantMarket.length).to.equal(8);
+                    expect(_.findIndex(deepPopulatedGrid.game.plantMarket, plant => plant.rank === 5)).to.equal(-1);
+                    expect(deepPopulatedGrid.game.plantMarket.every(function (plant, idx, arr) {
+                      if(idx === 0) return true;
+                      return plant.rank > arr[idx - 1].rank;
+                    })).to.be.true;
 
-                        expect(deepPopulatedGrid.game.plantMarket.length).to.equal(8);
-                        expect(_.findIndex(deepPopulatedGrid.game.plantMarket, plant => plant.rank === 5)).to.equal(-1);
-                        expect(deepPopulatedGrid.game.plantMarket.every(function (plant, idx, arr) {
-                          if(idx === 0) return true;
-                          return plant.rank > arr[idx - 1].rank;
-                        })).to.be.true;
+                    var purpleIdx = _.findIndex(deepPopulatedGrid.players, player => player._id.equals(playersByTurnOrder[0]._id));
+                    expect(deepPopulatedGrid.players[purpleIdx].money).to.equal(45);
+                    expect(deepPopulatedGrid.players[purpleIdx].plants[0].rank).to.equal(5);
 
-                        var purpleIdx = _.findIndex(deepPopulatedGrid.players, player => player._id.equals(playersByTurnOrder[0]._id));
-                        expect(deepPopulatedGrid.players[purpleIdx].money).to.equal(45);
-                        expect(deepPopulatedGrid.players[purpleIdx].plants[0].rank).to.equal(5);
+                    expect(deepPopulatedGrid.state.phase).to.equal('resource');
+                    expect(deepPopulatedGrid.state.remainingPlayers.length).to.equal(2);
+                    expect(deepPopulatedGrid.game.turnOrder[0]._id.equals(playersByTurnOrder[1]._id)).to.be.true;
+                    expect(deepPopulatedGrid.game.turnOrder[1]._id.equals(playersByTurnOrder[0]._id)).to.be.true;
 
-                        expect(deepPopulatedGrid.state.phase).to.equal('resource');
-                        expect(deepPopulatedGrid.state.remainingPlayers.length).to.equal(2);
-                        expect(deepPopulatedGrid.game.turnOrder[0]._id.equals(playersByTurnOrder[1]._id)).to.be.true;
-                        expect(deepPopulatedGrid.game.turnOrder[1]._id.equals(playersByTurnOrder[0]._id)).to.be.true;
+                    agentsByTurnOrder = [];
+                    deepPopulatedGrid.game.turnOrder.forEach(function (player) {
+                      agentsByTurnOrder.push(agentsByClockwiseOrder[player.clockwise]);
+                    });
+                    playersByTurnOrder = deepPopulatedGrid.game.turnOrder;
+                    playersByClockwiseOrder = deepPopulatedGrid.players;
 
-                        done();
-                    })
+                    done();
                   }).catch(done);
               });
           });
       });
 
 
-  	});
 
-  });
+      it('should validate and proceed game with first player\'s decision to buy 2 coal', function (done) {
+        agentsByTurnOrder[1]
+          .post(baseUrl + gridId)
+          .send({
+            phase: 'resource',
+            player: playersByTurnOrder[1],
+            data: {
+              wishlist: { coal: 2 }
+            }
+          })
+          .expect(201)
+          .end(function (err, res) {
+            if (err) done(err);
 
+            Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+              .then(function (deepPopulatedGrid) {
+                expect(deepPopulatedGrid.game.turnOrder[1].resources.coal).to.equal(2);
+                expect(deepPopulatedGrid.game.turnOrder[1].money).to.equal(playersByTurnOrder[1].money - 2)
+                expect(deepPopulatedGrid.game.resourceMarket.coal).to.equal(22);
+                done();
+              }).catch(done);
+          });
+      });
 
-});
+      it('should validate and proceed game with second player\'s decision to buy 2 coal', function (done) {
+        agentsByTurnOrder[0]
+          .post(baseUrl + gridId)
+          .send({
+            phase: 'resource',
+            player: playersByTurnOrder[0],
+            data: {
+              wishlist: { coal: 2 }
+            }
+          })
+          .expect(201)
+          .end(function (err, res) {
+            if (err) done(err);
+
+            Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+              .then(function (deepPopulatedGrid) {
+                expect(deepPopulatedGrid.game.turnOrder[0].resources.coal).to.equal(2);
+                expect(deepPopulatedGrid.game.turnOrder[0].money).to.equal(playersByTurnOrder[0].money - 3)
+                expect(deepPopulatedGrid.game.resourceMarket.coal).to.equal(20);
+
+                agentsByTurnOrder = [];
+                deepPopulatedGrid.game.turnOrder.forEach(function (player) {
+                  agentsByTurnOrder.push(agentsByClockwiseOrder[player.clockwise]);
+                });
+                playersByTurnOrder = deepPopulatedGrid.game.turnOrder;
+                playersByClockwiseOrder = deepPopulatedGrid.players;
+
+                regionsInPlay = deepPopulatedGrid.regions;
+                done();
+              }).catch(done);
+          });
+      });
+
+      it('should validate and proceed game with first player\'s decision to buy a city', function (done) {
+        City.find({ region: { $in: regionsInPlay } })
+          .then(function (foundCities) {
+            citiesInPlay = foundCities;
+            agentsByTurnOrder[1]
+              .post(baseUrl + gridId)
+              .send({
+                phase: 'city',
+                player: playersByTurnOrder[1],
+                data: {
+                  citiesToAdd: citiesInPlay.slice(0, 1)
+                }
+              })
+              .expect(201)
+              .end(function (err, res) {
+                if (err) done(err);
+
+                Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+                  .then(function (deepPopulatedGrid) {
+                    expect(deepPopulatedGrid.game.turnOrder[1].cities).to.include(citiesInPlay[0]._id);
+                    expect(deepPopulatedGrid.game.turnOrder[1].money).to.equal(playersByTurnOrder[1].money - 10);
+
+                    done();
+                  }).catch(done);
+              });
+          })
+      });
+
+      it('should validate and proceed game with second player\'s decision to buy a city', function (done) {
+        agentsByTurnOrder[0]
+          .post(baseUrl + gridId)
+          .send({
+            phase: 'city',
+            player: playersByTurnOrder[0],
+            data: {
+              citiesToAdd: citiesInPlay.slice(1, 2)
+            }
+          })
+          .expect(201)
+          .end(function (err, res) {
+            if (err) done(err);
+
+            Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+              .then(function (deepPopulatedGrid) {
+                expect(deepPopulatedGrid.game.turnOrder[0].cities).to.include(citiesInPlay[1]._id);
+                expect(deepPopulatedGrid.game.turnOrder[0].money).to.equal(playersByTurnOrder[0].money - 10);
+
+                agentsByTurnOrder = [];
+                deepPopulatedGrid.game.turnOrder.forEach(function (player) {
+                  agentsByTurnOrder.push(agentsByClockwiseOrder[player.clockwise]);
+                });
+                playersByTurnOrder = deepPopulatedGrid.game.turnOrder;
+                playersByClockwiseOrder = deepPopulatedGrid.players;
+
+                done();
+              }).catch(done);
+          });
+      });
+
+      it('should validate and proceed game with second player\'s decision to buy a city', function (done) {
+        agentsByTurnOrder[0]
+          .post(baseUrl + gridId)
+          .send({
+            phase: 'bureaucracy',
+            player: playersByTurnOrder[0],
+            data: {
+              plantsToPower: playersByTurnOrder[0].plants
+            }
+          })
+          .expect(201)
+          .end(function (err, res) {
+            if (err) done(err);
+
+            Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+              .then(function (deepPopulatedGrid) {
+                console.log('after first player', deepPopulatedGrid);
+                console.log('after first player', deepPopulatedGrid.game);
+
+                done();
+              }).catch(done);
+          });
+      });
+
+      it('should validate and proceed game with second player\'s decision to buy a city', function (done) {
+        agentsByTurnOrder[1]
+          .post(baseUrl + gridId)
+          .send({
+            phase: 'bureaucracy',
+            player: playersByTurnOrder[1],
+            data: {
+              plantsToPower: playersByTurnOrder[1].plants
+            }
+          })
+          .expect(201)
+          .end(function (err, res) {
+            if (err) done(err);
+
+            Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+              .then(function (deepPopulatedGrid) {
+                console.log('after second player', deepPopulatedGrid);
+                console.log('after second player', deepPopulatedGrid.game);
+
+                done();
+              }).catch(done);
+          });
+      });
+
+    }); // End of describe('2 player game')
+
+  }); // End of describe('Game should be set up properly for each number of players)
+
+}); // End of describe('Play Route')
