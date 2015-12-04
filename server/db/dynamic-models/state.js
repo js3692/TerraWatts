@@ -15,7 +15,7 @@ var drawPlant =						require('../utils/1_plant_phase/drawPlant');
 var resourcePrice =				require('../utils/2_resource_phase/price');
 var cityPrice =						require('../utils/3_city_phase/price');
 var payments =						require('../utils/4_bureaucracy_phase/payments.js');
-
+var loseResources = require('../utils/1_plant_phase/loseResources');
 var plantSpaces = dONP.plantSpaces;
 var endGame = dONP.endGame;
 var stepTwo = dONP.stepTwo;
@@ -59,8 +59,10 @@ schema.virtual('chatKey').get(function() {
 	return baseUrl + this.key + '/chat';
 })
 
-schema.methods.log = function(message) {
+schema.methods.log = function(name, bought, price) {
 	var fbRef = new Firebase(this.chatKey);
+	var message = name + ' has bought ' + bought;
+	if(price) message += ' for $' + price;
 	fbRef.push({
 		user: 'GRID GOD',
 		message: message
@@ -196,7 +198,7 @@ schema.methods.end = function (game) {
 
 schema.methods.transaction = function(update, game) {
   var self = this;
-	return Player.findById(update.player._id || update.player)
+	return Player.findById(update.player._id || update.player).populate('user')
 		.then(function (player) {
 			
 			self.remainingPlayers = self.removePlayer(player);
@@ -215,11 +217,10 @@ schema.methods.transaction = function(update, game) {
 				var plant = game.plantMarket.splice(plantIndex, 1)[0];
 
 				player.plants.push(plant);
+				loseResources(player, game);
 
 				game = drawPlant(game);
-				if (player.plants.length > plantSpaces[game.turnOrder.length]) {
-					// make player discard a plant
-				}
+				self.log(player.user.username, 'the ' + plant.rank, update.data.bid);
 			} // end of 'plant'
 			else if (self.phase === 'resource') {
 				var wishlist = update.data.wishlist;
@@ -227,11 +228,15 @@ schema.methods.transaction = function(update, game) {
 				for(var resource in wishlist) {
 					game.resourceMarket[resource] -= wishlist[resource];
 					player.resources[resource] += wishlist[resource];
+					if (wishlist[resource]) {
+						self.log(player.user.username, '' + wishlist[resource] + ' ' + resource);
+					}
 				}
 			} // end of 'resource'
 			else if (self.phase === 'city') {
 				var citiesToAdd = update.data.citiesToAdd;
-				player.money -= cityPrice(game, citiesToAdd, player);
+				var price = cityPrice(game, citiesToAdd, player);
+				player.money -= price;
 				citiesToAdd.forEach(function (city) {
 					player.cities.push(city.id);
 				})
@@ -240,6 +245,7 @@ schema.methods.transaction = function(update, game) {
 					game.discardedPlants.push(game.plantMarket.shift());
 					game = drawPlant(game);
 				}
+				self.log(player.user.username, '' + citiesToAdd.length + ' cities', price)
 			} // end of 'city'
 			else if (self.phase === 'bureaucracy') {
 

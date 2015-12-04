@@ -1,15 +1,22 @@
 <div class="plant-action-container">
     <div class="row">
         <div class="col-lg-4">
-            <div ng-if="plant || auctionPlant">
-                <plant  rank="{{auctionPlant ? auctionPlant.rank : plant.rank}}">
+            <div ng-if="plant || auction">
+                <div ng-show="auction" class="auction-text">
+                    Up for auction:
+                </div>
+                <plant rank="{{auctionPlant ? auctionPlant.rank : plant.rank}}">
                 </plant>
-                <bid start="{{plant.rank}}" 
-                     ng-model="bid">
+                <bid ng-show="shouldSeeBidButtons()"
+                     start="{{ auction ? auction.bid + 1 : plant.rank}}" 
+                     ng-model="$parent.bid">
                 </bid>
             </div>
         </div>
         <div class="col-lg-4">
+            <div ng-show="auction && !shouldSeeAuctionButtons()">
+                Waiting for {{ auction.activePlayer.user.username }} to bid...
+            </div>
             <div ng-hide="getAuction()">
                 <div ng-hide="plant">
                     <h2>Pick a Plant</h2>
@@ -20,16 +27,30 @@
                     <button class="btn btn-lg" ng-click="pass()">Pass</button>
                 </div>
             </div>
-            <div ng-if="shouldSeeAuctionButtons()">
-                <bid start="auction.bid + 1" ng-model="bid"></bid>
+            <div ng-show="shouldSeeAuctionButtons()" class="buttons-down">
                 <div>
                     <button class="btn btn-lg" ng-click="bidFor(bid)">Bid</button>
                     <button class="btn btn-lg" ng-click="pass()">Pass</button>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
-            Players go here!
+        <div ng-show="auction" class="col-lg-4">
+            Players still in auction:
+            <table class="table">
+                <tr ng-repeat="player in auction.remainingPlayers">
+                    <td>
+                        <div class="glyphicon glyphicon-home"
+                             ng-style="{ color: player.color }">
+                        </div>
+                    </td>
+                    <td>
+                        {{player.user.username}}
+                    </td>
+                    <td>
+                        <span ng-show="player._id === auction.highestBidder"> Highest bid: ${{ auction.bid }}</span>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </div>

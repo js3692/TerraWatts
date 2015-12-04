@@ -9,7 +9,7 @@ app.directive('bid', function () {
         link: function (scope, elem, attrs) {
             
             attrs.$observe('start', function(start){
-                scope.bid = +start;
+                scope.bid = start;
             }); 
             
             scope.getBid = function(){
@@ -19,6 +19,10 @@ app.directive('bid', function () {
             scope.changeBid = function (quantity) {
                 scope.bid = Number(scope.bid) + quantity;
             };
+            
+            scope.isMin = function(bid){
+                return Number(bid) <= Number(attrs.start)
+            }
         }
     }
 })

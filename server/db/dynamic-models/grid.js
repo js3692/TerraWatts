@@ -63,10 +63,29 @@ var schema = new mongoose.Schema({
   },
 });
 
-var fieldsToPopulate = ['players.user', 'players.cities', 'players.plants',
-  'game.cities', 'game.connections.cities', 'game.plantMarket', 'game.plantDeck',
-  'game.discardedPlants', 'game.stepThreePlants', 'game.turnOrder.user',
-  'game.turnOrder.plants', 'state.auction.activePlayer', 'state.auction.plant'];
+var fieldsToPopulate = [
+    'players.user',
+    'players.cities',
+    'players.plants',
+    'game.cities',
+    'game.connections',
+    'game.connections.cities',
+    'game.plantMarket',
+    'game.plantDeck',
+    'game.discardedPlants',
+    'game.stepThreePlants',
+    'game.turnOrder',
+    'game.turnOrder.user',
+    'game.turnOrder.plants',
+    'state.auction',
+    'state.activePlayer',
+    'state.activePlayer.user',
+    'state.auction.activePlayer',
+    'state.auction.activePlayer.user',  
+    'state.auction.remainingPlayers', 
+    'state.auction.remainingPlayers.user', 
+    'state.auction.plant'
+  ];
 
 schema.plugin(deepPopulate, {
   whitelist: fieldsToPopulate,
@@ -78,7 +97,7 @@ schema.plugin(deepPopulate, {
       select: 'username'
     }
   }
-})
+});
 
 // For the "id" virtual
 schema.set('toObject', { virtuals: true });
@@ -90,6 +109,7 @@ schema.post('save', function (grid) {
       .populate(grid, 'game state players')
       .then(function (populatedGrid){
         populatedGrid.deepPopulate(fieldsToPopulate, function(err, deepPopulatedGrid) {
+         
           if(err) throw err;
           // This is mainly for '/join' and '/leave' of players
           firebaseHelper
@@ -204,7 +224,12 @@ schema.methods.initialize = function () {
 
 schema.methods.continue = function (update) {
   var self = this;
-  if(this.state.auction) {
+  if(this.state.auction.choice) {
+    return this.state.auction.choice.continue(update, this.game)
+    .then(function () {
+      return self.save();
+    })
+  } else if(this.state.auction) {
     return this.state.auction.continue(update, this.game)
       .then(function () {
         return self.save();
