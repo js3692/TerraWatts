@@ -46,7 +46,10 @@ app.directive('bargraph', function($parse) {
 					{numCities: 8, user: {username: 'person1'}},
 					{numCities: 5, user: {username: 'person2'}},
 					{numCities: 7, user: {username: 'person3'}},
-					{numCities: 2, user: {username: 'person4'}}
+					{numCities: 2, user: {username: 'person4'}},
+					{numCities: 2, user: {username: 'person5'}},
+					{numCities: 2, user: {username: 'person6'}},
+					{numCities: 2, user: {username: 'person7'}}
 				];
 
 				if(players) {

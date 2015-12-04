@@ -4,7 +4,6 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCart) {
 		replace: true,
 		template: '<div class="map"></div>',
 		scope: {
-			// game: '=',
 			grid: '=',
 			cityShoppingCart: '=ngModel'
 		},
@@ -12,13 +11,6 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCart) {
             scope.me = PlayGameFactory.getMe();
 			var isActivePlayer = false;
 			scope.cityShoppingCart = [];
-			scope.$watch('me', function(me) {
-				if(me && me._id === scope.grid.state.activePlayer) {
-					console.log("You're the activePlayer! And special!!!")
-					scope.showCityBuyPanel = true;
-					isActivePlayer = true;
-				}
-			})
 
 			var width = Math.max(960, window.innerWidth),
 			    height = Math.max(500, window.innerHeight);
