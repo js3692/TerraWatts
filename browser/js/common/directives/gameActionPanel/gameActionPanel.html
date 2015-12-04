@@ -4,6 +4,6 @@
             panel-default
             game-action-slider
             game-action-slider-pull">
-    <plant-action ng-show="shouldViewPlantAction()" plant="getPlantToBidOn()">
+    <plant-action ng-if="shouldViewPlantAction()" plant="getPlantToBidOn()">
     </plant-action>
 </div>

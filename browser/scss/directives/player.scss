@@ -1,5 +1,6 @@
 player {
     .panel-default {
+        height: 85px;
         width: 100%;
         margin: 0 auto 3px auto;
     }
@@ -46,6 +47,24 @@ player {
     
     .below-username {
         margin-top: 6px;
+    }
+    
+    plant {
+        
+        img {
+            margin: 0;
+            max-width: 18%;
+            max-height: 18%;
+            border-radius: 2px;
+            margin-left: 3px;
+            margin-top: 8px;
+        }
+        
+        img:hover{
+            position:relative;
+            top: -15px;
+            max-width: 100px;
+        }
     }
 }
 

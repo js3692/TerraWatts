@@ -85,6 +85,9 @@ schema.plugin(deepPopulate, {
     'game.turnOrder.plants',
     'state.auction',
     'state.auction.activePlayer',
+    'state.auction.activePlayer.user',  
+    'state.auction.remainingPlayers', 
+    'state.auction.remainingPlayers.user', 
     'state.auction.plant'
   ],
   populate: {
@@ -116,8 +119,12 @@ schema.post('save', function (grid) {
           'game.stepThreePlants',
           'game.turnOrder',
           'game.turnOrder.user',
+          'game.turnOrder.plants',    
           'state.auction',
           'state.auction.activePlayer',
+          'state.auction.activePlayer.user',
+          'state.auction.remainingPlayers', 
+          'state.auction.remainingPlayers.user', 
           'state.auction.plant'    
         ], function(err, deepPopulatedGrid) {
           if(err) throw err;

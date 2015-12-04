@@ -1,12 +1,19 @@
 plant-action {
+    color: white;
+    font-weight: 100;
+    text-align: center;
+    
+    .table {
+        margin-top: 5px;
+    }
+    .auction-text {
+        padding-left: 10px;
+    }
     .plant-action-container {
-        height: 100%;
-        width: 100%;
-        padding-top: 30px;
+        padding-top: 20px;
     }
     .row, col-lg-4 {
-        height: 100%;
-        width: 100;
+        width: 100%;
     }
     
     bid {

@@ -23,6 +23,7 @@ app.directive('plantAction', function(PlayGameFactory){
                 update.data.plant = PlayGameFactory.getPlantToBidOn();
                 update.data.bid = scope.bid;
                 PlayGameFactory.continue(update);
+                PlayGameFactory.setPlantToBidOn(null);
             };
             
             scope.pickAnotherPlant = function(){
@@ -40,6 +41,13 @@ app.directive('plantAction', function(PlayGameFactory){
                 update.data.plant = scope.auction.plant;
                 update.data.bid = bid;
                 PlayGameFactory.continue(update);
+            }
+            
+            scope.shouldSeeBidButtons = function(){
+                return [
+                    PlayGameFactory.iAmActiveAuctionPlayer(),
+                    PlayGameFactory.iAmActivePlayer && !Boolean(PlayGameFactory.getAuction())
+                ].some(valid => valid);
             }
             
             scope.shouldSeeAuctionButtons = function(){
