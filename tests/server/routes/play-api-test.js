@@ -219,7 +219,7 @@ describe('Play Route: ', function () {
           });
       });
 
-      it('should validate and proceed game with first player\'s move', function (done) {
+      it('should validate and proceed game with first player\'s bid at 4', function (done) {
         Plant.findOne({ rank: 4 })
           .then(function (plantFour) {
             agentsByTurnOrder[0]
@@ -255,7 +255,7 @@ describe('Play Route: ', function () {
           });
       });
 
-      it('should validate and proceed game with second player\'s move', function (done) {
+      it('should validate and proceed game with second player\'s decision to bid higher at 6', function (done) {
         Plant.findOne({ rank: 4 })
           .then(function (plantFour) {
             agentsByClockwiseOrder[nextTurnIdx]
@@ -356,8 +356,12 @@ describe('Play Route: ', function () {
 
                     expect(deepPopulatedGrid.state.phase).to.equal('resource');
                     expect(deepPopulatedGrid.state.remainingPlayers.length).to.equal(2);
-                    expect(deepPopulatedGrid.game.turnOrder[0]._id.equals(playersByTurnOrder[1]._id)).to.be.true;
-                    expect(deepPopulatedGrid.game.turnOrder[1]._id.equals(playersByTurnOrder[0]._id)).to.be.true;
+
+                    // playerByTurnOrder has players in the order that was determined at the beginning of the plant phase
+                    // the new game turn order has players in the order of each player's highest plant rank
+                    // however in the game the turn starts at the end, i.e. the player with the lowest rank
+                    expect(deepPopulatedGrid.game.turnOrder[0]._id.equals(playersByTurnOrder[0]._id)).to.be.true;
+                    expect(deepPopulatedGrid.game.turnOrder[1]._id.equals(playersByTurnOrder[1]._id)).to.be.true;
 
                     agentsByTurnOrder = [];
                     deepPopulatedGrid.game.turnOrder.forEach(function (player) {
@@ -490,7 +494,7 @@ describe('Play Route: ', function () {
           });
       });
 
-      it('should validate and proceed game with second player\'s decision to buy a city', function (done) {
+      it('should validate and proceed game with second player\'s decision to power up his plant', function (done) {
         agentsByTurnOrder[0]
           .post(baseUrl + gridId)
           .send({
@@ -506,15 +510,18 @@ describe('Play Route: ', function () {
 
             Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
               .then(function (deepPopulatedGrid) {
-                console.log('after first player', deepPopulatedGrid);
-                console.log('after first player', deepPopulatedGrid.game);
-
+                console.log('after first player', deepPopulatedGrid.players[0].resources);
+                console.log('after first player', deepPopulatedGrid.players[1].resources);
+                expect(deepPopulatedGrid.state.remainingPlayers.length).to.equal(1);
+                expect(deepPopulatedGrid.state.phase).to.equal('bureaucracy');
+                expect(deepPopulatedGrid.game.turnOrder[0].money).to.equal(playersByTurnOrder[0].money + 22);
+                // expect(deepPopulatedGrid.game.turnOrder[0].resources.coal).to.equal(0);
                 done();
               }).catch(done);
           });
       });
 
-      it('should validate and proceed game with second player\'s decision to buy a city', function (done) {
+      it('should validate and proceed game with second player\'s decision to power up his plant', function (done) {
         agentsByTurnOrder[1]
           .post(baseUrl + gridId)
           .send({
@@ -530,8 +537,17 @@ describe('Play Route: ', function () {
 
             Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
               .then(function (deepPopulatedGrid) {
-                console.log('after second player', deepPopulatedGrid);
-                console.log('after second player', deepPopulatedGrid.game);
+                console.log('after first player', deepPopulatedGrid.players[0].resources);
+                console.log('after first player', deepPopulatedGrid.players[0].money);
+                console.log('after first player', deepPopulatedGrid.players[1].resources);
+                console.log('after first player', deepPopulatedGrid.players[1].money);
+                
+                expect(deepPopulatedGrid.state.remainingPlayers.length).to.equal(2);
+                expect(deepPopulatedGrid.state.phase).to.equal('plant');
+                expect(deepPopulatedGrid.game.turnOrder[1].money).to.equal(playersByTurnOrder[1].money + 22);
+                // expect(deepPopulatedGrid.game.turnOrder[1].resources.coal).to.equal(0);
+                expect(deepPopulatedGrid.game.turn).to.equal(2);
+                expect(deepPopulatedGrid.game.stepThreePlants.length).to.equal(1);
 
                 done();
               }).catch(done);
