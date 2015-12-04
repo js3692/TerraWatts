@@ -1,20 +1,33 @@
-.chart {
-    background: transparent;
-    padding: 3px;
-}
+#resourceChart {
+    width: 100%;
+    height: 100%;
 
-.chart div {
-    width: 0;
-    transition: all 1s ease-out;
-    -moz-transition: all 1s ease-out;
-    -webkit-transition: all 1s ease-out;
-}
+    .bar {
+        fill: steelblue;
+    }
 
-.chart div {
-    font: 10px sans-serif;
-    text-align: right;
-    padding: 10px;
-    margin: 14px;
-    color: white;
-    border-radius: 5px;
+    .bar:hover {
+        fill: brown;
+    }
+
+    .axis {
+        font: 8px sans-serif;
+    }
+
+    .axis path {
+        fill: none;
+        stroke: white;
+        shape-rendering: crispEdges;
+    }
+
+    .axis line {
+        fill: none;
+        stroke: white;
+        shape-rendering: crispEdges;
+    }
+
+    .y.axis path {
+        display: none;
+    }
+
 }
