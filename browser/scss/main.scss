@@ -20,10 +20,9 @@ body {
 }
 
 @import 'directives/_main';
-@import 'directives/sidePanel';
-@import 'directives/resourcePanel';
+@import 'directives/playerPanel';
 @import 'directives/chatPanel';
-@import 'directives/plantPanel';
+@import 'directives/plantAndResourcePanel';
 @import 'directives/resource';
 @import 'directives/plant';
 @import 'directives/player';
@@ -33,6 +32,8 @@ body {
 @import 'directives/resourceModal';
 @import 'directives/gameActionPanel';
 @import 'directives/cityBuyPanel';
+@import 'directives/plantAction';
+@import 'directives/resourceAction';
 @import 'directives/graphs/barGraph';
 @import 'home/main';
 @import 'about/main';

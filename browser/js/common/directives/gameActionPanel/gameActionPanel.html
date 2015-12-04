@@ -2,6 +2,10 @@
      class="menu-panel-body
             panel 
             panel-default
-            plant-slider
-            plant-slider-pull">
+            game-action-slider
+            game-action-slider-pull">
+    <plant-action ng-if="shouldViewPlantAction()" plant="getPlantToBidOn()">
+    </plant-action>
+    <resource-action ng-if="shouldViewResourceAction()">
+    </resource-action>
 </div>

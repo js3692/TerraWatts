@@ -1,17 +1,19 @@
 <div class="panel panel-default"
-     ng-style="{ 'border-color': player.color}">
-  <div class="panel-body" ng-class="{ 'active-player': active }">
+     ng-style="{ 'border-color': player.color}"
+     ng-class="{ 'active-player': isActive() }">
+  <div class="panel-body">
       <div class="row player-top-row">
           <div class="player-box glyphicon pull-left">
               <div class="player-text username">{{ player.user.username }}</div>
               <div class="below-username player-box glyphicon glyphicon-home pull-right"
-                   ng-style="{ color: player.user.color }">
+                   ng-style="{ color: player.color }">
                   <div class="player-text">{{ player.numCities }}</div>
               </div>
               <div class="below-username player-box glyphicon glyphicon-piggy-bank pull-right">
                    <div class="player-text">{{ player.money }}</div>
               </div>
           </div>
+          <plant rank="{{plant.rank}}" ng-repeat="plant in player.plants"></plant>
           <div class="pull-right resource-box">
               <div class="row">
                   <div class="player-box glyphicon nuke">

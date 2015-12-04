@@ -1,5 +1,6 @@
 player {
     .panel-default {
+        height: 85px;
         width: 100%;
         margin: 0 auto 3px auto;
     }
@@ -47,8 +48,59 @@ player {
     .below-username {
         margin-top: 6px;
     }
+    
+    plant {
+        
+        img {
+            margin: 0;
+            max-width: 18%;
+            max-height: 18%;
+            border-radius: 2px;
+            margin-left: 3px;
+            margin-top: 8px;
+        }
+        
+        img:hover{
+            position:relative;
+            top: -15px;
+            max-width: 100px;
+        }
+    }
+}
+
+//.active-player {
+//    box-shadow: 0 0 15px #fff;
+//}
+
+@-webkit-keyframes alternateShadow {  
+    0% { box-shadow: none; }
+    5% { box-shadow: 0 0 1.5px #fff; }
+    10% { box-shadow: 0 0 3px #fff; }
+    15% { box-shadow: 0 0 4.5px #fff; }
+    20% { box-shadow: 0 0 6px #fff; }
+    25% { box-shadow: 0 0 7.5px #fff; }
+    30% { box-shadow: 0 0 9px #fff; }
+    35% { box-shadow: 0 0 10.5px #fff; }
+    40% { box-shadow: 0 0 12px #fff; }
+    45% { box-shadow: 0 0 13.5px #fff; }
+    50% { box-shadow: 0 0 15px #fff; }
+    55% { box-shadow: 0 0 13.5px #fff; }
+    60% { box-shadow: 0 0 12px #fff; }
+    65% { box-shadow: 0 0 10.5px #fff; }
+    70% { box-shadow: 0 0 9px #fff; }
+    75% { box-shadow: 0 0 7.5px #fff; }
+    80% { box-shadow: 0 0 6px #fff; }
+    85% { box-shadow: 0 0 4.5px #fff; }
+    90% { box-shadow: 0 0 3px #fff; }
+    95% { box-shadow: 0 0 1.5px #fff; }
+    100% { box-shadow: none; }
 }
 
 .active-player {
-    border: 2px dashed red;
-}
+    box-shadow: none;
+    -webkit-animation-name: alternateShadow;  
+    -webkit-animation-iteration-count: infinite;  
+    -webkit-animation-duration: 1s; 
+}  
+
+

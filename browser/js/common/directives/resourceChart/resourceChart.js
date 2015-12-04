@@ -97,7 +97,7 @@ app.directive('bars', function ($parse) {
                         .attr('id', function(d,i) { return d.type; })
                         .attr('x', 0)
                         .attr('width', function(d,i) { return xAmount(d.value); })
-                        .attr('y', function(d) {return y(d.type);})
+                        .attr('y', function(d) { return y(d.type); })
                         .attr('height', 20);
 
                     // svg.selectAll('.text')

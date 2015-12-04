@@ -2,10 +2,11 @@ app.directive('plant', function(){
     return {
         restrict: 'E',
         templateUrl: "js/common/directives/plant/plant.html",
-        scope: {
-            plant:'='
-        },
-        link: function(scope, elem, attrs){ 
+        link: function(scope, elem, attrs){
+            scope.rank = attrs.rank;
+            attrs.$observe('rank', function(rank){
+                scope.rank = rank;
+            })
         }
     }
 }); 

@@ -5,7 +5,7 @@
       </span>
     </button>
     <button type="button" class="btn btn-default">
-        <span>{{ bid }}</span>
+        <span>${{ getBid() }}</span>
     </button>
     <button type="button" class="btn " ng-style="{ 'background-color': buttonColor }" ng-click="changeBid(1)" ng-disabled="isMax(bid)">
         <span class="glyphicon glyphicon-plus">

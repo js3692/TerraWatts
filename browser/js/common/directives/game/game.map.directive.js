@@ -1,24 +1,16 @@
-app.directive('gameMap', function($parse, CityCart) {
+app.directive('gameMap', function($parse, PlayGameFactory, CityCart) {
 	return {
 		restrict: 'E',
 		replace: true,
 		template: '<div class="map"></div>',
 		scope: {
-			// game: '=',
 			grid: '=',
-			me: '='
+			cityShoppingCart: '=ngModel'
 		},
 		link: function(scope, element, attrs) {
-
+            scope.me = PlayGameFactory.getMe();
 			var isActivePlayer = false;
-
-			scope.$watch('me', function(me) {
-				if(me && me._id === scope.grid.state.activePlayer) {
-					console.log("You're the activePlayer! And special!!!")
-					scope.showCityBuyPanel = true;
-					isActivePlayer = true;
-				}
-			})
+			scope.cityShoppingCart = [];
 
 			var width = Math.max(960, window.innerWidth),
 			    height = Math.max(500, window.innerHeight);
@@ -134,7 +126,7 @@ app.directive('gameMap', function($parse, CityCart) {
 						.attr('id', function(d,i) { return 'city' + i; })
 						.on('click', function(d,i) {
 							console.log("You've clicked " + d.properties.name)
-
+							CityCart.push(d.properties);
 							d3.select('#slot10Towers' + i + ' #leftTower')
 								.transition()
 								.duration(1000)

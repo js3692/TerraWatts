@@ -47,7 +47,6 @@ function canAffordResources(update, grid) {
 
 // city
 function canBuyCities(update, grid) {
-	console.log(update)
 	var canBuy = true;
 	update.data.citiesToAdd.forEach(function (city) {
 		if (numResidents(city, grid.players) >= grid.game.step) canBuy = false;
@@ -67,7 +66,7 @@ function hasResources(update) {
 	var has = {};
 	var needs = {};
 	update.data.plantsToPower.forEach(function (plant) {
-		needs[plant.resourceType] = needs[plant.resourceType] + plant.resourceNum || plant.resourceNum;
+		needs[plant.resourceType] = needs[plant.resourceType] + plant.numResources || plant.numResources;
 	});
 	var enoughResources = true;
 	['coal', 'oil', 'trash', 'nuke'].forEach(function (resource) {
@@ -79,45 +78,67 @@ function hasResources(update) {
 	return enoughResources;
 }
 
+function hasResourceChoiceIfNeeded(update) {
+	if (update.choice.resourcesToUseForHybrids) return true;
+	var has = {};
+	var needs = {};
+	update.data.plantsToPower.forEach(function (plant) {
+		needs[plant.resourceType] = needs[plant.resourceType] + plant.numResources || plant.numResources;
+	});
+	['coal', 'oil'].forEach(function (resource) {
+		has[resource] = update.player.resources[resource];
+		has[resource] -= needs[resource];
+	});
+	return !(needs['hybrid'] && has['coal'] && has['oil'] && (needs['hybrid'] < has['coal'] + has['oil']))
+}
+
 module.exports = {
 	global: [{
-		func: isActive,
-		message: 'You are not the active player'
-	},
-	{
-		func: isCorrectPhase,
-		message: 'Request coming from wrong phase'
-	}],
+			func: isActive,
+			message: 'You are not the active player'
+		},
+		{
+			func: isCorrectPhase,
+			message: 'Request coming from wrong phase'
+		}],
+
 	plant: [{
-		func: cannotPassFirstTurn,
-		message: 'Cannot pass on the first turn'
-	},
-	{
-		func: plantIsAvailable,
-		message: 'This plant is not available'
-	},
-	{
-		func: canAffordBid,
-		message: 'You cannot afford this bid'
-	}],
+			func: cannotPassFirstTurn,
+			message: 'Cannot pass on the first turn'
+		},
+		{
+			func: plantIsAvailable,
+			message: 'This plant is not available'
+		},
+		{
+			func: canAffordBid,
+			message: 'You cannot afford this bid'
+		}],
+
 	resource: [{
-		func: canHoldResources,
-		message: 'Your plants cannot fit those resources'
-	},
-	{
-		func: canAffordResources,
-		message: 'You cannot afford the resources'
-	}],
+			func: canHoldResources,
+			message: 'Your plants cannot fit those resources'
+		},
+		{
+			func: canAffordResources,
+			message: 'You cannot afford the resources'
+		}],
+
 	city: [{
-		func: canBuyCities,
-		message: 'Some of those cities are unavailable'
-	},
-	{
-		func: canAffordCities,
-		message: 'You cannot afford those cities'
-	}],
+			func: canBuyCities,
+			message: 'Some of those cities are unavailable'
+		},
+		{
+			func: canAffordCities,
+			message: 'You cannot afford those cities'
+		}],
+
 	bureaucracy: [{
-		func: hasResources,
-		message: 'You do not have enough resources'
-	}]
+			func: hasResources,
+			message: 'You do not have enough resources'
+		},
+		{
+			func: hasResourceChoiceIfNeeded,
+			message: 'You need to specify a choice for powering your hybrid(s)'
+		}]
 }
