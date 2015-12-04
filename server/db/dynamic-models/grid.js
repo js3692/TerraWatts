@@ -63,10 +63,27 @@ var schema = new mongoose.Schema({
   },
 });
 
-var fieldsToPopulate = ['players.user', 'players.cities', 'players.plants',
-  'game.cities', 'game.connections.cities', 'game.plantMarket', 'game.plantDeck',
-  'game.discardedPlants', 'game.stepThreePlants', 'game.turnOrder.user',
-  'game.turnOrder.plants', 'state.auction.activePlayer', 'state.auction.plant'];
+var fieldsToPopulate = [
+    'players.user',
+    'players.cities',
+    'players.plants',
+    'game.cities',
+    'game.connections',
+    'game.connections.cities',
+    'game.plantMarket',
+    'game.plantDeck',
+    'game.discardedPlants',
+    'game.stepThreePlants',
+    'game.turnOrder',
+    'game.turnOrder.user',
+    'game.turnOrder.plants',
+    'state.auction',
+    'state.auction.activePlayer',
+    'state.auction.activePlayer.user',  
+    'state.auction.remainingPlayers', 
+    'state.auction.remainingPlayers.user', 
+    'state.auction.plant'
+  ];
 
 schema.plugin(deepPopulate, {
   whitelist: fieldsToPopulate,
@@ -78,7 +95,7 @@ schema.plugin(deepPopulate, {
       select: 'username'
     }
   }
-})
+});
 
 // For the "id" virtual
 schema.set('toObject', { virtuals: true });
@@ -102,8 +119,12 @@ schema.post('save', function (grid) {
           'game.stepThreePlants',
           'game.turnOrder',
           'game.turnOrder.user',
+          'game.turnOrder.plants',    
           'state.auction',
           'state.auction.activePlayer',
+          'state.auction.activePlayer.user',
+          'state.auction.remainingPlayers', 
+          'state.auction.remainingPlayers.user', 
           'state.auction.plant'    
         ], function(err, deepPopulatedGrid) {
           if(err) throw err;
