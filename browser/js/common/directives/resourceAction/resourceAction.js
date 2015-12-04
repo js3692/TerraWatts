@@ -4,7 +4,7 @@ app.directive('resourceAction', function(PlayGameFactory){
         templateUrl: 'js/common/directives/resourceAction/resourceAction.html',
         link: function(scope, elem, attrs){
             scope.shouldShowResourceButtons = PlayGameFactory.iAmActivePlayer;
-            scope.getActivePlayer = PlayGameFactory.getActivePlayer();
+            scope.getActivePlayer = PlayGameFactory.getActivePlayer;
             
             scope.buyableResources = ['coal', 'oil', 'trash', 'nuke'];
             
