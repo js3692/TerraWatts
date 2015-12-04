@@ -74,11 +74,12 @@ function hasResources(update) {
 		has[resource] -= needs[resource];
 		if(has[resource] < 0) enoughResources = false;
 	});
-	if(needs['hybrid'] && needs['hybrid'] > has['coal'] + has['oil']) enoughResources = false;
+	if(needs.hybrid && needs.hybrid > has.coal + has.oil) enoughResources = false;
 	return enoughResources;
 }
 
 function hasResourceChoiceIfNeeded(update) {
+	if (update.data.plantsToPower.every(plantToPower => plantToPower.resourceType !== "hybrid")) return true;
 	if (update.choice.resourcesToUseForHybrids) return true;
 	var has = {};
 	var needs = {};
@@ -89,7 +90,7 @@ function hasResourceChoiceIfNeeded(update) {
 		has[resource] = update.player.resources[resource];
 		has[resource] -= needs[resource];
 	});
-	return !(needs['hybrid'] && has['coal'] && has['oil'] && (needs['hybrid'] < has['coal'] + has['oil']))
+	return !(needs.hybrid && has.coal && has.oil && (needs.hybrid < has.coal + has.oil))
 }
 
 module.exports = {

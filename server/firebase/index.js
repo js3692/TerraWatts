@@ -13,13 +13,7 @@ module.exports = {
         if(!gridHash[key]) this.setConnection(key);
         return gridHash[key];
     },
-    getConnectionToGame: function (gridKey) {
-        return new Firebase(baseUrl + gridKey + '/game');
-    },
-    getConnectionToState: function (gridKey) {
-        return new Firebase(baseUrl + gridKey + '/state');
-    },
-    getConnectionToPlayers: function (gridKey) {
-        return new Firebase(baseUrl + gridKey + '/players');
+    disconnect: function (key) {
+        this.getConnection(key).onDisconnect().remove();
     }
 };
