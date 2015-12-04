@@ -107,8 +107,7 @@ describe('Play Route: ', function () {
       });
       User.remove({ username: { $in: usernames } })
         .then(function () {
-          baseRef.child(firebaseKey).remove();
-          baseRef.onDisconnect().remove();
+          baseRef.child(firebaseKey).onDisconnect().remove();
           done();
         }).catch(done);
     });

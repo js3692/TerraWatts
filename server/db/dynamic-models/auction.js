@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Choice = mongoose.model('Choice');
+var Player = mongoose.model('Player');
 var plantSpaces = require('../utils/0_basic_rules/dependsOnNumPlayers').plantSpaces;
 
 var schema = new mongoose.Schema({
@@ -55,30 +56,33 @@ schema.methods.go = function (game) {
   var self = this;
 
 	if (this.remainingPlayers.length === 1) {
-		if(null && this.highestBidder.plants.length >= plantSpaces[game.turnOrder.length]) {
-			var choice = new Choice({
-				player: this.highestBidder,
-				parentAuction: this
-			});
-			return choice.initialize()
-			.then(function (choice) {
-				self.choice = choice;
-				return this.save();
-			})
-		} else {
-			self.choice = null;
-			var result = {
-				player: this.highestBidder,
-				data: {
-					plant: this.plant,
-					bid: this.bid
-				}
-			};
-		    return mongoose.model('State').findById(this.plantState)
-		      .then(function (foundState) {
-		        return foundState.transaction(result, game);
-		      });
-		  }
+		return Player.findById(this.highestBidder)
+		.then(function(foundPlayer) {
+			if(foundPlayer.plants.length >= plantSpaces[game.turnOrder.length]) {
+				var choice = new Choice({
+					player: self.highestBidder,
+					parentAuction: self
+				});
+				return choice.initialize()
+				.then(function (choice) {
+					self.choice = choice;
+					return self.save();
+				})
+			} else {
+				self.choice = null;
+				var result = {
+					player: self.highestBidder,
+					data: {
+						plant: self.plant,
+						bid: self.bid
+					}
+				};
+			    return mongoose.model('State').findById(self.plantState)
+			      .then(function (foundState) {
+			        return foundState.transaction(result, game);
+			      });
+			  }
+		})
 	} else {
 		this.remainingPlayers.forEach(function (player, i) {
 			if (player.equals(self.highestBidder)) {
