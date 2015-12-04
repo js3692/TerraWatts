@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var Firebase = require('firebase');
 var Promise = require('bluebird');
 
 var mongoose = require('mongoose');
@@ -46,8 +47,24 @@ var schema = new mongoose.Schema({
 	choice: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Choice'
+	},
+	key: {
+		type: String
 	}
 });
+
+schema.virtual('chatKey').get(function() {
+	var baseUrl = "https://amber-torch-6713.firebaseio.com/";
+	return baseUrl + this.key + '/chat';
+})
+
+schema.methods.log = function(message) {
+	var fbRef = new Firebase(this.chatKey);
+	fbRef.push({
+		user: 'GRID GOD',
+		message: message
+	})
+}
 
 schema.methods.initialize = function (game) {
 	if(this.phase === 'resource' && game.turn === 1) {
@@ -157,7 +174,7 @@ schema.methods.end = function(game) {
 
 schema.methods.transaction = function(update, game) {
     var self = this;
-	return Player.findById(update.player._id || update.player)
+	return Player.findById(update.player._id || update.player).populate('user')
 	.then(function (player) {
 		self.remainingPlayers = self.removePlayer(player);
 		if (self.phase === 'plant') {
@@ -170,16 +187,21 @@ schema.methods.transaction = function(update, game) {
 			var plant = game.plantMarket.splice(plantIndex,1)[0];
 			player.plants.push(plant);
 			game = drawPlant(game);
+			self.log(player.user.username + ' bought the ' + plant.rank + ' plant for $' + update.data.bid);
 		} else if (self.phase === 'resource') {
 			var wishlist = update.data.wishlist;
 			player.money -= resourcePrice(wishlist, game.resourceMarket);
 			for(var resource in wishlist) {
 		        game.resourceMarket[resource] -= wishlist[resource];
 		        player.resources[resource] += wishlist[resource];
+		        if(wishlist[resource] > 0) {
+		        	self.log(player.user.username + ' bought ' + wishlist[resource] + ' ' + resource);
+	    		}
 	    	}
 		} else if (self.phase === 'city') {
 			var citiesToAdd = update.data.citiesToAdd;
-			player.money -= cityPrice(game, citiesToAdd, player);
+			var price = cityPrice(game, citiesToAdd, player);
+			player.money -= price;
 			citiesToAdd.forEach(function (city) {
 				player.cities.push(city.id);
 			})
@@ -188,6 +210,7 @@ schema.methods.transaction = function(update, game) {
 				game.discardedPlants.push(game.plantMarket.shift());
 				game = drawPlant(game);
 			}
+			self.log(player.user.username + ' bought ' + citiesToAdd.length + 'cities for $' + price)
 		} else if (self.phase === 'bureaucracy') {
 			var plantsToPower = update.data;
 			var totalCapacity = 0;

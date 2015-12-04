@@ -6,13 +6,9 @@ var schema = new mongoose.Schema({
 		ref: 'Player',
 		required: true
 	},
-	hybridPlants: [{
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Plant'
-	}],
 	choiceType: {
 		type: String,
-		enum: ['discardPlant', 'loseResources', 'powerHybrid'],
+		enum: ['discardPlant', 'loseResources', 'powerHybrids'],
 		required: true
 	},
 	parentState: {
@@ -29,21 +25,21 @@ schema.methods.initialize = function() {
 	if (this.choiceType === 'discardPlant') {
 		this.choices = this.player.plants;
 	} 
-	// else if (this.choiceType === 'spendResources') {
-	// 	var totalResourcesNeeded = this.hybridPlants.reduce(function(prev, currPlant) {
-	// 		return prev + currPlant.resourceNum;
-	// 	}, 0);
-	// 	var choices = [];
-	// 	for(var i = 0; i <= totalResourcesNeeded; i++) {
-	// 		choices.push({coal: i, oil: totalResourcesNeeded - i});
-	// 	}
-	// 	var numCoal = this.player.resources.coal, numOil = this.player.resources.oil;
-	// 	this.choices = choices.filter(function (choice) {
-	// 		return choice.coal <= numCoal && choice.oil <= numOil
-	// 	});
-	// } else if (this.choiceType === 'ditchResources') {
+	else if (this.choiceType === 'powerHybrids') {
+		var totalResourcesNeeded = this.player.plants.reduce(function(prev, currPlant) {
+			if(currPlant.resourceType === 'hybrid') return prev + currPlant.resourceNum;
+		}, 0);
+		var choices = [];
+		for(var i = 0; i <= totalResourcesNeeded; i++) {
+			choices.push({coal: i, oil: totalResourcesNeeded - i});
+		}
+		var numCoal = this.player.resources.coal, numOil = this.player.resources.oil;
+		this.choices = choices.filter(function (choice) {
+			return choice.coal <= numCoal && choice.oil <= numOil
+		});
+	} else if (this.choiceType === 'loseResources') {
 		
-	// }
+	}
 	return this.save();
 }
 
