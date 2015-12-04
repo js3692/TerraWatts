@@ -3,19 +3,22 @@ app.directive('bid', function () {
         restrict: 'E',
         templateUrl: 'js/common/directives/bid/bid.html',
         scope: {
-            start: '=',
             buttonColor: '=',
             bid: '=ngModel'
         },
         link: function (scope, elem, attrs) {
-            scope.bid = scope.start;
+            
+            attrs.$observe('start', function(start){
+                scope.bid = +start;
+            }); 
+            
+            scope.getBid = function(){
+                return scope.bid;
+            };
+            
             scope.changeBid = function (quantity) {
-                scope.bid += quantity;
-            }
-
-            scope.isMin = function (bid) {
-                return bid <= scope.start;
-            }
+                scope.bid = Number(scope.bid) + quantity;
+            };
         }
     }
 })

@@ -1,6 +1,7 @@
 <div class="panel panel-default"
-     ng-style="{ 'border-color': player.color}">
-  <div class="panel-body" ng-class="{ 'active-player': active }">
+     ng-style="{ 'border-color': player.color}"
+     ng-class="{ 'active-player': isActive() }">
+  <div class="panel-body">
       <div class="row player-top-row">
           <div class="player-box glyphicon pull-left">
               <div class="player-text username">{{ player.user.username }}</div>

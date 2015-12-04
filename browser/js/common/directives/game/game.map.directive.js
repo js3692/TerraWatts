@@ -1,4 +1,4 @@
-app.directive('gameMap', function($parse, CityCart) {
+app.directive('gameMap', function($parse, PlayGameFactory, CityCart) {
 	return {
 		restrict: 'E',
 		replace: true,
@@ -6,12 +6,12 @@ app.directive('gameMap', function($parse, CityCart) {
 		scope: {
 			// game: '=',
 			grid: '=',
-			me: '='
+			cityShoppingCart: '=ngModel'
 		},
 		link: function(scope, element, attrs) {
-
+            scope.me = PlayGameFactory.getMe();
 			var isActivePlayer = false;
-
+			scope.cityShoppingCart = [];
 			scope.$watch('me', function(me) {
 				if(me && me._id === scope.grid.state.activePlayer) {
 					console.log("You're the activePlayer! And special!!!")

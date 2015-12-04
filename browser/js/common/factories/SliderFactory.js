@@ -1,4 +1,6 @@
 app.factory('SliderFactory', function(){
+    var pickedPlant;
+    
     return {
         slideOut: function(side){
             var sliders = [].slice.call(document.getElementsByClassName(side + '-slider'));
@@ -13,6 +15,13 @@ app.factory('SliderFactory', function(){
                 slider.toggleClass(triangleBase + rightTriangle);
                 slider.toggleClass(triangleBase + leftTriangle);
             }
+        },
+        hidePlant: function(plant){
+            pickedPlant = plant;
+            plant.addClass('make-invisible');
+        },
+        showPickedPlant: function(){
+            pickedPlant.removeClass('make-invisible');
         }
     };
 }); 
