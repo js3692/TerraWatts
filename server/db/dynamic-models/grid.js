@@ -53,11 +53,6 @@ var schema = new mongoose.Schema({
       ref: 'State',
       default: null
   },
-  auction: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Auction',
-    default: null
-  },
   // Below are HISTORICAL data relevant to this game environment
   complete: {
       type: Boolean,
@@ -68,27 +63,18 @@ var schema = new mongoose.Schema({
   },
 });
 
+var fieldsToPopulate = ['players.user', 'players.cities', 'players.plants',
+  'game.cities', 'game.connections.cities', 'game.plantMarket', 'game.plantDeck',
+  'game.discardedPlants', 'game.stepThreePlants', 'game.turnOrder.user',
+  'game.turnOrder.plants', 'state.auction.activePlayer', 'state.auction.plant'];
+
 schema.plugin(deepPopulate, {
-  whitelist: [
-    'players.user',
-    'players.cities',
-    'players.plants',
-    'game.cities',
-    'game.connections',
-    'game.connections.cities',
-    'game.plantMarket',
-    'game.plantDeck',
-    'game.discardedPlants',
-    'game.stepThreePlants',
-    'game.turnOrder',
-    'game.turnOrder.user',
-    'game.turnOrder.plants',
-    'state.auction',
-    'state.auction.activePlayer',
-    'state.auction.plant'
-  ],
+  whitelist: fieldsToPopulate,
   populate: {
     'players.user': {
+      select: 'username'
+    },
+    'game.turnOrder.user': {
       select: 'username'
     }
   }
@@ -101,7 +87,7 @@ schema.set('toJSON', { virtuals: true });
 schema.post('save', function (grid) {
   if(grid.players.length > 0) {
     grid.constructor
-      .populate(grid, 'game state players auction')
+      .populate(grid, 'game state players')
       .then(function (populatedGrid){
         populatedGrid.deepPopulate([
           'players.user',
