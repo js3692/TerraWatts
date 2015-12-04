@@ -134,7 +134,7 @@ app.directive('gameMap', function($parse, CityCart) {
 						.attr('id', function(d,i) { return 'city' + i; })
 						.on('click', function(d,i) {
 							console.log("You've clicked " + d.properties.name)
-
+							CityCart.push(d.properties);
 							d3.select('#slot10Towers' + i + ' #leftTower')
 								.transition()
 								.duration(1000)

@@ -76,7 +76,6 @@ schema.methods.initialize = function (game) {
 };
 
 schema.methods.go = function (game) {
-	if (this.choice) return Promise.all([this.save(), game.save()]);
 	if (!this.remainingPlayers.length) return this.end(game);
 	if (this.phase !== 'bureaucracy' || this.remainingPlayers.length === game.turnOrder.length) {
 		this.activePlayer = this.remainingPlayers[0];
@@ -86,10 +85,6 @@ schema.methods.go = function (game) {
 };
 
 schema.methods.continue = function(update, game) {
-    if(this.choice) {	
-    	this.choice = null;
-    	return this.go(game);
-    }
     if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
 		if(update.data.plant) update.data.plant = update.data.plant._id;
         return this.transaction(update, game);
@@ -212,7 +207,7 @@ schema.methods.transaction = function(update, game) {
 			}
 			self.log(player.user.username + ' bought ' + citiesToAdd.length + 'cities for $' + price)
 		} else if (self.phase === 'bureaucracy') {
-			var plantsToPower = update.data;
+			var plantsToPower = update.data.plantsTo;
 			var totalCapacity = 0;
 			plantsToPower.forEach(function (plant) {
 				totalCapacity += plant.capacity;
@@ -230,19 +225,7 @@ schema.methods.transaction = function(update, game) {
         player.markModified('resources');
 		return player.save();
 	})
-	.then(function(savedPlayer) {
-        if (savedPlayer.plants.length > plantSpaces[game.turnOrder.length]) {
-			var choice = new Choice({
-				player: savedPlayer,
-				choiceType: 'discardPlant',
-				parentState: self
-			})
-			return choice.initialize()
-			.then(function (_choice) {
-				self.choice = _choice;
-				return self.go(game);
-			})
-		}
+	.then(function() {
         return self.go(game);
 	})
 	

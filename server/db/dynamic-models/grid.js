@@ -228,13 +228,7 @@ schema.methods.initialize = function () {
 
 schema.methods.continue = function (update) {
   var self = this;
-  if(this.state.choice) {
-    return this.state.choice.continue(update, this.game)
-    .then(function (whatContinueReturns) {
-      self.game = whatContinueReturns[1];
-      return self.save();
-    })
-  } else if(this.state.auction) {
+  if(this.state.auction) {
     return this.state.auction.continue(update, this.game)
     .then(function () {
         return self.save();
@@ -243,7 +237,6 @@ schema.methods.continue = function (update) {
     return this.state.continue(update, this.game)
     .then(function (whatContinueReturns) {
       if(whatContinueReturns.length) self.game = whatContinueReturns[1];
-      console.log('!!!!!!!!!!!!!!!!', self.game);
       return self.save();
     })
   }
