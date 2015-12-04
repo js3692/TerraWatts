@@ -1,0 +1,35 @@
+<div class="plant-action-container">
+    <div class="row">
+        <div class="col-lg-4">
+            <div ng-if="plant || auctionPlant">
+                <plant  rank="{{auctionPlant ? auctionPlant.rank : plant.rank}}">
+                </plant>
+                <bid start="{{plant.rank}}" 
+                     ng-model="bid">
+                </bid>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div ng-hide="getAuction()">
+                <div ng-hide="plant">
+                    <h2>Pick a Plant</h2>
+                    <h4>&#8212   or   &#8212</h4>
+                </div>
+                <div ng-class="{ 'buttons-down' : plant}">
+                    <button class="btn btn-lg" ng-show="plant" ng-click="pickPlant()">Pick This Plant</button>
+                    <button class="btn btn-lg" ng-click="pass()">Pass</button>
+                </div>
+            </div>
+            <div ng-if="shouldSeeAuctionButtons()">
+                <bid start="auction.bid + 1" ng-model="bid"></bid>
+                <div>
+                    <button class="btn btn-lg" ng-click="bidFor(bid)">Bid</button>
+                    <button class="btn btn-lg" ng-click="pass()">Pass</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            Players go here!
+        </div>
+    </div>
+</div>

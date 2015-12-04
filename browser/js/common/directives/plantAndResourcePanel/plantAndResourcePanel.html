@@ -3,17 +3,17 @@
             panel-default
             plant-slider
             plant-slider-pull">
-    <plant ng-style="{ opacity: firstFour($index) }"
+    <plant plant-to-action
+           ng-style="{ opacity: firstFour($index) }"
            ng-show="plantsTrueResourcesFalse"
            ng-class="{ plantHover: hover }"
            ng-mouseover="hover = $index < 4" 
            ng-mouseleave="hover=false"
-           ng-repeat="plant in plantMarket" 
-           ng-click="bidFor(plant)"
+           ng-repeat="plant in getPlantMarket()" 
            plant="plant"
-           player="player">
+           rank="{{plant.rank}}">
     </plant>
-    <bars data="resources" 
+    <bars data="getResourceMarket()" 
           resource-colors="resourceColors"
           ng-hide="plantsTrueResourcesFalse"
           ng-click="buyResources()">

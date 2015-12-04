@@ -1,0 +1,40 @@
+plant-action {
+    .plant-action-container {
+        height: 100%;
+        width: 100%;
+        padding-top: 30px;
+    }
+    .row, col-lg-4 {
+        height: 100%;
+        width: 100;
+    }
+    
+    bid {
+        margin-left: 6px;
+    }
+    
+    hr {
+        border: 1px solid black;
+    }
+    h2, h4 {
+        color: white;
+        text-align: center;
+        font-weight: 100;
+    }
+    >div {
+        padding-top: 10px;
+        text-align: center;
+    }
+    button.btn.btn-lg,
+    button.btn.btn-lg:hover {
+        color: white;
+        font-weight: 100;
+        background-color: $main-background;
+        margin-bottom: 5%;
+        border: 1px solid white;
+    }
+    
+    .buttons-down {
+        margin-top: 40px;
+    }
+}

@@ -83,7 +83,9 @@ schema.plugin(deepPopulate, {
     'game.turnOrder',
     'game.turnOrder.user',
     'game.turnOrder.plants',
-    'state.auction'
+    'state.auction',
+    'state.auction.activePlayer',
+    'state.auction.plant'
   ],
   populate: {
     'players.user': {
@@ -114,7 +116,9 @@ schema.post('save', function (grid) {
           'game.stepThreePlants',
           'game.turnOrder',
           'game.turnOrder.user',
-          'state.auction'
+          'state.auction',
+          'state.auction.activePlayer',
+          'state.auction.plant'    
         ], function(err, deepPopulatedGrid) {
           if(err) throw err;
           // This is mainly for '/join' and '/leave' of players
