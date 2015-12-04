@@ -17,30 +17,16 @@ router.use(function (req, res, next) {
 	}
 })
 
-router.param('gridId', function(req, res, next, gridId){
-  Grid.findById(gridId)
-    .populate('players game state')
-    .then(function(populatedGrid){
-        populatedGrid.deepPopulate([
-          'players.user',
-          'players.cities',
-          'players.plants',
-          'game.cities',
-          'game.connections',
-          'game.connections.cities',
-          'game.plantMarket',
-          'game.plantDeck',
-          'game.discardedPlants',
-          'game.stepThreePlants',
-          'game.turnOrder',
-          'game.turnOrder.plants',
-          'game.turnOrder.user',
-          'state.auction'    
-        ], function(err, deepPopulatedGrid) {
-            if(err) next(err);
-              req.grid = deepPopulatedGrid;
-              next(); 
-        })
+router.param('gridId', function(req, res, next, gridId) {
+  var fieldsToDeepPopulate = ['players.user', 'players.cities', 'players.plants',
+  'game.cities', 'game.connections.cities', 'game.plantMarket', 'game.plantDeck',
+  'game.discardedPlants', 'game.stepThreePlants', 'game.turnOrder.user',
+  'game.turnOrder.plants', 'state.auction.activePlayer', 'state.auction.plant'];
+
+  Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+    .then(function(deepPopulatedGrid){
+      req.grid = deepPopulatedGrid;
+      next(); 
     })
     .catch(next);
 });
@@ -64,7 +50,7 @@ router.post('/continue/:gridId', function (req, res, next) {
     req.grid.continue(req.body)
       .then(function () {
         res.sendStatus(201);
-      });
+      }).catch(next);
   }
 });
 

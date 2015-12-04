@@ -1,4 +1,3 @@
-var _ = require('lodash');
 var Firebase = require('firebase');
 var Promise = require('bluebird');
 
@@ -7,17 +6,19 @@ mongoose.Promise = Promise;
 
 var Player = mongoose.model('Player');
 var Auction = mongoose.model('Auction');
-var Choice = mongoose.model('Choice');
+// var Choice = mongoose.model('Choice');
 
+var masterRestockRates =	require('../utils/0_basic_rules/restock');
 var determineTurnOrder =	require('../utils/0_basic_rules/turnOrder');
-var dONP =					require('../utils/0_basic_rules/dependsOnNumPlayers.js');
-var drawPlant =				require('../utils/1_plant_phase/drawPlant');
-var resourcePrice =			require('../utils/2_resource_phase/price');
-var cityPrice =				require('../utils/3_city_phase/price');
-var payments =				require('../utils/4_bureaucracy_phase/payments.js');
+var dONP =								require('../utils/0_basic_rules/dependsOnNumPlayers.js');
+var drawPlant =						require('../utils/1_plant_phase/drawPlant');
+var resourcePrice =				require('../utils/2_resource_phase/price');
+var cityPrice =						require('../utils/3_city_phase/price');
+var payments =						require('../utils/4_bureaucracy_phase/payments.js');
 
 var plantSpaces = dONP.plantSpaces;
 var endGame = dONP.endGame;
+var stepTwo = dONP.stepTwo;
 
 var phases = ['plant', 'resource', 'city', 'bureaucracy'];
 
@@ -77,41 +78,56 @@ schema.methods.initialize = function (game) {
 
 schema.methods.go = function (game) {
 	if (!this.remainingPlayers.length) return this.end(game);
+
 	if (this.phase !== 'bureaucracy' || this.remainingPlayers.length === game.turnOrder.length) {
 		this.activePlayer = this.remainingPlayers[0];
-        game.markModified('resourceMarket')
+    game.markModified('resourceMarket');
+
 		return Promise.all([this.save(), game.save()]);
+	} else {
+		this.save();
 	}
 };
 
 schema.methods.continue = function(update, game) {
-    if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
+	var self = this;
+
+  if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
+		
 		if(update.data.plant) update.data.plant = update.data.plant._id;
-        return this.transaction(update, game);
+
+		return this.transaction(update, game);
+
 	} else {
 		if (update.data === 'pass') {
+
 			this.remainingPlayers = this.removePlayer(update.player);
 			this.numPasses++;
+
 			return this.go(game)
+
 		} else {
+			
 			// start an auction
-			var self = this;
+
 			var auction = new Auction({
 				plant: update.data.plant,
 				bid: update.data.bid,
-                highestBidder: update.player,
+        highestBidder: update.player,
 				plantState: self
-			})
+			});
+
+			
 			return auction.initialize(game)
-            .then(function (_auction) {
-                self.auction = _auction;
-                return self.save();
-            })
+				.then(function (_auction) {
+					self.auction = _auction;
+					return self.save();
+				});
 		}
 	}
 }
 
-schema.methods.end = function(game) {
+schema.methods.end = function (game) {
 	if(this.phase === 'plant') {
 		if (this.numPasses === game.turnOrder.length) {
 			game.discardedPlants.push(game.plantMarket.shift());
@@ -121,7 +137,7 @@ schema.methods.end = function(game) {
 			game.discardedPlants.push(game.plantMarket.shift());
 			game.step = 3;
 		}		
-	}
+	} // end of 'plant'
 	if (this.phase === 'bureaucracy') {
 		var maxCities = game.turnOrder.reduce(function (prev, curr) {
 			return Math.max(prev, curr.cities.length);
@@ -140,14 +156,14 @@ schema.methods.end = function(game) {
 		}
 
 		// start step 2 if necessary
-		if (game.step === 1 && maxCities > step2[game.turnOrder.length]) {
+		if (game.step === 1 && maxCities > stepTwo[game.turnOrder.length]) {
 			game.step = 2;
 			game.discardedPlants.push(game.plantMarket.shift());
 			game = drawPlant(game);
 		}
 
 		// restock resources
-		game.restockRates = restockRatesMaster[game.turnOrder.length][game.step];
+		game.restockRates = masterRestockRates[game.turnOrder.length][game.step];
 		for(var resource in game.resourceMarket) {
 			var canFill = Math.min(game.restockRates[resource], game.resourceBank[resource]);
 			game.resourceBank[resource] -= canFill;
@@ -162,73 +178,106 @@ schema.methods.end = function(game) {
 		game = drawPlant(game);
 		game.turn++;
 		game.turnOrder = determineTurnOrder(game.turnOrder);
-	}
+	} // end of 'bureaucracy'
+
 	this.phase = phases[phases.indexOf(this.phase) + 1] || phases[0];
+
 	return this.initialize(game);
 }
 
 schema.methods.transaction = function(update, game) {
-    var self = this;
-	return Player.findById(update.player._id || update.player).populate('user')
-	.then(function (player) {
-		self.remainingPlayers = self.removePlayer(player);
-		if (self.phase === 'plant') {
-			self.auction = null;
-			player.money -= update.data.bid;
-			var plantIndex;
-			game.plantMarket.forEach(function (plant,i) {
-				if (plant._id.equals(update.data.plant)) plantIndex = i;
-			});
-			var plant = game.plantMarket.splice(plantIndex,1)[0];
-			player.plants.push(plant);
-			game = drawPlant(game);
-			self.log(player.user.username + ' bought the ' + plant.rank + ' plant for $' + update.data.bid);
-		} else if (self.phase === 'resource') {
-			var wishlist = update.data.wishlist;
-			player.money -= resourcePrice(wishlist, game.resourceMarket);
-			for(var resource in wishlist) {
-		        game.resourceMarket[resource] -= wishlist[resource];
-		        player.resources[resource] += wishlist[resource];
-		        if(wishlist[resource] > 0) {
-		        	self.log(player.user.username + ' bought ' + wishlist[resource] + ' ' + resource);
-	    		}
-	    	}
-		} else if (self.phase === 'city') {
-			var citiesToAdd = update.data.citiesToAdd;
-			var price = cityPrice(game, citiesToAdd, player);
-			player.money -= price;
-			citiesToAdd.forEach(function (city) {
-				player.cities.push(city.id);
-			})
-			// remove plant from market if necessary
-			while (player.cities.length >= game.plantMarket[0].rank) {
-				game.discardedPlants.push(game.plantMarket.shift());
+  var self = this;
+	return Player.findById(update.player._id || update.player)
+		.then(function (player) {
+			
+			self.remainingPlayers = self.removePlayer(player);
+
+			if (self.phase === 'plant') {
+				self.auction = null;
+				player.money -= update.data.bid;
+				
+				var plantIndex;
+
+				game.plantMarket.forEach(function (plant,i) {
+					if (plant._id.equals(update.data.plant._id)) plantIndex = i;
+				});
+
+				var plant = game.plantMarket.splice(plantIndex, 1)[0];
+
+				player.plants.push(plant);
+
 				game = drawPlant(game);
-			}
-			self.log(player.user.username + ' bought ' + citiesToAdd.length + 'cities for $' + price)
-		} else if (self.phase === 'bureaucracy') {
-			var plantsToPower = update.data.plantsTo;
-			var totalCapacity = 0;
-			plantsToPower.forEach(function (plant) {
-				totalCapacity += plant.capacity;
-				if (plant.resourceType === 'hybrid') {
-					// transition to hybrid choice state
-				} else {
-					// move resources from player to bank
-					player.resources[plant.resourceType] -= plant.resourceNum;
-					game.resourceBank[plant.resourceType] += plant.resourceNum;
+				if (player.plants.length > plantSpaces[game.turnOrder.length]) {
+					// make player discard a plant
 				}
-			})
-			player.numPowered = Math.min(player.cities.length, totalCapacity);
-			player.money += payments[player.numPowered];
-		}
-        player.markModified('resources');
-		return player.save();
-	})
-	.then(function() {
-        return self.go(game);
-	})
-	
+			} // end of 'plant'
+			else if (self.phase === 'resource') {
+				var wishlist = update.data.wishlist;
+				player.money -= resourcePrice(wishlist, game.resourceMarket);
+				for(var resource in wishlist) {
+					game.resourceMarket[resource] -= wishlist[resource];
+					player.resources[resource] += wishlist[resource];
+				}
+			} // end of 'resource'
+			else if (self.phase === 'city') {
+				var citiesToAdd = update.data.citiesToAdd;
+				player.money -= cityPrice(game, citiesToAdd, player);
+				citiesToAdd.forEach(function (city) {
+					player.cities.push(city.id);
+				})
+				// remove plant from market if necessary
+				while (player.cities.length >= game.plantMarket[0].rank) {
+					game.discardedPlants.push(game.plantMarket.shift());
+					game = drawPlant(game);
+				}
+			} // end of 'city'
+			else if (self.phase === 'bureaucracy') {
+
+				var plantsToPower = update.data.plantsToPower;
+				var totalCapacity = 0;
+
+				var hybridResourcesNeeded = 0;
+				plantsToPower.forEach(function (plant) {
+					totalCapacity += plant.capacity;
+					if (plant.resourceType !== 'hybrid') {
+						// move resources from player to bank
+						player.resources[plant.resourceType] -= plant.numResources;
+						game.resourceBank[plant.resourceType] += plant.numResources;
+					} else {
+						hybridResourcesNeeded += plant.numResources;
+					}
+				});
+
+				//spend resources for hybrid plants
+				if(hybridResourcesNeeded) {
+					var hybridOptions = [];
+					for(var i = 0; i <= hybridResourcesNeeded; i++) {
+						hybridOptions.push({coal: i, oil: hybridResourcesNeeded - i});
+					}
+					hybridOptions = hybridOptions.filter(function (option) {
+						var hasCoal = player.resources.coal >= option.coal;
+						var hasOil = player.resources.oil >= option.oil;
+						return hasCoal && hasOil;
+					})
+					var resourcesToUse = (hybridOptions.length === 1) ? 
+						hybridOptions[0] : update.choice.resourcesToUseForHybrids;
+					Object.keys(resourcesToUse).forEach(function (resource) {
+						player.resources[resource] -= resourcesToUse[resource];
+						game.resourceBank[resource] += resourcesToUse[resource];
+					})
+				}
+
+				player.numPowered = Math.min(player.cities.length, totalCapacity);
+				player.money += payments[player.numPowered];
+
+			} // end of 'bureaucracy'
+
+			player.markModified('resources');
+			return player.save();
+		})
+		.then(function() {
+			return self.go(game);
+		});
 };
 
 schema.methods.setRemainingPlayers = function (game) {

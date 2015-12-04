@@ -53,11 +53,6 @@ var schema = new mongoose.Schema({
       ref: 'State',
       default: null
   },
-  auction: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Auction',
-    default: null
-  },
   // Below are HISTORICAL data relevant to this game environment
   complete: {
       type: Boolean,
@@ -68,8 +63,7 @@ var schema = new mongoose.Schema({
   },
 });
 
-schema.plugin(deepPopulate, {
-  whitelist: [
+var fieldsToPopulate = [
     'players.user',
     'players.cities',
     'players.plants',
@@ -89,13 +83,19 @@ schema.plugin(deepPopulate, {
     'state.auction.remainingPlayers', 
     'state.auction.remainingPlayers.user', 
     'state.auction.plant'
-  ],
+  ];
+
+schema.plugin(deepPopulate, {
+  whitelist: fieldsToPopulate,
   populate: {
     'players.user': {
       select: 'username'
+    },
+    'game.turnOrder.user': {
+      select: 'username'
     }
   }
-})
+});
 
 // For the "id" virtual
 schema.set('toObject', { virtuals: true });
@@ -104,7 +104,7 @@ schema.set('toJSON', { virtuals: true });
 schema.post('save', function (grid) {
   if(grid.players.length > 0) {
     grid.constructor
-      .populate(grid, 'game state players auction')
+      .populate(grid, 'game state players')
       .then(function (populatedGrid){
         populatedGrid.deepPopulate([
           'players.user',
@@ -241,15 +241,15 @@ schema.methods.continue = function (update) {
   var self = this;
   if(this.state.auction) {
     return this.state.auction.continue(update, this.game)
-    .then(function () {
+      .then(function () {
         return self.save();
-    })
+      });
   } else {
     return this.state.continue(update, this.game)
-    .then(function (whatContinueReturns) {
-      if(whatContinueReturns.length) self.game = whatContinueReturns[1];
-      return self.save();
-    })
+      .then(function (whatContinueReturns) {
+        if(whatContinueReturns && whatContinueReturns.length) self.game = whatContinueReturns[1];
+        if(whatContinueReturns !== undefined) return self.save();
+      });
   }
 };
 
