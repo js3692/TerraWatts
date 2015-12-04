@@ -15,6 +15,10 @@ app.directive('gameActionPanel', function(PlayGameFactory){
                     PlayGameFactory.iAmActivePlayer() || PlayGameFactory.getAuction()
                 ].every(valid => valid);
             }
+            
+            scope.shouldViewResourceAction = function() {
+                return scope.gamePhaseIs('resource');
+            }
         }
     }
 });

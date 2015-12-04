@@ -5,7 +5,13 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
         gridKey,
         grid,
         me,
-        plantToBidOn;    
+        plantToBidOn,
+        wishlist = {
+            oil: 0,
+            trash: 0,
+            coal: 0,
+            nuke: 0
+        };    
 
     function toData(response){
         return response.data;
@@ -58,7 +64,8 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     };
     
     PGFactory.getActivePlayer = function(){
-        if(grid && grid.state) return grid.state.activePlayer; 
+        if(grid && grid.state) {
+            return grid.state.activePlayer; }
     };
     
     PGFactory.getPlantMarket = function(){
@@ -83,7 +90,7 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     
     PGFactory.iAmActivePlayer = function(){
         var me = PGFactory.getMe();
-        if(me) return me._id === PGFactory.getActivePlayer();
+        if(me) return me._id === PGFactory.getActivePlayer()._id;
     };
     
     PGFactory.iAmActiveAuctionPlayer = function(){
@@ -94,6 +101,14 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     PGFactory.getAuction = function(){
         if(grid && grid.state) return grid.state.auction;
     };
+    
+    PGFactory.changeWishlist = function(resourceType, quantity){
+        wishlist[resourceType] += +quantity;
+    }
+    
+    PGFactory.getWishlist = function(){
+        return wishlist;
+    }
 
     PGFactory.bid = {}
     
