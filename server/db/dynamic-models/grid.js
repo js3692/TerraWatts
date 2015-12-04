@@ -224,16 +224,18 @@ schema.methods.initialize = function () {
 
 schema.methods.continue = function (update) {
   var self = this;
-  if(this.state.auction.choice) {
-    return this.state.auction.choice.continue(update, this.game)
-    .then(function () {
-      return self.save();
-    })
-  } else if(this.state.auction) {
-    return this.state.auction.continue(update, this.game)
-      .then(function () {
-        return self.save();
-      });
+  if(this.state.auction) {
+    if (this.state.auction.choice) {
+      return this.state.auction.choice.continue(update, this.game)
+        .then(function () {
+          return self.save();
+        })      
+    } else {
+      return this.state.auction.continue(update, this.game)
+        .then(function () {
+          return self.save();
+        });
+    }
   } else {
     return this.state.continue(update, this.game)
       .then(function (whatContinueReturns) {

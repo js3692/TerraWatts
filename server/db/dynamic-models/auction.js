@@ -55,7 +55,7 @@ schema.methods.go = function (game) {
   var self = this;
 
 	if (this.remainingPlayers.length === 1) {
-		if(this.highestBidder.plants.length >= plantSpaces[game.turnOrder.length]) {
+		if(null && this.highestBidder.plants.length >= plantSpaces[game.turnOrder.length]) {
 			var choice = new Choice({
 				player: this.highestBidder,
 				parentAuction: this
