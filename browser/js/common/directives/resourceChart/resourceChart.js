@@ -117,7 +117,37 @@ app.directive('resourceBars', function ($parse) {
                         })
                         .call(xNukePriceAxis);
 
-                    
+                    var nukeTicksCollection = svg.selectAll('#nukeTicks')
+                        .data([16,14,12,10])
+                        .enter()
+                        .append('g')
+                        // .attr('id', 'nukeTicks')
+                        .attr('id', function(d,i) { return 'nukeTicks' + d; })
+                        .attr("transform", function(d,i) {return "translate(" + ((i+1)*(35+(5/6))) + ",180)"})
+
+                    var nukeLine = nukeTicksCollection
+                        .each(function(d,i) {
+                            d3.select(this)
+                                .append('line')
+                                .attr('y2', 3)
+                                .attr('x2', 0)
+                                .attr('fill', 'none')
+                                .attr('stroke', 'white')
+
+                            d3.select(this)
+                                .append('text')
+                                .attr('dy', '.71em')
+                                .attr('y', 6)
+                                .attr('x', 0)
+                                .attr("text-anchor", "middle")
+                                .text(function(d) { return '$' + d; })
+                                .attr("font-family", "sans-serif")
+                                .attr('font-size', 10)
+                                .attr("fill", "white");
+                        })
+
+
+
 
                     svg.selectAll('.bar')
                         .data(resources)
@@ -139,12 +169,10 @@ app.directive('resourceBars', function ($parse) {
                         .enter()
                         .append('text')
                         .attr('class', 'text')
-                        // .attr('x', function(d) { return width - x(d.value) - 3; })
                         .attr('x', 5)
-                        // .attr('y', function(d) { return y(d.type); })
-                        .attr("transform", function(d,i) {return "translate(0," + (40+(i*51)) + ")"})
+                        // .attr("transform", function(d,i) {return "translate(0," + (40+(i*51)) + ")"})
+                        .attr("transform", function(d,i) {return "translate(0," + (17+(i*51)) + ")"})
                         .text(function(d) { return d.type; })
-                        // .style('text-anchor', 'end')
                         .attr("font-family", "sans-serif")
                         .attr("font-size", 9)
                         .attr("fill", "white")
