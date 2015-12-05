@@ -1,11 +1,12 @@
 <div id="gameActionPanel"
+     ng-switch on="getGamePhase()"
      class="menu-panel-body
             panel 
             panel-default
             game-action-slider
             game-action-slider-pull">
-    <plant-action ng-if="shouldViewPlantAction()" plant="getPlantToBidOn()"></plant-action>
-    <resource-action ng-if="shouldViewResourceAction()"></resource-action>
-    <city-action ng-if="shouldViewCityAction()"></city-action>
-    <bureaucracy-action ng-if="shouldViewBureaucracyAction()"></bureaucracy-action>
+    <plant-action ng-switch-when="plant" plant="getPlantToBidOn()"></plant-action>
+    <resource-action ng-switch-when="resource"></resource-action>
+    <city-action ng-switch-when="city"></city-action>
+    <bureaucracy-action ng-switch-when="bureaucracy"></bureaucracy-action>
 </div>

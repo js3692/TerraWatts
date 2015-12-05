@@ -3,6 +3,8 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
         restrict: 'E',
         templateUrl: 'js/common/directives/bureaucracyAction/bureaucracyAction.html',
         link: function(scope, elem, attrs){
+            scope.madeChoice = false;
+            
             
             scope.plantCart = [];
             
@@ -23,6 +25,7 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
                     } 
                 }
                 PlayGameFactory.continue(update);
+                scope.madeChoice = true;
             } 
             
             scope.powerNone = function(){
@@ -33,8 +36,8 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
                         plantsToPower: []    
                     } 
                 };
-                
                 PlayGameFactory.continue(update);
+                scope.madeChoice = true;
             }
             
             scope.getNumberOfCitiesPowered = function(){

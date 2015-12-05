@@ -22,10 +22,10 @@ app.controller('GridCtrl', function ($scope, $state, theUser, BeforeGameFactory,
     
 	$scope.startGame = function() {
 		BeforeGameFactory
-            .start($scope.grid.id, $scope.grid.players)
-            .then(function(updatedGrid){
-                $state.go('game', { id: gridId, key: key });
-            })
+            .start($scope.grid.id, $scope.grid.players);
+//            .then(function(updatedGrid){
+//                $state.go('game', { id: gridId, key: key });
+//            })
 	}; 
 
 	$scope.leaveGame = function() {

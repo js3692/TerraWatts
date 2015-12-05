@@ -1,12 +1,27 @@
 player {
+    
+    .glyphicon-container {
+        float: right;
+        margin-left: 5px;
+        .glyphicon {
+            float: left;
+            margin-top: 1px;
+        }
+        
+        .player-text {
+            float: right;
+            margin-left: 2px;
+        }
+        
+    }
     .panel-default {
-        height: 85px;
+        height: 90px;
         width: 100%;
         margin: 0 auto 3px auto;
     }
     
     .panel-body {
-        margin: 10px;
+        margin: 0 10px;
         padding: 0;
     }
     
@@ -17,13 +32,17 @@ player {
             height: 16px;
             width: 16px
         }
+        
+        .player-text {
+            padding-left: 5px;
+        }
     }
     
     .player-text {
         color: black;
-        font-weight: 100;
+        font-weight: 400;
         font-size: 10px;
-        text-align: center;    
+        text-align: left;    
     }
     
     .player-top-row {
@@ -37,18 +56,17 @@ player {
     
     .username {
         border-bottom: 1px solid black;
-        padding-bottom: 10px;
-        margin-bottom: 2px;
+        padding: 2px 0 3px 0;
     }
     
     .resource-box {
         margin-right: 5%;
     }
     
-    .below-username {
-        margin-top: 6px;
-    }
-    
+//    .below-username {
+//        margin-top: 6px;
+//    }
+//    
     plant {
         
         img {
