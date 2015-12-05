@@ -214,12 +214,23 @@ schema.methods.createGame = function () {
 schema.methods.initialize = function () {
   var self = this;
   this.state = new State({key: this.key});
-  return this.state.initialize(this.game)
-    .then(function (savedStateAndGame) {
-      self.state = savedStateAndGame[0];
-      self.game = savedStateAndGame[1];
-      return self.save();
+  return Player.find({ _id: {$in: this.players}})
+  .then(function (players) {
+    var promises = [];
+    players.forEach(function (player, i) {
+      player.clockwise = i;
+      promises.push(player.save())
     })
+    return Promise.all(promises)
+  })
+  .then(function () {
+    return self.state.initialize(self.game)
+  })
+  .then(function (savedStateAndGame) {
+    self.state = savedStateAndGame[0];
+    self.game = savedStateAndGame[1];
+    return self.save();
+  })
 };
 
 schema.methods.continue = function (update) {
