@@ -4,8 +4,8 @@
             panel-default
             game-action-slider
             game-action-slider-pull">
-    <plant-action ng-if="shouldViewPlantAction()" plant="getPlantToBidOn()">
-    </plant-action>
-    <resource-action ng-if="shouldViewResourceAction()">
-    </resource-action>
+    <plant-action ng-if="shouldViewPlantAction()" plant="getPlantToBidOn()"></plant-action>
+    <resource-action ng-if="shouldViewResourceAction()"></resource-action>
+    <city-action ng-if="shouldViewCityAction()"></city-action>
+    <bureaucracy-action ng-if="shouldViewBureaucracyAction()"></bureaucracy-action>
 </div>

@@ -1,0 +1,25 @@
+<div class="bureaucracy-action-container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class='container'>
+                <div class="bureaucracy-plant" ng-repeat="plant in getMyPlants()">
+                    <plant toggle-glow ng-click="togglePlant(plant)" rank="{{ plant.rank }}"></plant>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 btn-col" ng-hide="madeChoice">
+            <div class="btn-group">
+                <button class="btn btn-lg" ng-click="powerPlants()">Power Plants</button>
+                <button class="btn btn-lg" ng-click="pass()">Power None</button>
+            </div>
+            <div  class='bureaucracy-stats' ng-show="plantCart.length">
+                <hr>
+                <span>You'll power {{ getNumberOfCitiesPowered() }} cities.</span><br>
+                <span>You'll make ${{ calculateProfits() }}.</span>
+            </div>
+        </div>
+        <div ng-show="madeChoice">
+            <span>Waiting for other players to power plants.</span>
+        </div>
+    </div>
+</div>

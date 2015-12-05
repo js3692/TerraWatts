@@ -26,14 +26,12 @@ body {
 @import 'directives/resource';
 @import 'directives/plant';
 @import 'directives/player';
-@import 'directives/bidModal';
 @import 'directives/message';
 @import 'directives/resourceChart';
-@import 'directives/resourceModal';
 @import 'directives/gameActionPanel';
 @import 'directives/cityBuyPanel';
 @import 'directives/plantAction';
-@import 'directives/resourceAction';
+@import 'directives/actionPanels';
 @import 'directives/graphs/barGraph';
 @import 'home/main';
 @import 'about/main';

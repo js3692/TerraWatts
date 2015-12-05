@@ -51,7 +51,7 @@ function canBuyCities(update, grid) {
 	update.data.citiesToAdd.forEach(function (city) {
 		if (numResidents(city, grid.players) >= grid.game.step) canBuy = false;
 		if(update.player.cities) update.player.cities.forEach(function (c) {
-			if (c._id.equals(city._id)) canBuy = false;
+			if (c._id === city._id) canBuy = false;
 		})
 	})
 	return canBuy;
@@ -80,7 +80,7 @@ function hasResources(update) {
 
 function hasResourceChoiceIfNeeded(update) {
 	if (update.data.plantsToPower.every(plantToPower => plantToPower.resourceType !== "hybrid")) return true;
-	if (update.choice.resourcesToUseForHybrids) return true;
+	if (update.choice && update.choice.resourcesToUseForHybrids) return true;
 	var has = {};
 	var needs = {};
 	update.data.plantsToPower.forEach(function (plant) {

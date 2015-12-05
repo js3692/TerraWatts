@@ -32,48 +32,6 @@ app.directive('plantAndResourcePanel', function(SliderFactory, PlayGameFactory, 
                 trash: '#A8A818',
                 nuke: 'red'
             };
-            scope.buyResources = function () {
-                var modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: 'js/common/directives/resourceModal/resourceModal.html',
-                    controller: 'ResourceModalCtrl',
-                    size: undefined,
-                    resolve: {
-                        resources: function () {
-                            return scope.resources;
-                        },
-                        resourceColors: function () {
-                            return scope.resourceColors;
-                        },
-                        player: function(){
-                            return scope.player;
-                        }
-
-                    }
-                });
-            };
-            scope.bidFor = function (plant) {
-              var modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: 'js/common/directives/bidModal/bidModal.html',
-                    controller: 'BidModalCtrl',
-                    size: 'lg',
-                    resolve: {
-                      plant: function () {
-                        return plant;
-                      },
-                      player: function(){
-                        return scope.player;      
-                      },
-                      auction: function(){
-                        return scope.auction;
-                      },
-                      players: function(){
-                        return scope.players;
-                      }
-                    }
-                });   
-            };
         }
     }
 })

@@ -1,6 +1,6 @@
 <div class="resource-action-container">
     <div class="waiting-container" ng-hide="shouldShowResourceButtons()">
-        <h2>Waiting on {{ getActivePlayer.user.username }} to buy resources...</h2>
+        <h2>Waiting on {{ getActivePlayer().user.username }} to buy resources...</h2>
     </div>
     <div class="row" ng-show="shouldShowResourceButtons()">
         <div class="col-lg-4">

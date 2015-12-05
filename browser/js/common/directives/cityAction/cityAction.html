@@ -1,0 +1,20 @@
+<div class="city-action-container">
+    <div class="waiting-container" ng-hide="shouldAllowCityBuying()">
+        <h2>Waiting on {{ getActivePlayer().user.username }} to buy cities...</h2>
+    </div>
+    <div class="row" ng-show="shouldAllowCityBuying()">
+        <div class="col-lg-8">
+            <div class='city-container' ng-repeat="city in getCart()">
+                <span>{{ city.name }}</span>
+            </div>
+        </div>
+        <div class="col-lg-4 btn-col">
+            {{ getCartPrice() }}
+            <div class="btn-group">
+                
+                <button class="btn btn-lg" ng-click="buyCities()">Buy</button>
+                <button class="btn btn-lg" ng-click="pass()">Pass</button>
+            </div>
+        </div>
+    </div>
+</div>

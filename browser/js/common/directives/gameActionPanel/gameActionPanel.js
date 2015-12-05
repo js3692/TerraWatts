@@ -19,6 +19,14 @@ app.directive('gameActionPanel', function(PlayGameFactory){
             scope.shouldViewResourceAction = function() {
                 return scope.gamePhaseIs('resource');
             }
+            
+            scope.shouldViewCityAction = function(){
+                return scope.gamePhaseIs('city');
+            }
+            
+            scope.shouldViewBureaucracyAction = function(){
+                return scope.gamePhaseIs('bureaucracy');
+            }
         }
     }
 });

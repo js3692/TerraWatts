@@ -46,8 +46,11 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
         return grid;   
     };
     
+    PGFactory.getGame = function(){
+        if(grid) return grid.game;
+    }
+    
     PGFactory.getMe = function() {
-        if(me) return me;
         if(grid && grid.players) {
             var players = grid.players;
             for(var i = 0, len = players.length; i < len; i++) {
@@ -110,7 +113,13 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
         return wishlist;
     }
 
-    PGFactory.bid = {}
+    PGFactory.getMyPlants = function(){
+        return PGFactory.getMe().plants;
+    }
+    
+    PGFactory.getMyCities = function(){
+        return PGFactory.getMe().cities;
+    }
     
     return PGFactory;
     

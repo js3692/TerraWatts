@@ -7,7 +7,7 @@
               <div class="player-text username">{{ player.user.username }}</div>
               <div class="below-username player-box glyphicon glyphicon-home pull-right"
                    ng-style="{ color: player.color }">
-                  <div class="player-text">{{ player.numCities }}</div>
+                  <div class="player-text">{{ player.cities ? player.cities.length : 0 }}</div>
               </div>
               <div class="below-username player-box glyphicon glyphicon-piggy-bank pull-right">
                    <div class="player-text">{{ player.money }}</div>
