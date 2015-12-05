@@ -54,9 +54,8 @@ schema.methods.initialize = function(game) {
 
 schema.methods.go = function (game) {
   var self = this;
-
 	if (this.remainingPlayers.length === 1) {
-		return Player.findById(this.highestBidder)
+		return Player.findById(this.highestBidder._id || this.highestBidder)
 		.then(function(foundPlayer) {
 			if(foundPlayer.plants.length >= plantSpaces[game.turnOrder.length]) {
 				var choice = new Choice({
@@ -77,7 +76,7 @@ schema.methods.go = function (game) {
 						bid: self.bid
 					}
 				};
-			    return mongoose.model('State').findById(self.plantState)
+			    return mongoose.model('State').findById(self.plantState._id || self.plantState)
 			      .then(function (foundState) {
 			        return foundState.transaction(result, game);
 			      });
