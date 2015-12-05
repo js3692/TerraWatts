@@ -113,7 +113,13 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
         return wishlist;
     }
 
-    PGFactory.bid = {}
+    PGFactory.getMyPlants = function(){
+        return PGFactory.getMe().plants;
+    }
+    
+    PGFactory.getMyCities = function(){
+        return PGFactory.getMe().cities;
+    }
     
     return PGFactory;
     

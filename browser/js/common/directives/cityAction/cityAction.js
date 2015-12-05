@@ -6,12 +6,30 @@ app.directive('cityAction', function(PlayGameFactory, CityCartFactory){
             scope.getActivePlayer = PlayGameFactory.getActivePlayer;
             scope.getCart = CityCartFactory.getCart;
             scope.shouldAllowCityBuying = PlayGameFactory.iAmActivePlayer;
-            scope.getCartPrice = function(){
-                return CityCartFactory.getCartPrice(scope.getCart());
-            }
+            scope.getCartPrice = CityCartFactory.getCartPrice.bind(null, scope.getCart());
             
-            scope.buyCities = function(){};
-            scope.pass = function(){}
+            scope.buyCities = function(){
+                var update = {
+                    phase: 'city',
+                    player: PlayGameFactory.getMe(),
+                    data: {
+                        citiesToAdd: CityCartFactory.getCart()
+                    }
+                };
+                
+                PlayGameFactory.continue(update);
+            };
+            
+            scope.pass = function(){
+                var update = {
+                    phase: 'city',
+                    player: PlayGameFactory.getMe(),
+                    data: {
+                        citiesToAdd: []
+                    }
+                };
+                PlayGameFactory.continue(update);
+            }
         }
     }
-})
+});

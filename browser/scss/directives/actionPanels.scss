@@ -1,4 +1,4 @@
-resource-action, city-action {
+resource-action, city-action, bureaucracy-action {
     font-weight: 100;
     color: white;
     
@@ -47,5 +47,30 @@ city-action {
         padding: 20px 30px 0;
         display: block;
         float: left;
+    }
+}
+
+bureaucracy-action {
+    .bureaucracy-plant {
+        display: block;
+        float: left;
+        margin-top: 10px;
+        img {
+            border-radius: 6px;   
+        }
+    }
+    
+    .picked-plant {
+        box-shadow: 0px 0px 20px #fff;
+    }
+    
+    .bureaucracy-stats {
+        text-align: center;
+    }
+    
+    .btn-col {
+        .btn-group {
+            margin-top: 30px;
+        }
     }
 }

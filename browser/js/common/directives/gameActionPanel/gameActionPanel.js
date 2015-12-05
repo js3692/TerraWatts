@@ -23,6 +23,10 @@ app.directive('gameActionPanel', function(PlayGameFactory){
             scope.shouldViewCityAction = function(){
                 return scope.gamePhaseIs('city');
             }
+            
+            scope.shouldViewBureaucracyAction = function(){
+                return scope.gamePhaseIs('bureaucracy');
+            }
         }
     }
 });
