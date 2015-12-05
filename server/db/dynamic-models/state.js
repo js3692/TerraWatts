@@ -8,7 +8,6 @@ var Player = mongoose.model('Player');
 var Auction = mongoose.model('Auction');
 // var Choice = mongoose.model('Choice');
 
-var masterRestockRates =	require('../utils/0_basic_rules/restock');
 var determineTurnOrder =	require('../utils/0_basic_rules/turnOrder');
 var dONP =								require('../utils/0_basic_rules/dependsOnNumPlayers.js');
 var drawPlant =						require('../utils/1_plant_phase/drawPlant');
@@ -17,8 +16,8 @@ var cityPrice =						require('../utils/3_city_phase/price');
 var payments =						require('../utils/4_bureaucracy_phase/payments.js');
 var loseResources = require('../utils/1_plant_phase/loseResources');
 var plantSpaces = dONP.plantSpaces;
-var endGame = dONP.endGame;
-var stepTwo = dONP.stepTwo;
+var spendHybridResources = require('../utils/4_bureaucracy_phase/spendHybridResources');
+var endTurn = require('../utils/4_bureaucracy_phase/endTurn');
 
 var phases = ['plant', 'resource', 'city', 'bureaucracy'];
 
@@ -88,8 +87,6 @@ schema.methods.initialize = function (game) {
 };
 
 schema.methods.go = function (game) {
-	
-	
 	if (!this.remainingPlayers.length) return this.end(game);
 
 	if (this.phase !== 'bureaucracy' || this.remainingPlayers.length === game.turnOrder.length) {
@@ -105,7 +102,7 @@ schema.methods.go = function (game) {
 schema.methods.continue = function(update, game) {
 	var self = this;
 
-  if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
+  if(this.phase !== 'plant' && update.data !== 'pass') {
 		
 		return this.transaction(update, game);
 
@@ -121,17 +118,16 @@ schema.methods.continue = function(update, game) {
 			
 			// start an auction
 
-			var auction = new Auction({
+			this.auction = new Auction({
 				plant: update.data.plant,
 				bid: update.data.bid,
-        highestBidder: update.player,
+        		highestBidder: update.player,
 				plantState: self
 			});
 
 			
-			return auction.initialize(game)
-				.then(function (_auction) {
-					self.auction = _auction;
+			return this.auction.initialize(game)
+				.then(function () {
 					return self.save();
 				});
 		}
@@ -150,45 +146,7 @@ schema.methods.end = function (game) {
 		}		
 	} // end of 'plant'
 	if (this.phase === 'bureaucracy') {
-		var maxCities = game.turnOrder.reduce(function (prev, curr) {
-			return Math.max(prev, curr.cities.length);
-		}, 0);
-
-		// check end game condition
-		if (maxCities >= endGame[game.turnOrder.length]) {
-			// sort the players by win condition
-			var winningOrder = game.turnOrder.sort(function(player1, player2) {
-				if (player1.numPowered > player2.numPowered) return -1;
-				else if (player1.numPowered < player2.numPowered) return 1;
-				else if (player1.money > player2.money) return -1;
-				else return 1;
-			})
-			// return gameOver(winningOrder)
-		}
-
-		// start step 2 if necessary
-		if (game.step === 1 && maxCities > stepTwo[game.turnOrder.length]) {
-			game.step = 2;
-			game.discardedPlants.push(game.plantMarket.shift());
-			game = drawPlant(game);
-		}
-
-		// restock resources
-		game.restockRates = masterRestockRates[game.turnOrder.length][game.step];
-		for(var resource in game.resourceMarket) {
-			var canFill = Math.min(game.restockRates[resource], game.resourceBank[resource]);
-			game.resourceBank[resource] -= canFill;
-			game.resourceMarket[resource] += canFill;
-		}
-
-		if (game.step === 3) {
-			game.discardedPlants.push(game.plantMarket.shift());
-		} else {
-			game.stepThreePlants.push(game.plantMarket.pop());
-		}
-		game = drawPlant(game);
-		game.turn++;
-		game.turnOrder = determineTurnOrder(game.turnOrder);
+		endTurn(game);
 	} // end of 'bureaucracy'
 
 	this.phase = phases[phases.indexOf(this.phase) + 1] || phases[0];
@@ -204,18 +162,16 @@ schema.methods.transaction = function(update, game) {
 			self.remainingPlayers = self.removePlayer(player);
 
 			if (self.phase === 'plant') {
-
 				self.auction = null;
 				player.money -= update.data.bid;
 				
 				var plantIndex;
 
 				game.plantMarket.forEach(function (plant,i) {
-					if (plant._id.equals(update.data.plant._id)) plantIndex = i;
+					if (plant._id.equals(update.data.plant._id || update.data.plant)) plantIndex = i;
 				});
 
 				var plant = game.plantMarket.splice(plantIndex, 1)[0];
-
 				player.plants.push(plant);
 				loseResources(player, game);
 
@@ -267,25 +223,7 @@ schema.methods.transaction = function(update, game) {
 
 				//spend resources for hybrid plants
 				if(hybridResourcesNeeded) {
-					
-					var hybridOptions = [];
-					
-					for(var i = 0; i <= hybridResourcesNeeded; i++) {
-						hybridOptions.push({coal: i, oil: hybridResourcesNeeded - i});
-					}
-					
-					hybridOptions = hybridOptions.filter(function (option) {
-						var hasCoal = player.resources.coal >= option.coal;
-						var hasOil = player.resources.oil >= option.oil;
-						return hasCoal && hasOil;
-					})
-					
-					var resourcesToUse = (hybridOptions.length === 1)? hybridOptions[0] : update.choice.resourcesToUseForHybrids;
-					
-					Object.keys(resourcesToUse).forEach(function (resource) {
-						player.resources[resource] -= resourcesToUse[resource];
-						game.resourceBank[resource] += resourcesToUse[resource];
-					})
+					spendHybridResources(hybridResourcesNeeded, player, update, game);
 				}
 
 				player.numPowered = Math.min(player.cities.length, totalCapacity);
