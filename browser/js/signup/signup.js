@@ -19,7 +19,7 @@ app.controller('SignupCtrl', function ($scope, AuthService, UserFactory, $state)
 			if(user) return AuthService.login(loginInfo);
 		})
 		.then(function() {
-			$state.go('login');
+			$state.go('home');
 		}, function() {
 			$scope.error = 'Try another username and/or e-mail';
 		});

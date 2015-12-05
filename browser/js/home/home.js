@@ -9,11 +9,10 @@ app.config(function ($stateProvider) {
     });
 });
 
-app.controller('HomeCtrl', function ($scope, BeforeGameFactory, $state, AuthService, AUTH_EVENTS, $uibModal, FirebaseFactory) {
-    
+app.controller('HomeCtrl', function ($scope, $element, BeforeGameFactory, $state, AuthService, AUTH_EVENTS, $uibModal, FirebaseFactory) {
   /* populates joinable game from backend, then uses live updates from firebase */
-    $scope.games = FirebaseFactory.getBase();
-    $scope.getLiveJoinableGames = FirebaseFactory.getLiveJoinableGames.bind(null, $scope);
+  $scope.games = FirebaseFactory.getBase();
+  $scope.getLiveJoinableGames = FirebaseFactory.getLiveJoinableGames.bind(null, $scope);
 	
   $scope.logout = function () {
     AuthService.logout().then(function () {
@@ -24,9 +23,13 @@ app.controller('HomeCtrl', function ($scope, BeforeGameFactory, $state, AuthServ
 	$scope.newGame = openGameSettings;
 
 	$scope.joinGame = function (grid) {
-		BeforeGameFactory.joinGame(grid.id)
+    BeforeGameFactory.joinGame(grid.id)
       .then(function () {
-        $state.go('grid', { id: grid.id, key: grid.key });
+        angular.element("#home").addClass("fadeOutRightBig").one('webkitAnimationEnd mozAnimationEnd MSanimationEnd animationend', 
+          function () {
+            $(this).removeClass('fadeOutRightBig');
+            $state.go('grid', { id: grid.id, key: grid.key });
+          });
       });
 	};
 

@@ -67,7 +67,10 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, Befo
     BeforeGameFactory.newGame(gameSettings)
       .then(function (grid) {
         $uibModalInstance.close();
-        $state.go('grid', { id: grid._id, key: grid.key });
+        angular.element("#home").addClass("fadeOut").one('webkitAnimationEnd mozAnimationEnd MSanimationEnd animationend', 
+          function () {
+          $state.go('grid', { id: grid._id, key: grid.key });
+        });
       });
   };
 

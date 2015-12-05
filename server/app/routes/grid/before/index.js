@@ -26,7 +26,11 @@ router.post('/join', function (req, res, next) {
 router.post('/leave', function (req, res, next) {
   req.grid.removePlayer(req.user)
     .then(function () {
-      res.sendStatus(201);
+      if(req.grid.players.length > 1) res.sendStatus(201);
+      else return req.grid.remove().then(function () { 
+        console.log('hey')
+        res.sendStatus(201);
+      });
     })
     .catch(next);
 });
