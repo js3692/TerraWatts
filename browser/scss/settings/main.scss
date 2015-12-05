@@ -1,3 +1,4 @@
+$main-background: #132330;
 .settings-modal {
     color: white;
 	margin-top: 50px;
@@ -9,6 +10,9 @@
 			margin-left: 10px;
 		}
 	}
+    .modal-content {
+        background-color: $main-background;
+    }
 	.modal-body-container {
 		position: relative;
 		top: 50%;

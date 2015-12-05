@@ -46,6 +46,10 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
         return grid;   
     };
     
+    PGFactory.getGame = function(){
+        if(grid) return grid.game;
+    }
+    
     PGFactory.getMe = function() {
         if(grid && grid.players) {
             var players = grid.players;

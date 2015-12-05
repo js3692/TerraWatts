@@ -4,8 +4,11 @@ app.directive('cityAction', function(PlayGameFactory, CityCartFactory){
         templateUrl: 'js/common/directives/cityAction/cityAction.html',
         link: function(scope, elem, attrs){
             scope.getActivePlayer = PlayGameFactory.getActivePlayer;
-            scope.getCitiesInCart = CityCartFactory.getCart;
+            scope.getCart = CityCartFactory.getCart;
             scope.shouldAllowCityBuying = PlayGameFactory.iAmActivePlayer;
+            scope.getCartPrice = function(){
+                return CityCartFactory.getCartPrice(scope.getCart());
+            }
             
             scope.buyCities = function(){};
             scope.pass = function(){}
