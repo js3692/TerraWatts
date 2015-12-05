@@ -102,7 +102,7 @@ schema.methods.go = function (game) {
 schema.methods.continue = function(update, game) {
 	var self = this;
 
-  if(this.phase !== 'plant' || this.remainingPlayers.length === 1 && update.data !== 'pass') {
+  if(this.phase !== 'plant' && update.data !== 'pass') {
 		
 		return this.transaction(update, game);
 
@@ -118,7 +118,7 @@ schema.methods.continue = function(update, game) {
 			
 			// start an auction
 
-			var auction = new Auction({
+			this.auction = new Auction({
 				plant: update.data.plant,
 				bid: update.data.bid,
         		highestBidder: update.player,
@@ -126,9 +126,8 @@ schema.methods.continue = function(update, game) {
 			});
 
 			
-			return auction.initialize(game)
-				.then(function (_auction) {
-					self.auction = _auction;
+			return this.auction.initialize(game)
+				.then(function () {
 					return self.save();
 				});
 		}
@@ -163,18 +162,16 @@ schema.methods.transaction = function(update, game) {
 			self.remainingPlayers = self.removePlayer(player);
 
 			if (self.phase === 'plant') {
-
 				self.auction = null;
 				player.money -= update.data.bid;
 				
 				var plantIndex;
 
 				game.plantMarket.forEach(function (plant,i) {
-					if (plant._id.equals(update.data.plant._id)) plantIndex = i;
+					if (plant._id.equals(update.data.plant._id || update.data.plant)) plantIndex = i;
 				});
 
 				var plant = game.plantMarket.splice(plantIndex, 1)[0];
-
 				player.plants.push(plant);
 				loseResources(player, game);
 
