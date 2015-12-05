@@ -32,32 +32,12 @@ describe('Play Route: ', function () {
   'game.discardedPlants', 'game.stepThreePlants', 'game.turnOrder.user',
   'game.turnOrder.plants', 'state.auction'];
 
-  beforeEach('Establish DB connection', function (done) {
+  before('Establish DB connection', function (done) {
     if (mongoose.connection.db) return done();
     mongoose.connect(dbURI, done);
   });
 
-  after('Clear test database', function (done) {
-    Player.remove()
-      .then(function () {
-        return Game.remove();
-      })
-      .then(function () {
-        return State.remove();
-      })
-      .then(function () {
-        return Grid.remove();
-      })
-      .then(function () {
-        done();
-      }).catch(done);
-  });
-
-  it('Dummy to enable beforeEach && after middlewares', function (done) {
-    done();
-  })
-
-  describe('Game should be set up properly for each number of players: ', function () {
+  describe('Playing game', function () {
     var purpleAgent = supertest.agent(app);
     var yellowAgent = supertest.agent(app);
     var greenAgent = supertest.agent(app);
@@ -107,23 +87,42 @@ describe('Play Route: ', function () {
       });
       User.remove({ username: { $in: usernames } })
         .then(function () {
-          baseRef.child(firebaseKey).onDisconnect().remove();
+          baseRef.child(firebaseKey).remove();
           done();
         }).catch(done);
     });
 
-    describe('2 player game', function () {
+
+    describe('for two players: ', function () {
+
+      // =========== TURN 1 ===========
       var gridId, playersByTurnOrder, playersByClockwiseOrder;
       var agentsByTurnOrder = [];
       var agentsByClockwiseOrder = [purpleAgent, greenAgent];
       var nextTurnIdx;
       var regionsInPlay, citiesInPlay;
 
+      after('Clear all game data', function (done) {
+        Player.remove()
+          .then(function () {
+            return Game.remove();
+          })
+          .then(function () {
+            return State.remove();
+          })
+          .then(function () {
+            return Grid.remove();
+          })
+          .then(function () {
+            done();
+          }).catch(done);
+      });
+
       it('should instantiate the game properly', function (done) {
         purpleAgent
           .post('/api/grid')
           .send({
-            name: "Game Test",
+            name: "Game Test for Two",
             map: 'United States',
             maxPlayers: 2,
             makeRandom: true,
@@ -133,7 +132,7 @@ describe('Play Route: ', function () {
           .expect(201)
           .end(function (err, res) {
             if (err) done(err);
-            expect(res.body.name).to.equal("Game Test");
+            expect(res.body.name).to.equal("Game Test for Two");
             expect(res.body.state).to.be.a('null');
             expect(res.body.game).to.be.a('null');
             expect(res.body.players.length).to.equal(1);
@@ -555,13 +554,206 @@ describe('Play Route: ', function () {
                 expect(deepPopulatedGrid.game.turn).to.equal(2);
                 expect(deepPopulatedGrid.game.stepThreePlants.length).to.equal(1);
 
+                agentsByTurnOrder = [];
+                deepPopulatedGrid.game.turnOrder.forEach(function (player) {
+                  agentsByTurnOrder.push(agentsByClockwiseOrder[player.clockwise]);
+                });
+                playersByTurnOrder = deepPopulatedGrid.game.turnOrder;
+                playersByClockwiseOrder = deepPopulatedGrid.players;
+
                 done();
               }).catch(done);
           });
       });
 
-    }); // End of describe('2 player game')
+      // =========== TURN 2 ===========
 
-  }); // End of describe('Game should be set up properly for each number of players)
+      /* Available variables: 
+        var gridId, playersByTurnOrder, playersByClockwiseOrder;
+        var agentsByTurnOrder = [];
+        var agentsByClockwiseOrder = [purpleAgent, greenAgent];
+        var nextTurnIdx;
+        var regionsInPlay, citiesInPlay; */
+
+      it('should validate and proceed game with first player\'s bid at 7', function (done) {
+        Plant.findOne({ rank: 7 })
+          .then(function (plantSeven) {
+            agentsByTurnOrder[0]
+              .post('/api/play/continue/' + gridId)
+              .send({
+                phase: 'plant',
+                player: playersByTurnOrder[0],
+                data: {
+                  plant: plantSeven.toObject(),
+                  bid: 7
+                }
+              })
+              .expect(201)
+              .end(function (err, res) {
+                if (err) done(err);
+
+                Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+                  .then(function (deepPopulatedGrid) {
+                    expect(!!deepPopulatedGrid.state.auction).to.be.true;
+                    expect(deepPopulatedGrid.state.auction.bid).to.equal(7);
+                    expect(deepPopulatedGrid.state.auction.remainingPlayers.length).to.equal(2);
+                    expect(deepPopulatedGrid.state.auction.highestBidder.equals(playersByTurnOrder[0]._id)).to.be.true;
+
+                    var highestBidderId = deepPopulatedGrid.state.auction.highestBidder;
+                    var highestBidderIdx = _.findIndex(deepPopulatedGrid.players, player => player._id.equals(highestBidderId));
+                    var nextPlayerIndex = (highestBidderIdx + 1) % 2;
+                    expect(deepPopulatedGrid.state.auction.activePlayer.equals(deepPopulatedGrid.players[nextPlayerIndex]._id)).to.be.true;
+
+                    nextTurnIdx = (_.findIndex(deepPopulatedGrid.players, player => player.clockwise === deepPopulatedGrid.game.turnOrder[0].clockwise) + 1) % 2;
+                    done();
+                  }).catch(done);
+              });
+          });
+      });
+
+      it('should validate and proceed game with next player\'s decision to pass', function (done) {
+        agentsByClockwiseOrder[nextTurnIdx]
+          .post(baseUrl + gridId)
+          .send({
+            phase: 'plant',
+            player: playersByClockwiseOrder[nextTurnIdx],
+            data: 'pass'
+          })
+          .expect(201)
+          .end(function (err, res) {
+            if (err) done(err);
+            Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+              .then(function (deepPopulatedGrid) {
+                expect(deepPopulatedGrid.game.plantMarket.length).to.equal(8);
+                expect(_.findIndex(deepPopulatedGrid.game.plantMarket, plant => plant.rank === 7)).to.equal(-1);
+                expect(deepPopulatedGrid.game.plantMarket.every(function (plant, idx, arr) {
+                  if(idx === 0) return true;
+                  return plant.rank > arr[idx - 1].rank;
+                })).to.be.true;
+
+                var purpleIdx = _.findIndex(deepPopulatedGrid.players, player => player._id.equals(playersByTurnOrder[0]._id));
+                expect(deepPopulatedGrid.players[purpleIdx].money).to.equal(41);
+                expect(deepPopulatedGrid.players[purpleIdx].plants[1].rank).to.equal(7);
+
+                expect(deepPopulatedGrid.state.activePlayer.equals(playersByTurnOrder[1]._id)).to.equal.true;
+                expect(deepPopulatedGrid.state.remainingPlayers).to.not.include(playersByTurnOrder[0]._id);
+
+                done();
+              }).catch(done);
+          });
+      });
+
+      it('should validate and proceed game with second player\'s decision to buy the 8', function (done) {
+        Plant.findOne({ rank: 8 })
+          .then(function (plantEight) {
+            agentsByTurnOrder[1]
+              .post(baseUrl + gridId)
+              .send({
+                phase: 'plant',
+                player: playersByTurnOrder[1],
+                data: {
+                  plant: plantEight.toObject(),
+                  bid: 8
+                }
+              })
+              .expect(201)
+              .end(function (err, res) {
+                if (err) done(err);
+
+                Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
+                  .then(function (deepPopulatedGrid) {
+                    expect(!deepPopulatedGrid.state.auction).to.be.true;
+                    expect(deepPopulatedGrid.game.plantMarket.length).to.equal(8);
+                    expect(_.findIndex(deepPopulatedGrid.game.plantMarket, plant => plant.rank === 8)).to.equal(-1);
+                    expect(deepPopulatedGrid.game.plantMarket.every(function (plant, idx, arr) {
+                      if(idx === 0) return true;
+                      return plant.rank > arr[idx - 1].rank;
+                    })).to.be.true;
+
+                    // var greenIdx = _.findIndex(deepPopulatedGrid.players, player => player._id.equals(playersByTurnOrder[1]._id));
+                    expect(deepPopulatedGrid.game.turnOrder[1].money).to.equal(playersByTurnOrder[1].money - 8);
+                    expect(deepPopulatedGrid.game.turnOrder[1].plants[1].rank).to.equal(8);
+
+                    expect(deepPopulatedGrid.state.phase).to.equal('resource');
+                    expect(deepPopulatedGrid.state.remainingPlayers.length).to.equal(2);
+
+                    
+                    /* "playerByTurnOrder" has players in the order that was determined at the
+                    beginning of the plant phase. The new "game.turnOrder" has players in the
+                    order of each player's highest plant rank. However, in the game, the turn
+                    starts at the end of the array, i.e. the player with the lowest rank */
+
+                    expect(deepPopulatedGrid.game.turnOrder[0]._id.equals(playersByTurnOrder[0]._id)).to.be.true;
+                    expect(deepPopulatedGrid.game.turnOrder[1]._id.equals(playersByTurnOrder[1]._id)).to.be.true;
+
+                    agentsByTurnOrder = [];
+                    deepPopulatedGrid.game.turnOrder.forEach(function (player) {
+                      agentsByTurnOrder.push(agentsByClockwiseOrder[player.clockwise]);
+                    });
+                    playersByTurnOrder = deepPopulatedGrid.game.turnOrder;
+                    playersByClockwiseOrder = deepPopulatedGrid.players;
+                    done();
+                  }).catch(done);
+              });
+          });
+
+      });
+
+    }) // End of describe(for two players: )
+
+    xdescribe('for three players: ', function () {
+
+      // =========== TURN 1 ===========
+      var gridId, playersByTurnOrder, playersByClockwiseOrder;
+      var agentsByTurnOrder = [];
+      var agentsByClockwiseOrder = [purpleAgent, yellowAgent, greenAgent];
+      var nextTurnIdx;
+      var regionsInPlay, citiesInPlay;
+
+      after('Clear all game data', function (done) {
+        Player.remove()
+          .then(function () {
+            return Game.remove();
+          })
+          .then(function () {
+            return State.remove();
+          })
+          .then(function () {
+            return Grid.remove();
+          })
+          .then(function () {
+            done();
+          }).catch(done);
+      });
+
+      it('should instantiate the game properly', function (done) {
+        purpleAgent
+          .post('/api/grid')
+          .send({
+            name: "Game Test for Three",
+            map: 'United States',
+            maxPlayers: 2,
+            makeRandom: true,
+            regions: [],
+            color: 'purple'
+          })
+          .expect(201)
+          .end(function (err, res) {
+            if (err) done(err);
+            expect(res.body.name).to.equal("Game Test for Three");
+            expect(res.body.state).to.be.a('null');
+            expect(res.body.game).to.be.a('null');
+            expect(res.body.players.length).to.equal(1);
+
+            gridId = res.body.id;
+            firebaseKey = res.body.key;
+            done();
+          });
+      });
+
+    }) // End of describe(for three players: )
+
+
+  }); // End of describe(Playing game)
 
 }); // End of describe('Play Route')
