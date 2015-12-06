@@ -46,7 +46,7 @@ function cheapestDistanceTo(destination, network, cities, connections) {
 
 function containsCity(cities, city) {
 	return !!_.find(cities, function(c) {
-		return city._id.equals(c.id);
+		return city._id.equals(c.id || c._id || c);
 	})
 }
 
