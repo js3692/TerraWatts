@@ -73,9 +73,22 @@ bureaucracy-action {
             margin-top: 30px;
         }
     }
+    
+    .choice-container {
+        width: 100%;
+        text-align: center;
+        padding-top: 10px;
+        table {
+            margin-bottom: 0;
+        }
+        td {
+            text-align: left;
+        }
+    }
+    
 }
 
-resource-action {
+resource-action, bureaucracy-action {
     td {
         img {
             margin-top: 9px;
