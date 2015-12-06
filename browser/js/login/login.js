@@ -13,7 +13,7 @@ app.config(function ($stateProvider) {
 
 });
 
-app.controller('LoginCtrl', function ($scope, userDoesExist, AuthService, $state, AUTH_EVENTS) {
+app.controller('LoginCtrl', function ($scope, userDoesExist, AuthService, $state, AUTH_EVENTS, AppConstants) {
 
     $scope.loggedIn = false;
 
@@ -34,14 +34,16 @@ app.controller('LoginCtrl', function ($scope, userDoesExist, AuthService, $state
     $scope.error = null;
 
     $scope.sendLogin = function (loginInfo) {
-
-        $scope.error = null;
-
-        AuthService.login(loginInfo).then(function () {
+      $scope.error = null;
+      AuthService.login(loginInfo).then(function () {
+        angular.element("#login-main")
+          .addClass("fadeOut")
+          .one(AppConstants.animationEndEvent, function () {
             $state.go('home');
-        }).catch(function () {
-            $scope.error = 'Invalid login credentials.';
-        });
+          })
+      }).catch(function () {
+        $scope.error = 'Invalid login credentials.';
+      });
 
     };
 

@@ -1,9 +1,14 @@
-<section id="home" class="animated fadeIn">
+<section id="home" class="animated">
   <div class="container">
-    <h1>Wilkommen</h1>
+    <h1>Wilkommen {{ modalOpen }}</h1>
     <div class="row top-menu">
-      <button class="btn btn-primary btn-lg" ng-click="newGame()"><span class="glyphicon glyphicon-plus"></span> New Game</button>
-      <button class="btn btn-danger btn-lg" ng-click="logout()">Log out <span class="glyphicon glyphicon-share-alt"></span></button>
+      <div class="col-xs-6 left-column">
+        <button class="btn btn-warning btn-lg" ng-click="openProfile()">&nbsp;&nbsp;<span class="glyphicon glyphicon-user"></span> {{ me }}&nbsp;&nbsp;</button>
+      </div>
+      <div class="col-xs-6 right-column">
+        <button class="btn btn-primary btn-lg" ng-click="newGame()"><span class="glyphicon glyphicon-plus"></span> New Game</button>
+        <button class="btn btn-danger btn-lg" ng-click="logout()">Log out <span class="glyphicon glyphicon-share-alt"></span></button>
+      </div>
     </div>
     <table class="table table-hover">
       <thead>
@@ -20,9 +25,10 @@
           <td style="text-align: center;">{{ $index + 1 }}</td>
           <td>{{ grid.name }}</td>
           <td style="text-align: center;">{{ grid.players.length || 0 }} / {{ grid.maxPlayers }}</td>
-          <td style="text-align: center;">Waiting</td>
+          <td style="text-align: center;" ng-class="{ 'animated flash infinite': currentlyInGame(grid) }">Waiting</td>
           <td style="text-align: center;">
-            <button ng-click="joinGame(grid)" class="btn btn-success">Join</button>
+            <button ng-click="joinGame(grid)" class="btn btn-success" ng-if="!currentlyInGame(grid)">Join</button>
+            <button ng-click="goBackIn(grid)" class="btn btn-warning" ng-if="currentlyInGame(grid)">Go Back</button>
           </td>
         </tr>
       </tbody>

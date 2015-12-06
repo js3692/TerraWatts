@@ -1,7 +1,4 @@
 #home {
-  -webkit-animation-delay: 0.5s;
-  -moz-animation-delay: 0.5s;
-  -ms-animation-delay: 0.5s;
 	background: $main-background;
 	color: #ddd;
 	min-height: 100vh;
@@ -15,22 +12,41 @@
   	margin: auto;
   	margin-top: 60px;
     margin-bottom: 30px;
-    float: right;
-    button {
-      width: 200px;
-    }
-    .btn-primary {
-      background-color: #4e89b9;
-      border-color: #4e89b9;
-      &:hover {
-        background-color: #a6c4dc;
+    // float: right;
+    .left-column {
+      button {
+        // width: 250px;
+        background-color: #302013;
+        border-color: #302013;
+        &:hover {
+          background-color: #dabca2;
+          border-color: #dabca2;
+        }
+      }
+      .glyphicon-user {
+        margin: 0;
       }
     }
-    .btn-danger {
-      background-color: #67294b;
-      border-color: #67294b;
-      &:hover {
-        background-color: #b394a5;
+    .right-column {
+      text-align: right;
+      button {
+        width: 200px;
+      }
+      .btn-primary {
+        background-color: #4e89b9;
+        border-color: #4e89b9;
+        &:hover {
+          background-color: #a6c4dc;
+          border-color: #a6c4dc;
+        }
+      }
+      .btn-danger {
+        background-color: #67294b;
+        border-color: #67294b;
+        &:hover {
+          background-color: #b394a5;
+          border-color: #b394a5;
+        }
       }
     }
   }

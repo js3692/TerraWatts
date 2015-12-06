@@ -1,4 +1,4 @@
-app.controller('GridCtrl', function ($scope, $state, theUser, BeforeGameFactory, FirebaseFactory, gridId, key) {
+app.controller('GridCtrl', function ($scope, $state, theUser, AppConstants, BeforeGameFactory, FirebaseFactory, gridId, key) {
     $scope.grid = FirebaseFactory.getConnection(key);
     
 	$scope.me = theUser;
@@ -29,10 +29,14 @@ app.controller('GridCtrl', function ($scope, $state, theUser, BeforeGameFactory,
 	}; 
 
 	$scope.leaveGame = function() {
+    angular.element("#grid")
+      .addClass("fadeOutRightBig")
+      .one(AppConstants.animationEndEvent, function () {
         BeforeGameFactory
-            .leaveGame($scope.grid.id)
-            .then(function() {
-                $state.go('home');
-            });
+          .leaveGame($scope.grid.id)
+          .then(function() {
+            $state.go('home');
+          });
+      })
 	};
 })
