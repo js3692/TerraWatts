@@ -8,6 +8,7 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 			cityShoppingCart: '=ngModel'
 		},
 		link: function(scope, element, attrs) {
+
             scope.me = PlayGameFactory.getMe();
 			var isActivePlayer = false;
 			scope.cityShoppingCart = [];
@@ -108,9 +109,10 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 				}
 			}
 
-
+			var rendered = false;
 			scope.$watch('grid', function(grid) {
-				if(grid.game && grid.players) {
+				if(grid.game && grid.players && !rendered) {
+					rendered = true;
 					const revisedCities = grid.game.cities.map(function(city) { return cityType(city); });
 					const revisedConnections = grid.game.connections.map(function(connection) { return connectionType(connection); });
 					const revisedDistMarkers = grid.game.connections.map(function(connection) { return connectionDistType(connection); });
