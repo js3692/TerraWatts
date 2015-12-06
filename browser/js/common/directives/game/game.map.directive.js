@@ -9,10 +9,6 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 		},
 		link: function(scope, element, attrs) {
 
-            scope.me = PlayGameFactory.getMe();
-			var isActivePlayer = false;
-			scope.cityShoppingCart = [];
-
 			var width = Math.max(960, window.innerWidth),
 			    height = Math.max(500, window.innerHeight);
 
@@ -108,14 +104,16 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 					geometry: {type: 'LineString', coordinates: coordinates}
 				}
 			}
+			
 
+			// Game Watch
 			var rendered = false;
-			scope.$watch('grid', function(grid) {
-				if(grid.game && grid.players && !rendered) {
+			scope.$watch('grid.game', function(game) {
+				if(game && !rendered) {
 					rendered = true;
-					const revisedCities = grid.game.cities.map(function(city) { return cityType(city); });
-					const revisedConnections = grid.game.connections.map(function(connection) { return connectionType(connection); });
-					const revisedDistMarkers = grid.game.connections.map(function(connection) { return connectionDistType(connection); });
+					const revisedCities = game.cities.map(function(city) { return cityType(city); });
+					const revisedConnections = game.connections.map(function(connection) { return connectionType(connection); });
+					const revisedDistMarkers = game.connections.map(function(connection) { return connectionDistType(connection); });
 
 					svg.call(zoom);
 
@@ -123,15 +121,9 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 						.data(revisedCities)
 						.enter()
 						.append('g')
-						// .attr('id', function(d,i) { return 'city' + i; })
 						.on('click', function(d,i) {
 							CityCartFactory.toggle(d.properties);
-							// d3.select('#slot10Towers' + i + ' #leftTower')
-							// 	.transition()
-							// 	.duration(1000)
-							// 	.attr('height', leftTowerHeight)
-							// 	.attr('y', cityBoxYOffset + rectDimension - leftTowerHeight)
-						})
+						});
 
 					cityVector = cityGroups
 						.each(function(d,i) {
@@ -140,7 +132,6 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 								.attr('id', function(d,i) { return 'cityPath' + i; });
 
 							var cityBox = d3.select(this)
-							// cityBox = d3.select('#city' + i)
 								.append('rect')
 								.attr('class', 'cityBox')
 								.attr('width', cityWidth)
@@ -195,7 +186,6 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 
 							var slot10Towers = d3.select(this)
 								.append('g')
-								// .attr('id', function(d,j) { return 'slot10Towers' + i; })
 								.attr('id', 'slot10Towers')
 								.each(function(d,j) {
 									d3.select(this)
@@ -330,7 +320,16 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 
 					zoomed();
 
-					var poppedCities = CityCartFactory.getPopulatedCities(grid.players);
+				}
+
+			}, true);
+
+
+
+			// Player watch
+			scope.$watch('grid.players', function(players) {
+				if(players) {
+					var poppedCities = CityCartFactory.getPopulatedCities(players);
 					poppedCities.forEach(function(city) {
 						var cityName = city.name.replace(/\s/g, '');
 						for(var i = 0; i < city.players.length; i++) {
@@ -356,9 +355,13 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 								.style('fill', d3.rgb(city.players[i].color).darker(0.5));
 						}
 					})
-				}
 
+
+
+				}
 			}, true);
+
+
 
 			function renderOnCentroid() {
 				distText
@@ -412,7 +415,6 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 				renderOnCentroid();
 
 	    		distancePath
-	    			// .pointRadius(zoom.scale()/1600);
 	    			.pointRadius(zoom.scale()/1200);
 
 				var image = raster
