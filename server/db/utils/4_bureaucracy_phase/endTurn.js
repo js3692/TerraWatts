@@ -22,9 +22,9 @@ module.exports = function endTurn(game) {
 		})
 		// return gameOver(winningOrder)
 	}
-
+	console.log('STEP TWO CONDITION', stepTwo[game.turnOrder.length])
 	// start step 2 if necessary
-	if (game.step === 1 && maxCities > stepTwo[game.turnOrder.length]) {
+	if (game.step === 1 && maxCities >= stepTwo[game.turnOrder.length]) {
 		game.step = 2;
 		game.discardedPlants.push(game.plantMarket.shift());
 		game = drawPlant(game);

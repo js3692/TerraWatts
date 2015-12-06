@@ -5,12 +5,12 @@
     <div class="row" ng-show="shouldShowResourceButtons()">
         <div class="col-lg-4">
             <table class="table" border="0">
-                <tr ng-repeat="resource in buyableResources">
+                <tr ng-repeat="resource in listBuyableResources()">
                     <td>
-                        {{ resource }}
+                        <img ng-src="/{{resource}}.png">
                     </td>
                     <td>
-                        <resource-buyer resource-type="resource"></resource-buyer>
+                        <resource-buyer max="getMaxBuyableFor(resource)" resource-type="resource"></resource-buyer>
                     </td>
                 </tr>
             </table>

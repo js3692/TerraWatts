@@ -3,12 +3,17 @@ app.directive('resourceBuyer', function(PlayGameFactory){
         restrict: 'E',
         templateUrl: "js/common/directives/resourceBuyer/resourceBuyer.html",
         scope: {
-            resourceType: '='
+            resourceType: '=',
+            max: '='
         },
         link: function(scope, elem, attrs){
-            scope.isMin = function(bid){
+            scope.isMin = function(){
                 return scope.getBid() <= 0;
             };
+            
+            scope.isMax = function(){
+                return scope.getBid() >= +scope.max;
+            }
             
             scope.changeBid = function (quantity){
                 PlayGameFactory.changeWishlist(scope.resourceType, quantity);  

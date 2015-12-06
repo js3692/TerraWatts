@@ -6,6 +6,9 @@ app.directive('plantAction', function(PlayGameFactory){
             plant: '='  
         },
         link: function(scope, elem, attrs){
+            scope.getPlantToBidOn = PlayGameFactory.getPlantToBidOn;
+            scope.getActivePlayer = PlayGameFactory.getActivePlayer;
+            
             
             var update = {
                 phase: 'plant',
@@ -45,6 +48,13 @@ app.directive('plantAction', function(PlayGameFactory){
                 update.data.plant = scope.auction.plant;
                 update.data.bid = bid;
                 PlayGameFactory.continue(update);
+            }
+            
+            scope.showWaitingMessage = function() {
+                return [
+                    !PlayGameFactory.iAmActivePlayer(),
+                    !PlayGameFactory.getAuction()
+                ].every(valid => valid);
             }
             
             scope.shouldSeeBidButtons = function(){

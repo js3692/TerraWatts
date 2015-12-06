@@ -1,5 +1,8 @@
-<div class="bureaucracy-action-container">
-    <div class="row">
+<div class="bureaucracy-action-container" ng-switch on='madeChoice'>
+    <div class="waiting-container" ng-switch-when="true">
+        <h2>Waiting on other players to power plants.</h2>
+    </div>
+    <div ng-switch-when="false" class="row">
         <div class="col-lg-6">
             <div class='container'>
                 <div class="bureaucracy-plant" ng-repeat="plant in getMyPlants()">
@@ -7,19 +10,19 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6 btn-col" ng-hide="madeChoice">
-            <div class="btn-group">
-                <button class="btn btn-lg" ng-click="powerPlants()">Power Plants</button>
-                <button class="btn btn-lg" ng-click="pass()">Power None</button>
+        
+        <div class="col-lg-6 btn-col">
+            <div>
+                <div class="btn-group">
+                    <button class="btn btn-lg" ng-click="powerPlants()">Power Plants</button>
+                    <button class="btn btn-lg" ng-click="powerNone()">Power None</button>
+                </div>
+                <div  class='bureaucracy-stats' ng-show="plantCart.length">
+                    <hr>
+                    <span>You'll power {{ getNumberOfCitiesPowered() }} cities.</span><br>
+                    <span>You'll make ${{ calculateProfits() }}.</span>
+                </div>
             </div>
-            <div  class='bureaucracy-stats' ng-show="plantCart.length">
-                <hr>
-                <span>You'll power {{ getNumberOfCitiesPowered() }} cities.</span><br>
-                <span>You'll make ${{ calculateProfits() }}.</span>
-            </div>
-        </div>
-        <div ng-show="madeChoice">
-            <span>Waiting for other players to power plants.</span>
         </div>
     </div>
 </div>

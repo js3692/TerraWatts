@@ -12,8 +12,13 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
             }
         }
         cityCart.push(city);
+        console.log('cityCart', cityCart)
         $rootScope.$digest();
         
+    };
+    
+    CCFactory.clearCart = function(){
+        cityCart = [];
     };
     
     CCFactory.getCart = function(){
@@ -24,6 +29,32 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
         var game = PlayGameFactory.getGame();
         var player = PlayGameFactory.getMe();
         return totalCost(game, citiesToAdd, player);
+    }
+
+    CCFactory.getPopulatedCities = function(players) {
+        var populatedCities = [];
+        players.forEach(function(player) {
+            if(player.cities) {
+                var currPlayer = { name: player.user.username, id: player._id, color: player.color }
+                player.cities.forEach(function(city) {
+                    var currCity = { name: city.name, id: city.id, players: [currPlayer] }
+                    if(!populatedCities.length) {
+                        populatedCities.push(currCity);
+                        return populatedCities;
+                    } else {
+                        var hasCity = false;
+                        for(var i = 0; i < populatedCities.length; i++) {
+                            if(populatedCities[i].id === city.id) {
+                                populatedCities[i].players.push(currPlayer);
+                                hasCity = true;
+                            }
+                        }
+                        if(!hasCity) populatedCities.push(currCity);
+                    }
+                })
+            }
+        });
+        return populatedCities;
     }
     
     //city price algorithm -- needs dij and num residents -- rename;
@@ -117,7 +148,6 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
             })[0];
         })
         
-        console.log(neighboringCities)
         return data.filter(function (node) {
             return containsCity(neighboringCities, node.city) && !node.visited;
         })

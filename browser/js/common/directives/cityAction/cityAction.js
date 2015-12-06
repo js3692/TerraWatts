@@ -18,6 +18,7 @@ app.directive('cityAction', function(PlayGameFactory, CityCartFactory){
                 };
                 
                 PlayGameFactory.continue(update);
+                CityCartFactory.clearCart();
             };
             
             scope.pass = function(){
@@ -29,6 +30,8 @@ app.directive('cityAction', function(PlayGameFactory, CityCartFactory){
                     }
                 };
                 PlayGameFactory.continue(update);
+                
+                CityCartFactory.clearCart();
             }
         }
     }

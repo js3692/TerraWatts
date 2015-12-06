@@ -1,5 +1,5 @@
 <div class="btn-group" role="group">
-    <button type="button" class="btn" ng-click="changeBid(-1)" ng-disabled="isMin(bid)">
+    <button type="button" class="btn" ng-click="changeBid(-1)" ng-disabled="isMin()">
         <span class="glyphicon 
                    glyphicon-minus">
       </span>
@@ -7,7 +7,7 @@
     <button type="button" class="btn btn-default">
         <span>{{ getBid() }}</span>
     </button>
-    <button type="button" class="btn " ng-click="changeBid(1)" ng-disabled="isMax(bid)">
+    <button type="button" class="btn " ng-click="changeBid(1)" ng-disabled="isMax()">
         <span class="glyphicon glyphicon-plus">
       </span>
     </button>
