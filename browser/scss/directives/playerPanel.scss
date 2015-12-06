@@ -4,6 +4,7 @@ $side-tab-width: 30px;
 $side-tab-height: 100px;
 $panel-position: 60px;
 player-panel {
+    color: white;
     overflow: hidden;
     position: fixed;
     top: $panel-position;
@@ -24,12 +25,30 @@ player-panel {
     .menu-tab {
         width: $side-tab-width;
         height: $side-tab-height;
-        border-radius: 5px 0 0 5px;
         border-right: 1px solid white;
+        border-top: 1px solid white;
+        clear: right;
     }
+    
     .menu-tab:hover {
         background-color: grey;
     }
+    
+    .triangle-tab {
+        border-top: none;
+        width: $side-tab-width;
+        height: 100px;
+        border-radius: 5px 0 0 0;   
+    }
+    
+    .tab-container {
+        border-radius: 5px 0 0 5px;
+    }
+    
+    .chat-tab {
+        border-radius: 0 0 0 5px;
+    }
+    
     .menu-panel-body {
         height: $panel-height;
         width: $panel-width;
@@ -41,5 +60,22 @@ player-panel {
         margin-left: 5px;
         margin-top: 37px;
         color: white;
+    }
+    
+    .active-tab, .active-tab:hover {
+        background-color: #1E8EEB;
+    }
+    
+    chat {
+        #chat-window {
+            height: 455px;
+        }
+        form, .chat-input {
+            color: white;
+            font-weight: 100;
+            width: 95%;
+            margin: 0 auto;
+            background-color: $main-background;
+        }        
     }
 }

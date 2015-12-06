@@ -1,8 +1,25 @@
-<div class="menu-panel-body panel panel-default right-slider">
-    <div class="panel-body">
+<div class="menu-panel-body panel panel-default right-slider" ng-switch on="view">
+    <div ng-switch-when="players" class="panel-body">
         <player player="player"
                 ng-repeat="player in getTurnOrder()">
         </player>
     </div>
+    <div ng-switch-when="chat">
+        <chat></chat>
+    </div>
 </div>
-<div class="right-slider menu-tab" ng-click="open()"><span class="glyphicon glyphicon-user"></span></div>
+<div class="right-slider tab-container">
+    <div class="menu-tab triangle-tab" ng-click="open(); toggleArrows()">
+        <span class="glyphicon glyphicon-triangle-left"></span>
+    </div>
+    <div ng-click="view='players'"
+         class="menu-tab"
+         ng-class="{'active-tab' : view === 'players'}">
+        <span class="glyphicon glyphicon-user"></span>
+    </div>
+    <div ng-click="view='chat'"
+         class="menu-tab chat-tab"
+         ng-class="{'active-tab' : view === 'chat'}">
+        <span class="glyphicon glyphicon-comment"></span>
+    </div>
+</div>
