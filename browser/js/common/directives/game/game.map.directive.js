@@ -111,10 +111,13 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 
 
 			scope.$watch('grid', function(grid) {
-				if(grid.game) {
-					var revisedCities = grid.game.cities.map(function(city) { return cityType(city); });
-					var revisedConnections = grid.game.connections.map(function(connection) { return connectionType(connection); });
-					var revisedDistMarkers = grid.game.connections.map(function(connection) { return connectionDistType(connection); });
+				if(grid.game && grid.players) {
+					console.log('grid', grid)
+					const revisedCities = grid.game.cities.map(function(city) { return cityType(city); });
+					const revisedConnections = grid.game.connections.map(function(connection) { return connectionType(connection); });
+					const revisedDistMarkers = grid.game.connections.map(function(connection) { return connectionDistType(connection); });
+
+					console.log('popCities', CityCartFactory.getPopulatedCities(grid.players))
 
 					svg.call(zoom);
 
@@ -145,7 +148,7 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 								.attr('y', cityBoxYOffset + rectDimension - rightTowerHeight)
 
 
-						});
+						})
 
 					cityVector = cityGroups
 						.each(function(d,i) {
@@ -346,6 +349,8 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 
 			}, true);
 
+			
+
 
 			function renderOnCentroid() {
 				distText
@@ -377,6 +382,7 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 		    	
 		    	cityVector
 		    		.attr('name', function(d) { return d.properties.name })
+		    		.attr('cityID', function(d) { return d.properties.id })
 		    		.attr('region', function(d) { return d.properties.region })
 					.attr('d', cityPath)
 					.attr('fill', 'none')

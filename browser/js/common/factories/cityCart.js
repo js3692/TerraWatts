@@ -1,5 +1,6 @@
 app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
 	var cityCart = [],
+        populatedCities = [],
         CCFactory = {};
     
     CCFactory.toggle = function(city){
@@ -12,6 +13,7 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
             }
         }
         cityCart.push(city);
+        console.log('cityCart', cityCart)
         $rootScope.$digest();
         
     };
@@ -24,6 +26,27 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
         var game = PlayGameFactory.getGame();
         var player = PlayGameFactory.getMe();
         return totalCost(game, citiesToAdd, player);
+    }
+
+    CCFactory.getPopulatedCities = function(players) {
+        players.forEach(function(player) {
+            if(player.cities) {
+                var currPlayer = { name: player.user.username, id: player._id, color: player.color }
+                player.cities.forEach(function(city) {
+                    var newCity = { name: city.name, id: city.id, players: [currPlayer] }
+                    if(!populatedCities.length) {
+                        populatedCities.push(newCity);
+                        return;
+                    } else {
+                        for(var i = 0; i < populatedCities.length; i++) {
+                            if(populatedCities[i].id === city.id) populatedCities[i].players.push(currPlayer);
+                            else populatedCities.push(newCity);
+                        }
+                    }
+                })
+            }
+        });
+        return populatedCities;
     }
     
     //city price algorithm -- needs dij and num residents -- rename;
@@ -117,7 +140,6 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
             })[0];
         })
         
-        console.log(neighboringCities)
         return data.filter(function (node) {
             return containsCity(neighboringCities, node.city) && !node.visited;
         })

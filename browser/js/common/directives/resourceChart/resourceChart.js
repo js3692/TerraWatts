@@ -86,8 +86,6 @@ app.directive('resourceBars', function ($parse) {
                     }
                     resources.push({ value: data['nuke'], type: 'nuke', color: scope.resourceColors['nuke']});
 
-                    console.log('resources', resources)
-
                     y.domain(resources.map(function(resource) { return resource.type; }));
                     // x.domain([0, d3.max(resources, function(resource) { return resource.value; })]);
 
