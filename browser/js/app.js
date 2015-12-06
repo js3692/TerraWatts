@@ -7,6 +7,8 @@ app.config(function ($urlRouterProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
     // If we go to a URL that ui-router doesn't have registered, go to the "/" url.
     $urlRouterProvider.otherwise('/');
+}).constant("AppConstants", {
+    animationEndEvent: "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend"
 });
 
 // This app.run is for controlling access to specific states.

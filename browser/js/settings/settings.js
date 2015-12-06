@@ -1,4 +1,4 @@
-app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, BeforeGameFactory) {
+app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, AppConstants, BeforeGameFactory) {
 
   $scope.gameSettings = {};
   $scope.gameSettings.map = 'United States';
@@ -64,10 +64,14 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, Befo
 
   $scope.ok = function (gameSettings) {
     if (gameSettings.checkedRegions.length < 3) gameSettings.makeRandom = true;
-    BeforeGameFactory.newGame(gameSettings)
-      .then(function (grid) {
-        $uibModalInstance.close();
-        $state.go('grid', { id: grid._id, key: grid.key });
+    $uibModalInstance.close();
+    angular.element("#home")
+      .addClass("fadeOutLeftBig")
+      .one(AppConstants.animationEndEvent, function () {
+        BeforeGameFactory.newGame(gameSettings)
+          .then(function (grid) {
+            $state.go('grid', { id: grid._id, key: grid.key });
+          });
       });
   };
 

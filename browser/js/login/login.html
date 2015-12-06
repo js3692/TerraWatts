@@ -1,6 +1,6 @@
-<div id="login-main">
+<div id="login-main" class="animated fadeIn">
   <div class="container login-container">
-    <div class="row">
+    <div class="row animated fadeInDown">
       <div class="col-sm-offset-4 col-sm-4">
         <h1>{{ loggedIn? "Welcome Back" : "Welcome" }}</h1>
         <hr>
@@ -8,7 +8,7 @@
         <br ng-if="!loggedIn">
       </div>
     </div>
-    <form id="login-form" class="form-horizontal" name="loginForm" ng-submit="loginForm.$valid && sendLogin(login)" ng-if="!loggedIn">
+    <form id="login-form" class="form-horizontal animated flipInX" name="loginForm" ng-submit="loginForm.$valid && sendLogin(login)" ng-if="!loggedIn">
       <div class="form-group">
         <label for="username" class="col-sm-offset-3 col-sm-2 control-label">Username</label>
         <div class="col-sm-3">
@@ -34,7 +34,7 @@
       </div>
     </form>
     <br>
-    <div class="row" ng-if="!loggedIn">
+    <div class="row animated fadeInUp" ng-if="!loggedIn">
       <div class="col-sm-offset-4 col-sm-4 signup-message">
         <hr>
         <br>
@@ -45,9 +45,11 @@
     </div>
     <div class="row" ng-if="loggedIn">
       <div class="col-sm-offset-4 col-sm-4">
-        <button class="btn btn-success btn-block btn-lg" ng-click="continue()">Continue as {{ username }}</button>
-        <br>
-        <hr>
+        <button class="btn btn-success btn-block btn-lg animated slideInDown" ng-click="continue()">Continue as {{ username }}</button>
+        <div class="animated fadeInUp">
+          <br>
+          <hr>
+        </div>
       </div>
     </div>
   </div>
