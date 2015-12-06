@@ -1,6 +1,5 @@
 app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
 	var cityCart = [],
-        populatedCities = [],
         CCFactory = {};
     
     CCFactory.toggle = function(city){
@@ -29,19 +28,24 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
     }
 
     CCFactory.getPopulatedCities = function(players) {
+        var populatedCities = [];
         players.forEach(function(player) {
             if(player.cities) {
                 var currPlayer = { name: player.user.username, id: player._id, color: player.color }
                 player.cities.forEach(function(city) {
-                    var newCity = { name: city.name, id: city.id, players: [currPlayer] }
+                    var currCity = { name: city.name, id: city.id, players: [currPlayer] }
                     if(!populatedCities.length) {
-                        populatedCities.push(newCity);
-                        return;
+                        populatedCities.push(currCity);
+                        return populatedCities;
                     } else {
+                        var hasCity = false;
                         for(var i = 0; i < populatedCities.length; i++) {
-                            if(populatedCities[i].id === city.id) populatedCities[i].players.push(currPlayer);
-                            else populatedCities.push(newCity);
+                            if(populatedCities[i].id === city.id) {
+                                populatedCities[i].players.push(currPlayer);
+                                hasCity = true;
+                            }
                         }
+                        if(!hasCity) populatedCities.push(currCity);
                     }
                 })
             }

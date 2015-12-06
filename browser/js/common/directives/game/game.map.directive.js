@@ -67,7 +67,6 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 				cityCentroids = {};
 
 			// City Shape Variables:
-			// var cityWidth = zoom.scale()/110 > 120 ? 120 : zoom.scale()/110,
 			var cityWidth = zoom.scale()/105 > 120 ? 120 : zoom.scale()/105,
 			// var cityWidth = 80,
 				cityHeight = cityWidth/2,
@@ -112,12 +111,9 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 
 			scope.$watch('grid', function(grid) {
 				if(grid.game && grid.players) {
-					console.log('grid', grid)
 					const revisedCities = grid.game.cities.map(function(city) { return cityType(city); });
 					const revisedConnections = grid.game.connections.map(function(connection) { return connectionType(connection); });
 					const revisedDistMarkers = grid.game.connections.map(function(connection) { return connectionDistType(connection); });
-
-					console.log('popCities', CityCartFactory.getPopulatedCities(grid.players))
 
 					svg.call(zoom);
 
@@ -125,29 +121,14 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 						.data(revisedCities)
 						.enter()
 						.append('g')
-						.attr('id', function(d,i) { return 'city' + i; })
+						// .attr('id', function(d,i) { return 'city' + i; })
 						.on('click', function(d,i) {
 							CityCartFactory.toggle(d.properties);
-							d3.select('#slot10Towers' + i + ' #leftTower')
-								.transition()
-								.duration(1000)
-								.attr('height', leftTowerHeight)
-								.attr('y', cityBoxYOffset + rectDimension - leftTowerHeight)
-
-
-							d3.select('#slot10Towers' + i + ' #midTower')
-								.transition()
-								.duration(1000)
-								.attr('height', midTowerHeight)
-								.attr('y', cityBoxYOffset + rectDimension - midTowerHeight)
-
-							d3.select('#slot10Towers' + i + ' #rightTower')
-								.transition()
-								.duration(1000)
-								.attr('height', rightTowerHeight)
-								.attr('y', cityBoxYOffset + rectDimension - rightTowerHeight)
-
-
+							// d3.select('#slot10Towers' + i + ' #leftTower')
+							// 	.transition()
+							// 	.duration(1000)
+							// 	.attr('height', leftTowerHeight)
+							// 	.attr('y', cityBoxYOffset + rectDimension - leftTowerHeight)
 						})
 
 					cityVector = cityGroups
@@ -212,7 +193,8 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 
 							var slot10Towers = d3.select(this)
 								.append('g')
-								.attr('id', function(d,j) { return 'slot10Towers' + i; })
+								// .attr('id', function(d,j) { return 'slot10Towers' + i; })
+								.attr('id', 'slot10Towers')
 								.each(function(d,j) {
 									d3.select(this)
 										.append('rect')
@@ -248,7 +230,7 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 
 							var slot15Towers = d3.select(this)
 								.append('g')
-								.attr('id', function(d,j) { return 'slot15Towers' + i; })
+								.attr('id', 'slot15Towers')
 								.each(function(d,j) {
 									d3.select(this)
 										.append('rect')
@@ -284,7 +266,7 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 
 							var slot20Towers = d3.select(this)
 								.append('g')
-								.attr('id', function(d,j) { return 'slot20Towers' + i; })
+								.attr('id', 'slot20Towers')
 								.each(function(d,j) {
 									d3.select(this)
 										.append('rect')
@@ -345,12 +327,36 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 						.attr("fill", "white");
 
 					zoomed();
+
+					var poppedCities = CityCartFactory.getPopulatedCities(grid.players);
+					poppedCities.forEach(function(city) {
+						var cityName = city.name.replace(/\s/g, '');
+						for(var i = 0; i < city.players.length; i++) {
+							d3.select('#' + cityName + ' #slot10Towers #leftTower')
+								.transition()
+								.duration(1000)
+								.attr('height', leftTowerHeight)
+								.attr('y', cityBoxYOffset + rectDimension - leftTowerHeight)
+								.style('fill', d3.rgb(city.players[i].color).darker(1));
+
+							d3.select('#' + cityName + ' #slot10Towers #midTower')
+								.transition()
+								.duration(1000)
+								.attr('height', midTowerHeight)
+								.attr('y', cityBoxYOffset + rectDimension - midTowerHeight)
+								.attr('fill', city.players[i].color);
+
+							d3.select('#' + cityName + ' #slot10Towers #rightTower')
+								.transition()
+								.duration(1000)
+								.attr('height', rightTowerHeight)
+								.attr('y', cityBoxYOffset + rectDimension - rightTowerHeight)
+								.style('fill', d3.rgb(city.players[i].color).darker(0.5));
+						}
+					})
 				}
 
 			}, true);
-
-			
-
 
 			function renderOnCentroid() {
 				distText
@@ -369,7 +375,6 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 					});
 			}
 
-
 			function zoomed() {
 				var tiles = tile
 			    	.scale(zoom.scale())
@@ -381,8 +386,10 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 			    	.translate(zoom.translate());
 		    	
 		    	cityVector
-		    		.attr('name', function(d) { return d.properties.name })
-		    		.attr('cityID', function(d) { return d.properties.id })
+		    		.attr('id', function(d) {
+		    			var cityName = d.properties.name.replace(/\s/g, '');
+		    			return cityName;
+		    		})
 		    		.attr('region', function(d) { return d.properties.region })
 					.attr('d', cityPath)
 					.attr('fill', 'none')
