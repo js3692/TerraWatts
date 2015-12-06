@@ -47,7 +47,7 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     };
     
     PGFactory.getGame = function(){
-        if(grid) return grid.game;
+        if(grid && grid.game) return grid.game;
     }
     
     PGFactory.getMe = function() {
