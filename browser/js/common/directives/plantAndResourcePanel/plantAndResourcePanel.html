@@ -5,9 +5,6 @@
     <plant plant-to-action
            ng-style="{ opacity: firstFour($index) }"
            ng-show="plantsTrueResourcesFalse"
-           ng-class="{ plantHover: hover }"
-           ng-mouseover="hover = $index < 4" 
-           ng-mouseleave="hover=false"
            ng-repeat="plant in getPlantMarket()" 
            plant="plant"
            rank="{{plant.rank}}">

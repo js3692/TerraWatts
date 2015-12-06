@@ -112,6 +112,15 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     PGFactory.getWishlist = function(){
         return wishlist;
     }
+    
+    PGFactory.clearWishlist = function() {
+        wishlist = {
+            oil: 0,
+            trash: 0,
+            coal: 0,
+            nuke: 0
+        };  
+    }
 
     PGFactory.getMyPlants = function(){
         return PGFactory.getMe().plants;
@@ -119,6 +128,10 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     
     PGFactory.getMyCities = function(){
         return PGFactory.getMe().cities;
+    }
+    
+    PGFactory.getMyResources = function(){
+        return PGFactory.getMe().resources;
     }
     
     return PGFactory;

@@ -1,29 +1,32 @@
-<div class="plant-action-container">
-    <div class="row">
+<div class="plant-action-container" ng-switch on="showWaitingMessage()">
+    <div class="waiting-container" ng-switch-when="true">
+        <h2>Waiting on {{ getActivePlayer().user.username }} to pick a plant...</h2>
+    </div>
+    <div class="row" ng-switch-when="false">
         <div class="col-lg-4">
-            <div ng-if="plant || auction">
+            <div ng-if="getPlantToBidOn() || auction">
                 <div ng-show="auction" class="auction-text">
                     Up for auction:
                 </div>
-                <plant rank="{{auctionPlant ? auctionPlant.rank : plant.rank}}">
+                <plant rank="{{auctionPlant ? auctionPlant.rank : getPlantToBidOn().rank}}">
                 </plant>
                 <bid ng-show="shouldSeeBidButtons()"
-                     start="{{ auction ? auction.bid + 1 : plant.rank}}" 
-                     ng-model="$parent.bid">
+                     start="{{ auction ? auction.bid + 1 : getPlantToBidOn().rank}}" 
+                     ng-model="$parent.$parent.bid">
                 </bid>
             </div>
         </div>
         <div class="col-lg-4">
             <div ng-show="auction && !shouldSeeAuctionButtons()">
-                Waiting for {{ auction.activePlayer.user.username }} to bid...
+                Waiting on {{ auction.activePlayer.user.username }} to bid...
             </div>
             <div ng-hide="getAuction()">
-                <div ng-hide="plant">
+                <div ng-hide="getPlantToBidOn() || getAuction()">
                     <h2>Pick a Plant</h2>
                     <h4>&#8212   or   &#8212</h4>
                 </div>
                 <div ng-class="{ 'buttons-down' : plant}">
-                    <button class="btn btn-lg" ng-show="plant" ng-click="pickPlant()">Pick This Plant</button>
+                    <button class="btn btn-lg" ng-show="getPlantToBidOn()" ng-click="pickPlant()">Pick This Plant</button>
                     <button class="btn btn-lg" ng-click="pass()">Pass</button>
                 </div>
             </div>

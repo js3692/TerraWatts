@@ -16,6 +16,10 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
         
     };
     
+    CCFactory.clearCart = function(){
+        cityCart = [];
+    };
+    
     CCFactory.getCart = function(){
         return cityCart;
     };

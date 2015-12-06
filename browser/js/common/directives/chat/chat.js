@@ -3,11 +3,12 @@ app.directive('chat', function(FirebaseFactory, PlayGameFactory){
         restrict: 'E',
         templateUrl: 'js/common/directives/chat/chat.html',
         scope: {
-            me: '='
+            me: '=',
+            key: '='
         },
         link: function(scope, elem, attrs){
             
-            scope.key = PlayGameFactory.getKey();
+            scope.key = scope.key || PlayGameFactory.getKey();
             
             scope.chatBox = document.getElementById('chat-window');
             var chatRef = FirebaseFactory.getChat(scope.key);

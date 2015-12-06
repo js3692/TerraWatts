@@ -6,7 +6,33 @@ app.directive('resourceAction', function(PlayGameFactory){
             scope.shouldShowResourceButtons = PlayGameFactory.iAmActivePlayer;
             scope.getActivePlayer = PlayGameFactory.getActivePlayer;
             
-            scope.buyableResources = ['coal', 'oil', 'trash', 'nuke'];
+            scope.listBuyableResources = function(){
+                return _.uniq(PlayGameFactory.getMyPlants()
+                    .reduce((resourceList, plant) => {
+                        if(plant.resourceType === 'hybrid') {
+                            resourceList.push('coal');
+                            resourceList.push('oil');
+                        } else resourceList.push(plant.resourceType);
+                        return resourceList;
+                    }, []), resource => resource);
+            }
+            
+            scope.getMaxBuyableFor = function(resourceType) {
+                
+                
+                return PlayGameFactory.getMyPlants()
+                    .reduce((total, plant) => {
+                        if(plant.resourceType === resourceType) {
+                            total += 2*Number(plant.numResources);
+                        }
+                        if(plant.resourceType === 'hybrid') {
+                            if(resourceType === 'coal' || resourceType === 'oil') {
+                                total += 2*Number(plant.numResources);
+                            }
+                        }
+                        return total;    
+                    }, 0) - PlayGameFactory.getMyResources()[resourceType];
+            };
             
             scope.buyResources = function(wishlist){
                 var update = {
@@ -17,6 +43,7 @@ app.directive('resourceAction', function(PlayGameFactory){
                     }
                 };
                 PlayGameFactory.continue(update);
+                PlayGameFactory.clearWishlist();
             };
             
             scope.pass = function(){
@@ -31,9 +58,10 @@ app.directive('resourceAction', function(PlayGameFactory){
                             nuke:0
                         }
                     }
+                    
                 };
-                
                 PlayGameFactory.continue(update);
+                PlayGameFactory.clearWishlist();
             }
         }
     }
