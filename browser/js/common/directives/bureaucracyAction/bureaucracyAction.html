@@ -3,14 +3,35 @@
         <h2>Waiting on other players to power plants.</h2>
     </div>
     <div ng-switch-when="false" class="row">
-        <div class="col-lg-6">
-            <div class='container'>
+        <div class="col-lg-6" ng-switch on='hybridChoice'>
+            <div class='container' ng-switch-when="false">
                 <div class="bureaucracy-plant" ng-repeat="plant in getMyPlants()">
-                    <plant toggle-glow ng-click="togglePlant(plant)" rank="{{ plant.rank }}"></plant>
+                    <plant toggle-glow ng-click="togglePlant(plant); choiceIfHybrid(plant)" rank="{{ plant.rank }}"></plant>
                 </div>
             </div>
+            <div class="container choice-container" ng-switch-when="true">
+                How do you want to power this plant?
+                <table class="table">
+                    <tr>
+                        <td>
+                            <img ng-src="/coal.png" />
+                        </td>
+                        <td>
+                            <resource-buyer max="getMax('coal')" resource-type="'coal'"></resource-buyer>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img ng-src="/oil.png" />
+                        </td>
+                        <td>
+                            <resource-buyer max="getMax('oil')" resource-type="'oil'"></resource-buyer>
+                        </td>
+                    </tr>
+                </table>
+                <button class="btn btn-lg" ng-click="backToMainView()">Submit</button>
+            </div>
         </div>
-        
         <div class="col-lg-6 btn-col">
             <div>
                 <div class="btn-group">

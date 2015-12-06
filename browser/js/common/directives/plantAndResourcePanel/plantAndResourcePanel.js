@@ -13,7 +13,7 @@ app.directive('plantAndResourcePanel', function(SliderFactory, PlayGameFactory, 
             scope.getResourceMarket = PlayGameFactory.getResourceMarket;
             scope.plantsTrueResourcesFalse = true;
             scope.open = SliderFactory.slideOut.bind(null, 'plant');
-            scope.toggleArrows = SliderFactory.toggleSliderArrowsHandler();
+            scope.toggleArrows = SliderFactory.toggleSliderArrowsHandler('right');
             
             scope.changeView = function(view){
                 var viewObj = {
