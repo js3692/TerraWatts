@@ -726,7 +726,7 @@ describe('Play Route: ', function () {
           }).catch(done);
       });
 
-      it('should instantiate the game properly', function (done) {
+      xit('should instantiate the game properly', function (done) {
         purpleAgent
           .post('/api/grid')
           .send({

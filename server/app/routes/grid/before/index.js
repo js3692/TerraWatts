@@ -28,7 +28,7 @@ router.post('/join', function (req, res, next) {
 router.post('/leave', function (req, res, next) {
   req.grid.removePlayer(req.user)
     .then(function () {
-      if(req.grid.players.length > 1) res.sendStatus(201);
+      if(req.grid.players.length > 0) res.sendStatus(201);
       else return req.grid.remove().then(function () { 
         fbHelper.getConnection(req.grid.key).remove();
         res.sendStatus(201);
