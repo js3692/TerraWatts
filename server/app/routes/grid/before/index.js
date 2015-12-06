@@ -3,6 +3,8 @@ var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 var router = require('express').Router();
 
+var fbHelper = require('../../../../firebase');
+
 var Game = mongoose.model('Game');
 var Player = mongoose.model('Player');
 
@@ -28,7 +30,7 @@ router.post('/leave', function (req, res, next) {
     .then(function () {
       if(req.grid.players.length > 1) res.sendStatus(201);
       else return req.grid.remove().then(function () { 
-        console.log('hey')
+        fbHelper.getConnection(req.grid.key).remove();
         res.sendStatus(201);
       });
     })
