@@ -156,7 +156,7 @@ schema.methods.end = function (game) {
 
 schema.methods.transaction = function(update, game) {
   var self = this;
-	return Player.findById(update.player._id || update.player).populate('user')
+	return Player.findById(update.player._id || update.player).populate('user cities')
 		.then(function (player) {
 			
 			self.remainingPlayers = self.removePlayer(player);
@@ -231,6 +231,7 @@ schema.methods.transaction = function(update, game) {
 
 			} // end of 'bureaucracy'
 
+			delete player.resources.green;
 			player.markModified('resources');
 			return player.save();
 		})
