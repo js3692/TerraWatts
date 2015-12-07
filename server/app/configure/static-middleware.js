@@ -13,6 +13,7 @@ module.exports = function (app) {
     var browserPath = path.join(root, './browser');
     var plantPath = path.join(root, './symbols/plants');
     var resourcePath = path.join(root, './symbols/resources');
+    var fontPath = path.join(root, './server/app/views/Orbitron');
 
     app.use(favicon(app.getValue('faviconPath')));
     app.use(express.static(npmPath));
@@ -21,5 +22,6 @@ module.exports = function (app) {
     app.use(express.static(browserPath));
     app.use(express.static(plantPath));
     app.use(express.static(resourcePath));
+    app.use(express.static(fontPath));
 
 };
