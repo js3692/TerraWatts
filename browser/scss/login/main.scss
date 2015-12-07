@@ -1,9 +1,11 @@
 #login-main {
+	overflow: hidden;
 	color: #ddd;
 	background: #132330;
 	min-height: 100vh;
 	height: 100%;
 	width: 100%;
+
 	.login-container	{
 		position: absolute;
 		top: 50%;
@@ -27,5 +29,11 @@
 		a {
 			text-decoration: none;
 		}
+	}
+	.footer {
+		position: absolute;
+		bottom: 15px;
+		left: 50%;
+		transform: translateX(-50%);
 	}
 }

@@ -1,71 +1,127 @@
 #grid {
-  // -webkit-animation-delay: 0.5s;
-  // -moz-animation-delay: 0.5s;
-  // -ms-animation-delay: 0.5s;
   background: $main-background;
-  color: #ddd;
   min-height: 100vh;
   height: 100%;
   width: 100%;
-  padding-top: 60px;
 
-  .button-container {
-    width: 50vh ;
-    margin-left: auto ;
-    margin-right: auto ;
+  .container {
+    padding: 30px;
   }
 
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .left-column, .right-column {
+    height: calc(100vh - 60px);
+  }
+
+  .left-column {
+    background-color: #133020;
+    border: 1px solid white;
+    border-radius: 12px;
+    box-shadow: 0 0 24px #888888;
+    padding: 5px;
+    color: white;
+  }
+
+  .top-icons, .bottom-icons {
+    display: block;
+    margin: 0;
+    height: 15px;
+  }
+
+  .header {
+    text-align: center;
+    height: 70px;
+    h3 span:first-child {
+      margin-right: 30px;
+    }
+    h3 span:last-child {
+      margin-left: 30px;
+    }
+  }
+
+  .body {
+    width: 100%;
+    height: calc(100vh - 100px);
+    padding: 0 60px;
+  }
+
+  .color-picker {
+    tbody tr td {
+      border-top: none;
+      div:hover {
+        cursor: pointer;
+      }
+    }
+  }
   .color-square {
     width: 50px;
     height: 50px;
     display: block;
-    float: left;
-    margin-right: 10px;
-    margin-bottom: 10px;
-
-
-  }
-
-  ul {
-    li {
-        clear: both;
+    border-radius: 12px;
+    text-align: center;
+    span {
+      line-height: 50px;
+      font-size: 35px;
     }
   }
-  .table {
-    border-top: .15em solid $main-background;
-    width: 20%;
-    margin: 0 auto;
-    margin-top: 5%;
-    clear: both;
-  }
-  tr {
 
-    th, td {
-        text-align: center;
+  section {
+    margin-top: 5px;
+  }
+
+  .player-container {
+    color: black;
+    background-color: #ccba99;
+    border: 1px solid white;
+    border-radius: 12px;
+    height: 60px;
+    width: 100%;
+    padding: 5px;
+    position: relative;
+
+    .bottom-icons {
+      margin-top: 20px;
     }
-    
-    .button-container {
-        text-align: center;
+
+    .player-info {
+      position: absolute;
+      transform: translateY(-29%);
+      text-align: center;
+      margin: 0 14px;
+      display: block;
+      width: 90%;
+      h4 {
+        font-size: 1.5em;
+      }
+      span.glyphicon-flash {
+        color: white;
+      }
     }
-
   }
 
-  button {
-    margin-top: 10%;
+  .btn-group button {
+    border: none;
   }
-  .color-header {
-    text-align: left;
+
+  .cta-buttons {
+    margin-right: 60px;
+    bottom: 35px;
+    position: absolute;
   }
   
   chat {
-      .chat-body {
-          height: 80vh;
-          border: 1px solid black;
-          border-radius: 4px;
-          margin-bottom: 5px;
-          background-color: $main-background;
-          color: white;    
-      }
-      
+    .chat-body {
+      height: calc(100vh - 100px);
+      border: 1px solid black;
+      border-radius: 4px;
+      margin-bottom: 5px;
+      background-color: $main-background;
+      color: white;
+      overflow: scroll; 
+    }
   }
 }

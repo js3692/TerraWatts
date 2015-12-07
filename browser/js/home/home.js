@@ -15,7 +15,7 @@ app.config(function ($stateProvider) {
 });
 
 app.controller('HomeCtrl', function ($scope, $state, $uibModal, AuthService, Session, AppConstants, fromState, BeforeGameFactory, FirebaseFactory) {
-  if(fromState === "login" || fromState === "signup") angular.element("#home").addClass("fadeIn");
+  if(fromState === "login" || fromState === "signup" || fromState === "profile") angular.element("#home").addClass("fadeIn");
   else if (fromState === "grid") angular.element("#home").addClass("fadeInLeftBig");
 
   /* populates joinable game from backend, then uses live updates from firebase */
@@ -61,7 +61,11 @@ app.controller('HomeCtrl', function ($scope, $state, $uibModal, AuthService, Ses
   };
 
   $scope.openProfile = function () {
-    console.log('whatwhat')
+    angular.element("#home")
+      .addClass("fadeOut")
+      .one(AppConstants.animationEndEvent, function () {
+        $state.go('profile');
+      });
   };
 
   function openGameSettings() {
