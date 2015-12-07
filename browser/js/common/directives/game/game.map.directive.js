@@ -106,11 +106,10 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 			}
 			
 
-			// Game Watch
-			var rendered = false;
+			var mapRendered = false;
 			scope.$watch('grid.game', function(game) {
-				if(game && !rendered) {
-					rendered = true;
+				if(game && !mapRendered) {
+					mapRendered = true;
 					const revisedCities = game.cities.map(function(city) { return cityType(city); });
 					const revisedConnections = game.connections.map(function(connection) { return connectionType(connection); });
 					const revisedDistMarkers = game.connections.map(function(connection) { return connectionDistType(connection); });
@@ -137,7 +136,8 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 								.attr('height', cityHeight)
 								.attr('rx', 5)
 								.attr('ry', 5)
-								.attr('fill', 'black')
+								.attr('fill', '#132330')
+								.attr('opacity', 0.85)
 								.attr('id', function(d,i) { return 'cityBox' + i; });
 
 							var leftRect = d3.select(this)
@@ -149,7 +149,8 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 								.attr('ry', 2)
 								.attr('x', cityBoxBuffer)
 								.attr('y', cityBoxYOffset)
-								.attr('fill', 'white');
+								.attr('fill', 'white')
+								.attr('opacity', 0.95);
 
 							var midRect = d3.select(this)
 								.append('rect')
@@ -160,7 +161,8 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 								.attr('ry', 2)
 								.attr('x', 2*cityBoxBuffer + rectDimension)
 								.attr('y', cityBoxYOffset)
-								.attr('fill', 'white');
+								.attr('fill', 'white')
+								.attr('opacity', 0.95);
 
 							var rightRect = d3.select(this)
 								.append('rect')
@@ -171,14 +173,16 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 								.attr('ry', 2)
 								.attr('x', 3*cityBoxBuffer + 2*rectDimension)
 								.attr('y', cityBoxYOffset)
-								.attr('fill', 'white');
+								.attr('fill', 'white')
+								.attr('opacity', 0.95);
 
 							var cityText = d3.select(this)
 								.append('text')
 								.text(function(d) {return d.properties.name})
 								.attr("text-anchor", "middle")
-								.attr("font-family", "sans-serif")
+								.attr("font-family", "orbitron")
 								.attr("font-size", textFontSize)
+								.attr('word-spacing', '-.31em')
 								.attr("fill", "white")
 								.attr('x', cityWidth/2)
 								.attr('y', textYOffset);
@@ -303,6 +307,7 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 					connectionDistVector = connectionDistCollection.selectAll("path")
 						.data(revisedDistMarkers).enter()
 						.append('path')
+						// .attr('opacity', 0.9)
 						.attr('id', function(d,i) { return "path_" + i; });
 
 					distText = connectionDistCollection.selectAll('text')
@@ -311,8 +316,8 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 						.text(function(d) { return d.properties.distance; })
 						.attr("text-anchor", "middle")
 						.attr('alignment-baseline', 'middle')
-						.attr("font-family", "sans-serif")
-						.attr("fill", "white");
+						.attr("font-family", "orbitron")
+						.attr("fill", "white")
 
 					zoomed();
 
@@ -403,6 +408,8 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 
 		    	connectionDistVector
 		    		.attr('distance', function(d) { return d.properties.distance })
+		    		.attr('stroke', '#132330')
+					.attr('stroke-width', '1px')
 		    		.attr('d', distancePath)
 		    		.each(function(d,i) {
 		    			distCentroids[i] = distancePath.centroid(d);
