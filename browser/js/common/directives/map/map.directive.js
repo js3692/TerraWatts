@@ -6,7 +6,6 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 		scope: {
 			grid: '=',
 			cityCart: '='
-			// cityShoppingCart: '=ngModel'
 		},
 		link: function(scope, element, attrs) {
 
@@ -109,8 +108,7 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 
 			var mapRendered = false;
 			scope.$watch('grid.game', function(game) {
-				// if(game && !mapRendered) {
-				if(game) {
+				if(game && !mapRendered) {
 					mapRendered = true;
 					const revisedCities = game.cities.map(function(city) { return cityType(city); });
 					const revisedConnections = game.connections.map(function(connection) { return connectionType(connection); });
@@ -123,7 +121,6 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 						.append('g')
 						.on('click', function(d,i) {
 							CityCartFactory.toggle(d.properties);
-							// console.log('cart', CityCartFactory.getCart())
 						});
 
 					cityVector = cityGroups
@@ -131,8 +128,6 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 							d3.select(this)
 								.append('path')
 								.attr('id', function(d,i) { return 'cityPath' + i; });
-
-							console.log('this', this)
 
 							var cityBox = d3.select(this)
 								.append('rect')
@@ -333,24 +328,37 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 
 
 			scope.$watch('cityCart', function(cart) {
-				if(cart) {
-					console.log('cart', cart)
-
-					cart.forEach(function(city) {
-						var cityName = city.name.replace(/[\s.]/g, '');
-						console.log('cityName', cityName)
-
-						d3.select('#' + cityName)
-							.append('circle')
-							.attr('id', 'pulsingCity')
-							.attr('fill', '#132330')
-							.attr('r', 50)
-
-					})
-
-				} else {
-					console.log('inside else')
+				if(cart.length) {
 					d3.selectAll('#pulsingCity').remove();
+					var activePlayer = PlayGameFactory.getActivePlayer();
+					var me = PlayGameFactory.getMe();
+
+					if(activePlayer._id === me._id) {
+						cart.forEach(function(city) {
+							var cityName = city.name.replace(/[\s.]/g, '');
+
+							var pulsingCircle = d3.select('#' + cityName)
+								.insert('circle', 'rect')
+								.attr('id', 'pulsingCity')
+								.attr('stroke', '#132330')
+								.attr('stroke-width', 3)
+								.attr('r', 20)
+								.attr('cx', cityWidth/2)
+								.attr('cy', cityHeight/2)
+								.attr('opacity', 0.5);
+
+							(function pulse() {
+								pulsingCircle
+									.transition().duration(1500)
+									.attr('r', 50)
+									.ease('sine')
+									.transition().duration(1500)
+									.attr('r', 20)
+									.ease('sine')
+									.each('end', pulse);
+							})();
+						});
+					}
 				}
 
 			}, true);
@@ -360,8 +368,8 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 			// Player watch
 			scope.$watch('grid.players', function(players) {
 				if(players) {
+					d3.selectAll('#pulsingCity').remove();
 					var poppedCities = CityCartFactory.getPopulatedCities(players);
-					console.log('poppedCities', poppedCities)
 					poppedCities.forEach(function(city) {
 						var cityName = city.name.replace(/[\s.]/g, '');
 						for(var i = 0; i < city.players.length; i++) {
