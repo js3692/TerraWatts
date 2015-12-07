@@ -9,8 +9,9 @@
            plant="plant"
            rank="{{plant.rank}}">
     </plant>
-    <resource-bars data="getResourceMarket()" 
+    <resource-bars resource-market="getResourceMarket()" 
           resource-colors="resourceColors"
+          resource-wishlist="getResourceWishlist()"
           ng-hide="plantsTrueResourcesFalse"
           ng-click="buyResources()">
     </resource-bars>
