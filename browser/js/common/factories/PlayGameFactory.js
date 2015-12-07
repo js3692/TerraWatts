@@ -7,9 +7,9 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
         me,
         plantToBidOn,
         wishlist = {
+            coal: 0,
             oil: 0,
             trash: 0,
-            coal: 0,
             nuke: 0
         };    
 
@@ -115,11 +115,11 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     
     PGFactory.clearWishlist = function() {
         wishlist = {
+            coal: 0,
             oil: 0,
             trash: 0,
-            coal: 0,
             nuke: 0
-        };  
+        }; 
     }
 
     PGFactory.getMyPlants = function(){

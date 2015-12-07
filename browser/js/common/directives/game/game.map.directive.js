@@ -118,8 +118,7 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 					svg.call(zoom);
 
 					cityGroups = citiesCollection.selectAll('g')
-						.data(revisedCities)
-						.enter()
+						.data(revisedCities).enter()
 						.append('g')
 						.on('click', function(d,i) {
 							CityCartFactory.toggle(d.properties);
@@ -295,22 +294,19 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 						});
 
 					connectionVector = connectionCollection.selectAll('path')
-						.data(revisedConnections)
-						.enter()
+						.data(revisedConnections).enter()
 						.append('path')
 						.attr('id', function(d) { return d.properties.cityNames; })
 						.attr('fill', 'none')
 						.attr('stroke', 'grey');
 
 					connectionDistVector = connectionDistCollection.selectAll("path")
-						.data(revisedDistMarkers)
-						.enter()
+						.data(revisedDistMarkers).enter()
 						.append('path')
 						.attr('id', function(d,i) { return "path_" + i; });
 
 					distText = connectionDistCollection.selectAll('text')
-						.data(revisedDistMarkers)
-						.enter()
+						.data(revisedDistMarkers).enter()
 						.append('text')
 						.text(function(d) { return d.properties.distance; })
 						.attr("text-anchor", "middle")
