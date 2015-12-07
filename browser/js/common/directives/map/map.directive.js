@@ -1,11 +1,11 @@
-app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
+app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartFactory) {
 	return {
 		restrict: 'E',
 		replace: true,
 		template: '<div class="map"></div>',
 		scope: {
 			grid: '=',
-			cityShoppingCart: '=ngModel'
+			cityCart: '='
 		},
 		link: function(scope, element, attrs) {
 
@@ -73,11 +73,11 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 				textYOffset = cityWidth/8,
 				textFontSize = cityWidth/8,
 				leftTowerWidth = rectDimension*0.25,
-				leftTowerHeight = rectDimension*0.4,
+				leftTowerHeight = rectDimension*0.5,
 				midTowerWidth = rectDimension*0.3,
 				midTowerHeight = rectDimension*0.8,
 				rightTowerWidth = rectDimension*0.25,
-				rightTowerHeight = rectDimension*0.6;
+				rightTowerHeight = rectDimension*0.65;
 
 			function cityType(d) {
 				return {
@@ -106,11 +106,10 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 			}
 			
 
-			// Game Watch
-			var rendered = false;
+			var mapRendered = false;
 			scope.$watch('grid.game', function(game) {
-				if(game && !rendered) {
-					rendered = true;
+				if(game && !mapRendered) {
+					mapRendered = true;
 					const revisedCities = game.cities.map(function(city) { return cityType(city); });
 					const revisedConnections = game.connections.map(function(connection) { return connectionType(connection); });
 					const revisedDistMarkers = game.connections.map(function(connection) { return connectionDistType(connection); });
@@ -137,7 +136,8 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 								.attr('height', cityHeight)
 								.attr('rx', 5)
 								.attr('ry', 5)
-								.attr('fill', 'black')
+								.attr('fill', '#132330')
+								.attr('opacity', 0.85)
 								.attr('id', function(d,i) { return 'cityBox' + i; });
 
 							var leftRect = d3.select(this)
@@ -149,7 +149,8 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 								.attr('ry', 2)
 								.attr('x', cityBoxBuffer)
 								.attr('y', cityBoxYOffset)
-								.attr('fill', 'white');
+								.attr('fill', 'white')
+								.attr('opacity', 0.95);
 
 							var midRect = d3.select(this)
 								.append('rect')
@@ -160,7 +161,8 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 								.attr('ry', 2)
 								.attr('x', 2*cityBoxBuffer + rectDimension)
 								.attr('y', cityBoxYOffset)
-								.attr('fill', 'white');
+								.attr('fill', 'white')
+								.attr('opacity', 0.95);
 
 							var rightRect = d3.select(this)
 								.append('rect')
@@ -171,14 +173,16 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 								.attr('ry', 2)
 								.attr('x', 3*cityBoxBuffer + 2*rectDimension)
 								.attr('y', cityBoxYOffset)
-								.attr('fill', 'white');
+								.attr('fill', 'white')
+								.attr('opacity', 0.95);
 
 							var cityText = d3.select(this)
 								.append('text')
 								.text(function(d) {return d.properties.name})
 								.attr("text-anchor", "middle")
-								.attr("font-family", "sans-serif")
+								.attr("font-family", "orbitron")
 								.attr("font-size", textFontSize)
+								.attr('word-spacing', '-.31em')
 								.attr("fill", "white")
 								.attr('x', cityWidth/2)
 								.attr('y', textYOffset);
@@ -297,13 +301,15 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 						.data(revisedConnections).enter()
 						.append('path')
 						.attr('id', function(d) { return d.properties.cityNames; })
-						.attr('fill', 'none')
-						.attr('stroke', 'grey');
+						.attr('class', 'connectionLines')
+						.attr('fill', 'none');
 
 					connectionDistVector = connectionDistCollection.selectAll("path")
 						.data(revisedDistMarkers).enter()
 						.append('path')
+						// .attr('opacity', 0.9)
 						.attr('id', function(d,i) { return "path_" + i; });
+
 
 					distText = connectionDistCollection.selectAll('text')
 						.data(revisedDistMarkers).enter()
@@ -311,11 +317,48 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 						.text(function(d) { return d.properties.distance; })
 						.attr("text-anchor", "middle")
 						.attr('alignment-baseline', 'middle')
-						.attr("font-family", "sans-serif")
-						.attr("fill", "white");
+						.attr("font-family", "orbitron")
+						.attr("fill", "white")
 
 					zoomed();
 
+				}
+
+			}, true);
+
+
+			scope.$watch('cityCart', function(cart) {
+				if(cart.length) {
+					d3.selectAll('#pulsingCity').remove();
+					var activePlayer = PlayGameFactory.getActivePlayer();
+					var me = PlayGameFactory.getMe();
+
+					if(activePlayer._id === me._id) {
+						cart.forEach(function(city) {
+							var cityName = city.name.replace(/[\s.]/g, '');
+
+							var pulsingCircle = d3.select('#' + cityName)
+								.insert('circle', 'rect')
+								.attr('id', 'pulsingCity')
+								.attr('stroke', '#132330')
+								.attr('stroke-width', 3)
+								.attr('r', 20)
+								.attr('cx', cityWidth/2)
+								.attr('cy', cityHeight/2)
+								.attr('opacity', 0.5);
+
+							(function pulse() {
+								pulsingCircle
+									.transition().duration(1500)
+									.attr('r', 50)
+									.ease('sine')
+									.transition().duration(1500)
+									.attr('r', 20)
+									.ease('sine')
+									.each('end', pulse);
+							})();
+						});
+					}
 				}
 
 			}, true);
@@ -325,16 +368,17 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 			// Player watch
 			scope.$watch('grid.players', function(players) {
 				if(players) {
+					d3.selectAll('#pulsingCity').remove();
 					var poppedCities = CityCartFactory.getPopulatedCities(players);
 					poppedCities.forEach(function(city) {
-						var cityName = city.name.replace(/\s/g, '');
+						var cityName = city.name.replace(/[\s.]/g, '');
 						for(var i = 0; i < city.players.length; i++) {
 							d3.select('#' + cityName + ' #slot10Towers #leftTower')
 								.transition()
 								.duration(1000)
 								.attr('height', leftTowerHeight)
 								.attr('y', cityBoxYOffset + rectDimension - leftTowerHeight)
-								.style('fill', d3.rgb(city.players[i].color).darker(1));
+								.style('fill', d3.rgb(city.players[i].color).darker(0.6));
 
 							d3.select('#' + cityName + ' #slot10Towers #midTower')
 								.transition()
@@ -348,7 +392,7 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 								.duration(1000)
 								.attr('height', rightTowerHeight)
 								.attr('y', cityBoxYOffset + rectDimension - rightTowerHeight)
-								.style('fill', d3.rgb(city.players[i].color).darker(0.5));
+								.style('fill', d3.rgb(city.players[i].color).darker(0.3));
 						}
 					})
 
@@ -388,7 +432,7 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 		    	
 		    	cityVector
 		    		.attr('id', function(d) {
-		    			var cityName = d.properties.name.replace(/\s/g, '');
+		    			var cityName = d.properties.name.replace(/[\s.]/g, '');
 		    			return cityName;
 		    		})
 		    		.attr('region', function(d) { return d.properties.region })
@@ -399,10 +443,14 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 					});
 
 		    	connectionVector
+			  //   	.attr('stroke', '#132330')
+					// .attr('stroke-width', '1px')
 			    	.attr('d', connectionPath);
 
 		    	connectionDistVector
 		    		.attr('distance', function(d) { return d.properties.distance })
+		    		.attr('stroke', '#132330')
+					.attr('stroke-width', '1px')
 		    		.attr('d', distancePath)
 		    		.each(function(d,i) {
 		    			distCentroids[i] = distancePath.centroid(d);
@@ -423,6 +471,8 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 
 				image.enter().append("image")
 			    	.attr("xlink:href", function(d) {
+			    		// https://api.mapbox.com/v4/mapbox.comic.html?access_token=pk.eyJ1IjoibHVpc21hcnRpbnMiLCJhIjoiY2loZ2xsNnpwMG0xcnZia2x2Mnp3ZzYzMCJ9.huypgaYnUDo8wKLThRmyVQ#6/36.836/-99.294
+			    		// return "https://api.mapbox.com/v4/mapbox.comic/" + d[2] + "/" + d[0] + "/" + d[1] + ".png?access_token=pk.eyJ1IjoibHVpc21hcnRpbnMiLCJhIjoiY2loZ2xsNnpwMG0xcnZia2x2Mnp3ZzYzMCJ9.huypgaYnUDo8wKLThRmyVQ"; })
 			      		// return "http://" + ["a", "b", "c"][Math.random() * 3 | 0] + ".tile.openstreetmap.org/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
 				    	return "http://" + ["a", "b", "c", "d"][Math.random() * 4 | 0] + ".tiles.mapbox.com/v3/mapbox.natural-earth-1/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
 			    	.attr("width", 1)

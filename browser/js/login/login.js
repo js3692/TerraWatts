@@ -1,7 +1,7 @@
 app.config(function ($stateProvider) {
 
     $stateProvider.state('login', {
-        url: '/',
+        url: '/login',
         templateUrl: 'js/login/login.html',
         controller: 'LoginCtrl',
         resolve: {

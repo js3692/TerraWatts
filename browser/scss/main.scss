@@ -34,6 +34,7 @@ body {
 @import 'directives/plantAction';
 @import 'directives/actionPanels';
 @import 'directives/graphs/barGraph';
+@import 'directives/map';
 @import 'home/main';
 @import 'about/main';
 @import 'profile/main';
@@ -41,5 +42,5 @@ body {
 @import 'login/main';
 @import 'signup/main';
 @import 'settings/main';
-@import 'game/main';
 @import 'grid/main';
+@import 'splash/main';

@@ -6,7 +6,7 @@ var masterRestockRates = require('../0_basic_rules/restock');
 var determineTurnOrder =	require('../0_basic_rules/turnOrder');
 
 
-module.exports = function endTurn(game) {
+module.exports = function endTurn(game, state) {
 	var maxCities = game.turnOrder.reduce(function (prev, curr) {
 		return Math.max(prev, curr.cities.length);
 	}, 0);
@@ -27,7 +27,7 @@ module.exports = function endTurn(game) {
 	if (game.step === 1 && maxCities >= stepTwo[game.turnOrder.length]) {
 		game.step = 2;
 		game.discardedPlants.push(game.plantMarket.shift());
-		game = drawPlant(game);
+		game = drawPlant(game, state);
 	}
 
 	// restock resources
@@ -43,7 +43,7 @@ module.exports = function endTurn(game) {
 	} else {
 		game.stepThreePlants.push(game.plantMarket.pop());
 	}
-	game = drawPlant(game);
+	game = drawPlant(game, state);
 	game.turn++;
 	game.turnOrder = determineTurnOrder(game.turnOrder);
 }

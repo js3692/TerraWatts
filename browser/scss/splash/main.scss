@@ -1,0 +1,26 @@
+#splash-background {
+	width: 100%;
+	z-index: 0;
+}
+
+#terrawatts-title {
+	position: absolute;
+	top: 10%;
+	left: 20%;
+	font-size: 80px;
+	z-index: 1;
+}
+
+.button-wrapper {
+	text-align: center;
+	z-index: 1;
+}
+
+#enter {
+	position: absolute;
+	width: 120px;
+	height: 70px;
+	top: 30%;
+	left: 25%;
+	font-size: 25px;
+}
