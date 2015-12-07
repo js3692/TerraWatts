@@ -21,7 +21,7 @@ router.param('gridId', function(req, res, next, gridId) {
   var fieldsToDeepPopulate = ['players.user', 'players.cities', 'players.plants',
   'game.cities', 'game.connections.cities', 'game.plantMarket', 'game.plantDeck',
   'game.discardedPlants', 'game.stepThreePlants', 'game.turnOrder.user',
-  'game.turnOrder.plants', 'state.auction.activePlayer', 'state.auction.plant'];
+  'game.turnOrder.plants', 'state.auction.activePlayer', 'state.auction.plant', 'state.auction.choice'];
 
   Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
     .then(function(deepPopulatedGrid){

@@ -12,7 +12,7 @@ app.directive('resourceAction', function(PlayGameFactory){
                         if(plant.resourceType === 'hybrid') {
                             resourceList.push('coal');
                             resourceList.push('oil');
-                        } else resourceList.push(plant.resourceType);
+                        } else if(plant.resourceType !== 'green') resourceList.push(plant.resourceType);
                         return resourceList;
                     }, []), resource => resource);
             }

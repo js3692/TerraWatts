@@ -1,5 +1,4 @@
 player {
-    
     .glyphicon-container {
         float: right;
         margin-left: 5px;
@@ -42,7 +41,9 @@ player {
         color: black;
         font-weight: 400;
         font-size: 10px;
-        text-align: left;    
+        text-align: left; 
+        margin-top: 2px;
+        font-family: 'Orbitron';
     }
     
     .player-top-row {

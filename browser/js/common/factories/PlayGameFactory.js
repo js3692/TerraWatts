@@ -1,6 +1,6 @@
 app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     var baseUrl = '/api/play/continue/',
-        chooseUrl = '/api/play/choose',
+        chooseUrl = '/api/play/choose/',
         user,
         gridId,
         gridKey,
@@ -27,6 +27,7 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
         return $http.post(baseUrl + gridId, update)
             .then(toData);
     };  
+    
     
     PGFactory.choose = function(update){
         return $http.post(chooseUrl + gridId, update)
@@ -112,6 +113,20 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     PGFactory.iAmActiveAuctionPlayer = function(){
         var auction = PGFactory.getAuction();
         if(auction) return auction.activePlayer._id === PGFactory.getMe()._id;
+    }
+    
+    PGFactory.iAmActiveDiscarder = function(){
+        var auction = PGFactory.getAuction();
+        console.log('in active discarder', auction)
+        if(auction && auction.choice) {
+            console.log(auction.choice.player._id === PGFactory.getMe()._id, auction.choice.player, PGFactory.getMe(), 'player id and get me id'); 
+            return auction.choice.player._id === PGFactory.getMe()._id; 
+        }
+    }
+    
+    PGFactory.getActiveDiscarder = function(){
+        var auction = PGFactory.getAuction();
+        if(auction) return auction.choice.player;
     }
     
     PGFactory.getAuction = function(){

@@ -1,10 +1,13 @@
-app.directive('plantDiscardAction', function(PlayGameFactory){
+app.directive('discardPlantAction', function(PlayGameFactory){
     return {
         restrict: 'E',
-        templateUrl: 'js/common/directives/plantDiscardAction/plantDiscardAction.html',
+        templateUrl: 'js/common/directives/discardPlantAction/discardPlantAction.html',
         link: function(scope, elem, attrs){
             scope.getMyPlants = PlayGameFactory.getMyPlants;
             var plantToDiscard, index;
+            
+            scope.iAmActiveDiscarder = PlayGameFactory.iAmActiveDiscarder;
+            scope.getActiveDiscarder = PlayGameFactory.getActiveDiscarder;
             
             scope.isPlantToDiscard = function(plant){
                 return plant === plantToDiscard;
@@ -18,6 +21,10 @@ app.directive('plantDiscardAction', function(PlayGameFactory){
             scope.unsetAsPlantToDiscard = function(plant, _index){
                 plantToDiscard = null;
                 index = null;
+            }
+            
+            scope.plantHasBeenChosen = function(){
+                return Boolean(plantToDiscard);
             }
             
             scope.choosePlantToDiscard = function(){

@@ -93,8 +93,10 @@ bureaucracy-action {
 }
 
 discard-plant-action {
-    .discard-plant {
-        transform: translateY(-50px);
+    .slide-down {
+        img{
+            transform: translateY(20px);
+        }
     } 
 }
 
