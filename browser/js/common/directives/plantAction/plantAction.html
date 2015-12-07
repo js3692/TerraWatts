@@ -1,8 +1,5 @@
-<div class="plant-action-container" ng-switch on="showWaitingMessage()">
-    <div class="waiting-container" ng-switch-when="true">
-        <h2>Waiting on {{ getActivePlayer().user.username }} to pick a plant...</h2>
-    </div>
-    <div class="row" ng-switch-when="false">
+<div class="plant-action-container">
+    <div class="row">
         <div class="col-lg-4">
             <div ng-if="getPlantToBidOn() || auction">
                 <div ng-show="auction" class="auction-text">

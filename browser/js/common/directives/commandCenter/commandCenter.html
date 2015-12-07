@@ -1,0 +1,12 @@
+<div>
+    <div class="glyphicon glyphicon-cd top-right-cd"></div>
+    <div class="glyphicon glyphicon-cd top-left-cd"></div>
+    <div class="command-text">
+        <div class="phase-text">
+            PHASE: {{ getGamePhase() }}
+        </div>
+        <div class="waiting-on-text" ng-show="getWaitingOnPlayer()">
+            Waiting on {{ getWaitingOnPlayer() }}...
+        </div>
+    </div>
+</div>

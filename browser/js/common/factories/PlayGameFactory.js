@@ -100,7 +100,7 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     
     PGFactory.getGamePhase = function(){
         if(grid && grid.state) {
-            if(grid.state.auction && grid.state.auction.choice) return "plant-discard";
+            if(grid.state.auction && grid.state.auction.choice) return "plantDiscard";
             else return grid.state.phase;
         }
     };
@@ -115,11 +115,22 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
         if(auction) return auction.activePlayer._id === PGFactory.getMe()._id;
     }
     
+    PGFactory.getWaitingOnPlayer = function(){
+        if(PGFactory.iAmActiveAuctionPlayer() || PGFactory.iAmActiveDiscarder()) return null;
+        if(PGFactory.iAmActivePlayer() && !PGFactory.getAuction()) return null;
+        var auction = PGFactory.getAuction();
+        
+        if(auction) {
+            if(auction.choice) return auction.choice.player.user.username;
+            else return auction.activePlayer.user.username;
+        } else {
+            return PGFactory.getActivePlayer().user.username;
+        }
+    }
+    
     PGFactory.iAmActiveDiscarder = function(){
         var auction = PGFactory.getAuction();
-        console.log('in active discarder', auction)
-        if(auction && auction.choice) {
-            console.log(auction.choice.player._id === PGFactory.getMe()._id, auction.choice.player, PGFactory.getMe(), 'player id and get me id'); 
+        if(auction && auction.choice) { 
             return auction.choice.player._id === PGFactory.getMe()._id; 
         }
     }
@@ -140,6 +151,8 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     PGFactory.getWishlist = function(){
         return wishlist;
     }
+    
+    
     
     PGFactory.getResourcesToUseForHybrids = function(){
         return resourcesForHybrids;

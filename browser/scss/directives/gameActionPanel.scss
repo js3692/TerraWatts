@@ -2,7 +2,7 @@
 
 game-action-panel {
     $game-action-box-bottom: 200px;
-    $game-action-box-left: 200px;
+    $game-action-box-left: 0px;
     $game-action-panel-width: 700px;
     $game-action-panel-height: 200px;   
         
@@ -34,7 +34,7 @@ game-action-panel {
     .menu-panel-body {
         height: $game-action-panel-height;
         width: $game-action-panel-width;
-        border-radius: 5px 5px 0 0;
+        border-radius: 0 5px 0 0;
         border-width: 0;
     }
     

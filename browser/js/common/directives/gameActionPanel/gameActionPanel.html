@@ -5,8 +5,9 @@
             panel-default
             game-action-slider
             game-action-slider-pull">
+    <command-center></command-center>
     <plant-action ng-switch-when="plant" plant="getPlantToBidOn()"></plant-action>
-    <discard-plant-action ng-switch-when="plant-discard"></discard-plant-action>
+    <discard-plant-action ng-switch-when="plantDiscard"></discard-plant-action>
     <resource-action ng-switch-when="resource"></resource-action>
     <city-action ng-switch-when="city"></city-action>
     <bureaucracy-action ng-switch-when="bureaucracy"></bureaucracy-action>
