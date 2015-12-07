@@ -1,4 +1,4 @@
-app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
+app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartFactory) {
 	return {
 		restrict: 'E',
 		replace: true,
@@ -108,7 +108,8 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 
 			var mapRendered = false;
 			scope.$watch('grid.game', function(game) {
-				if(game && !mapRendered) {
+				// if(game && !mapRendered) {
+				if(game) {
 					mapRendered = true;
 					const revisedCities = game.cities.map(function(city) { return cityType(city); });
 					const revisedConnections = game.connections.map(function(connection) { return connectionType(connection); });
@@ -301,14 +302,17 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 						.data(revisedConnections).enter()
 						.append('path')
 						.attr('id', function(d) { return d.properties.cityNames; })
-						.attr('fill', 'none')
-						.attr('stroke', 'grey');
+						.attr('class', 'connectionLines')
+						.attr('fill', 'none');
+
+					// MapFactory.drawConnections(revisedConnections, connectionCollection);
 
 					connectionDistVector = connectionDistCollection.selectAll("path")
 						.data(revisedDistMarkers).enter()
 						.append('path')
 						// .attr('opacity', 0.9)
 						.attr('id', function(d,i) { return "path_" + i; });
+
 
 					distText = connectionDistCollection.selectAll('text')
 						.data(revisedDistMarkers).enter()
