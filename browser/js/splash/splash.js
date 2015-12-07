@@ -22,7 +22,7 @@ app.controller('SplashCtrl', function ($scope) {
 	$scope.imageInfo = imagesHolder[Math.floor(Math.random()*imagesHolder.length)];
 
 	$scope.getImageUrl = function() {
-		return 'images/' + $scope.imageInfo.imageUrl + '.jpg';
+		return $scope.imageInfo.imageUrl + '.jpg';
 	}
 
 });
