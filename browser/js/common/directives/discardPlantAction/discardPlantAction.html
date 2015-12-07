@@ -4,7 +4,8 @@
         <plant ng-class="{ 'slide-down' : isPlantToDiscard() }"
                rank="{{ plant.rank }}"
                ng-repeat="plant in getMyPlants()"
-               ng-click="isPlantToDiscard(plant) ? unsetAsPlantToDiscard(plant) : setAsPlantToDiscard(plant)"></plant>
+               ng-click="isPlantToDiscard(plant) ? unsetAsPlantToDiscard(plant, $index) : setAsPlantToDiscard(plant, $index)"
+               ng-class="{'discard-plant': isPlantToDiscard(plant)}"></plant>
         <button class="btn btn-lg">Submit</button>
     </div>
 </div>

@@ -1,5 +1,6 @@
 app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     var baseUrl = '/api/play/continue/',
+        chooseUrl = '/api/play/choose',
         user,
         gridId,
         gridKey,
@@ -26,6 +27,11 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
         return $http.post(baseUrl + gridId, update)
             .then(toData);
     };  
+    
+    PGFactory.choose = function(update){
+        return $http.post(chooseUrl + gridId, update)
+            .then(toData);
+    }
     
     PGFactory.setGridId = function(_gridId){
         gridId = _gridId;
@@ -92,7 +98,10 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     };
     
     PGFactory.getGamePhase = function(){
-        if(grid && grid.state) return grid.state.phase;
+        if(grid && grid.state) {
+            if(grid.state.auction && grid.state.auction.choice) return "plant-discard";
+            else return grid.state.phase;
+        }
     };
     
     PGFactory.iAmActivePlayer = function(){

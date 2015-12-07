@@ -30,6 +30,7 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
                 };
                 PlayGameFactory.continue(update);
                 PlayGameFactory.clearResourcesToUseForHybrids();
+                scope.madeChoice = true;
             }
             
             scope.powerPlants = function(){
@@ -66,11 +67,9 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
             }
             
             function showHybridChoice() {
-                console.log(iHaveBothOilAndCoal(), 'i have both oil and coal')
                 if(!iHaveBothOilAndCoal()) return false;
                 var myPlants = PlayGameFactory.getMyPlants();
                 for(var i = 0; i < myPlants.length; i++){
-                    console.log(myPlants[i].resourceType, 'plant resource type')
                     if(myPlants[i].resourceType === 'hybrid') return true;    
                 }
                 return false;
@@ -78,7 +77,7 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
             
             
             scope.getNumberOfCitiesPowered = function(){
-                var capacity = scope.getMyPlants()
+                var capacity = scope.plantCart
                     .reduce((total, plant) => {
                         return total += plant.capacity;
                     }, 0);

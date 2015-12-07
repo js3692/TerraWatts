@@ -1,6 +1,7 @@
 resource-action,
 city-action,
-bureaucracy-action {
+bureaucracy-action, 
+discard-plant-action, {
     font-weight: 100;
     color: white;
     .waiting-container {
@@ -90,3 +91,10 @@ bureaucracy-action {
         }
     }
 }
+
+discard-plant-action {
+    .discard-plant {
+        transform: translateY(-50px);
+    } 
+}
+
