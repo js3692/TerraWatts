@@ -1,11 +1,11 @@
-app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
+app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartFactory) {
 	return {
 		restrict: 'E',
 		replace: true,
 		template: '<div class="map"></div>',
 		scope: {
 			grid: '=',
-			cityShoppingCart: '=ngModel'
+			cityCart: '='
 		},
 		link: function(scope, element, attrs) {
 
@@ -73,11 +73,11 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 				textYOffset = cityWidth/8,
 				textFontSize = cityWidth/8,
 				leftTowerWidth = rectDimension*0.25,
-				leftTowerHeight = rectDimension*0.4,
+				leftTowerHeight = rectDimension*0.5,
 				midTowerWidth = rectDimension*0.3,
 				midTowerHeight = rectDimension*0.8,
 				rightTowerWidth = rectDimension*0.25,
-				rightTowerHeight = rectDimension*0.6;
+				rightTowerHeight = rectDimension*0.65;
 
 			function cityType(d) {
 				return {
@@ -301,14 +301,15 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 						.data(revisedConnections).enter()
 						.append('path')
 						.attr('id', function(d) { return d.properties.cityNames; })
-						.attr('fill', 'none')
-						.attr('stroke', 'grey');
+						.attr('class', 'connectionLines')
+						.attr('fill', 'none');
 
 					connectionDistVector = connectionDistCollection.selectAll("path")
 						.data(revisedDistMarkers).enter()
 						.append('path')
 						// .attr('opacity', 0.9)
 						.attr('id', function(d,i) { return "path_" + i; });
+
 
 					distText = connectionDistCollection.selectAll('text')
 						.data(revisedDistMarkers).enter()
@@ -326,20 +327,58 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 			}, true);
 
 
+			scope.$watch('cityCart', function(cart) {
+				if(cart.length) {
+					d3.selectAll('#pulsingCity').remove();
+					var activePlayer = PlayGameFactory.getActivePlayer();
+					var me = PlayGameFactory.getMe();
+
+					if(activePlayer._id === me._id) {
+						cart.forEach(function(city) {
+							var cityName = city.name.replace(/[\s.]/g, '');
+
+							var pulsingCircle = d3.select('#' + cityName)
+								.insert('circle', 'rect')
+								.attr('id', 'pulsingCity')
+								.attr('stroke', '#132330')
+								.attr('stroke-width', 3)
+								.attr('r', 20)
+								.attr('cx', cityWidth/2)
+								.attr('cy', cityHeight/2)
+								.attr('opacity', 0.5);
+
+							(function pulse() {
+								pulsingCircle
+									.transition().duration(1500)
+									.attr('r', 50)
+									.ease('sine')
+									.transition().duration(1500)
+									.attr('r', 20)
+									.ease('sine')
+									.each('end', pulse);
+							})();
+						});
+					}
+				}
+
+			}, true);
+
+
 
 			// Player watch
 			scope.$watch('grid.players', function(players) {
 				if(players) {
+					d3.selectAll('#pulsingCity').remove();
 					var poppedCities = CityCartFactory.getPopulatedCities(players);
 					poppedCities.forEach(function(city) {
-						var cityName = city.name.replace(/\s/g, '');
+						var cityName = city.name.replace(/[\s.]/g, '');
 						for(var i = 0; i < city.players.length; i++) {
 							d3.select('#' + cityName + ' #slot10Towers #leftTower')
 								.transition()
 								.duration(1000)
 								.attr('height', leftTowerHeight)
 								.attr('y', cityBoxYOffset + rectDimension - leftTowerHeight)
-								.style('fill', d3.rgb(city.players[i].color).darker(1));
+								.style('fill', d3.rgb(city.players[i].color).darker(0.6));
 
 							d3.select('#' + cityName + ' #slot10Towers #midTower')
 								.transition()
@@ -353,7 +392,7 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 								.duration(1000)
 								.attr('height', rightTowerHeight)
 								.attr('y', cityBoxYOffset + rectDimension - rightTowerHeight)
-								.style('fill', d3.rgb(city.players[i].color).darker(0.5));
+								.style('fill', d3.rgb(city.players[i].color).darker(0.3));
 						}
 					})
 
@@ -393,7 +432,7 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 		    	
 		    	cityVector
 		    		.attr('id', function(d) {
-		    			var cityName = d.properties.name.replace(/\s/g, '');
+		    			var cityName = d.properties.name.replace(/[\s.]/g, '');
 		    			return cityName;
 		    		})
 		    		.attr('region', function(d) { return d.properties.region })
@@ -430,8 +469,10 @@ app.directive('gameMap', function($parse, PlayGameFactory, CityCartFactory) {
 
 				image.enter().append("image")
 			    	.attr("xlink:href", function(d) {
+			    		// https://api.mapbox.com/v4/mapbox.comic.html?access_token=pk.eyJ1IjoibHVpc21hcnRpbnMiLCJhIjoiY2loZ2xsNnpwMG0xcnZia2x2Mnp3ZzYzMCJ9.huypgaYnUDo8wKLThRmyVQ#6/36.836/-99.294
+			    		return "https://api.mapbox.com/v4/mapbox.comic/" + d[2] + "/" + d[0] + "/" + d[1] + ".png?access_token=pk.eyJ1IjoibHVpc21hcnRpbnMiLCJhIjoiY2loZ2xsNnpwMG0xcnZia2x2Mnp3ZzYzMCJ9.huypgaYnUDo8wKLThRmyVQ"; })
 			      		// return "http://" + ["a", "b", "c"][Math.random() * 3 | 0] + ".tile.openstreetmap.org/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
-				    	return "http://" + ["a", "b", "c", "d"][Math.random() * 4 | 0] + ".tiles.mapbox.com/v3/mapbox.natural-earth-1/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
+				    	// return "http://" + ["a", "b", "c", "d"][Math.random() * 4 | 0] + ".tiles.mapbox.com/v3/mapbox.natural-earth-1/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
 			    	.attr("width", 1)
 			    	.attr("height", 1)
 			    	.attr("x", function(d) { return d[0]; })
