@@ -1,88 +1,108 @@
 #grid {
   background: $main-background;
-  color: #dfdfdf;
   min-height: 100vh;
   height: 100%;
   width: 100%;
-  padding-top: 30px;
 
-  .col-xs-6 {
-    height: inherit;
-  }
-  .button-container {
-    // width: 50vh;
-    // margin-left: auto;
-    // margin-right: auto;
+  .container {
+    padding: 30px;
   }
 
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .left-column, .right-column {
+    height: calc(100vh - 60px);
+  }
+
+  .left-column {
+    background-color: #133020;
+    border: 1px solid white;
+    border-radius: 12px;
+    box-shadow: 0 0 24px #888888;
+    padding: 5px;
+    color: white;
+  }
+
+  .top-icons, .bottom-icons {
+    display: block;
+    margin: 0;
+    height: 15px;
+  }
+
+  .header {
+    text-align: center;
+    height: 70px;
+    h3 span:first-child {
+      margin-right: 30px;
+    }
+    h3 span:last-child {
+      margin-left: 30px;
+    }
+  }
+
+  .body {
+    width: 100%;
+    height: calc(100vh - 100px);
+    padding: 0 60px;
+  }
+
+  .color-picker {
+    tbody tr td {
+      border-top: none;
+      div:hover {
+        cursor: pointer;
+      }
+    }
+  }
   .color-square {
     width: 50px;
     height: 50px;
     display: block;
-    float: left;
     border-radius: 12px;
+    text-align: center;
     span {
       line-height: 50px;
       font-size: 35px;
     }
   }
 
-  ul {
-    li {
-      clear: both;
-    }
-  }
-
-  .table {
-    border-top: .15em solid $main-background;
-    width: 20%;
-    margin: 0 auto;
-    margin-top: 5%;
-    clear: both;
+  section {
+    margin-top: 5px;
   }
 
   .player-container {
-    margin: 0 auto;
+    color: black;
+    background-color: #ccba99;
     border: 1px solid white;
     border-radius: 12px;
-    box-shadow: 0 0 24px #888888;
-    height: 100px;
-    width: 75%;
+    height: 90px;
+    width: 100%;
     padding: 5px;
-    .top-icons, .bottom-icons {
-      display: block;
-      margin: 0;
-      height: 15px;
-    }
+
     .player-info {
-      display: table-cell;
-      vertical-align: middle;
-      width: inherit;
-      height: 58px;
-      padding-left: 30px;
-      h2 {
-        text-align: right;
-        margin-top: 5px;
-        margin-bottom: 0;
+      text-align: center;
+      margin: 0 14px;
+      display: block;
+      h4 {
+        font-size: 1.5em;
+      }
+      span.glyphicon-flash {
+        color: white;
       }
     }
   }
 
-  tr {
-    th, td {
-      text-align: center;
-    }
-    .button-container {
-      text-align: center;
-    }
+  .btn-group button {
+    border: none;
   }
 
-  button {
-    margin-top: 10%;
-  }
-
-  .color-header {
-    text-align: left;
+  .cta-buttons {
+    margin-right: 60px;
+    bottom: 35px;
+    position: absolute;
   }
   
   chat {

@@ -1,59 +1,75 @@
 <div id="grid" class="animated fadeInRightBig">
-  <div class="container" style="height: 100%;">
-    <div class="row" style="min-height: 100vh; height: 100%">
-      <div class="col-xs-6">
-        <div class="row" style="text-align: center;">
-          <h1><span class="flag-icon flag-icon-us"></span>{{ grid.name }}</h1>
-          <hr>
-          <table class="table color-squares">
-            <tbody>
-              <tr>
-                <td ng-repeat="color in colors"><div class="color-square" ng-style="{ background: color, opacity: colorPicked(color) }" ng-click="!colorPicked(color) && changeColor(color)"><span class="glyphicon glyphicon-flash"></span>
-                </div></td>
-              </tr>
-            </tbody>
-          </table>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-6 left-column">
+        <div class="row top-icons">
+          <span class="glyphicon glyphicon-cd pull-left"></span>
+          <span class="glyphicon glyphicon-cd pull-right"></span>
+        </div>
+<!--         <div class="row header">
+          <h3><span class="flag-icon flag-icon-us"></span>{{ grid.name }}<span class="flag-icon flag-icon-us"></span></h3>
+        </div> -->
+        <div class="row body">
+          <div class="row">
+            <table class="table color-picker">
+              <tbody>
+                <tr>
+                  <td ng-repeat="color in colors">
+                    <div class="color-square" ng-style="{ background: color, opacity: colorPicked(color) }" ng-click="!colorPicked(color) && changeColor(color)">
+                      <span class="glyphicon glyphicon-flash" ng-hide="!!colorPicked(color)"></span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          
-          <section ng-repeat="player in grid.players">
-            <div class="player-container">
-              <div class="row top-icons">
-                <span class="glyphicon glyphicon-cd pull-left"></span>
-                <span class="glyphicon glyphicon-cd pull-right"></span>
-              </div> 
-              <div class="row player-info">
-                <div ng-style="{ background: player.color }" class="color-square"><span class="glyphicon glyphicon-flash"></span></div>
-                <h2>{{ player.user.username }} <span class="glyphicon glyphicon-wrench"></span></h2>
+          <div class="row">
+            <section ng-repeat="player in grid.players">
+              <div class="player-container">
+                <div class="row top-icons">
+                  <span class="glyphicon glyphicon-cd pull-left"></span>
+                  <span class="glyphicon glyphicon-cd pull-right"></span>
+                </div> 
+                <div class="row player-info">
+                  <div class="col-xs-3">
+                    <div ng-style="{ background: player.color }" class="color-square"><span class="glyphicon glyphicon-flash"></span></div>
+                  </div>
+                  <div class="col-xs-9">
+                    <h4>{{ player.user.username }} <span class="glyphicon glyphicon-wrench"></span></h4>
+                  </div>
+                </div>
+                <div class="row bottom-icons">
+                  <span class="glyphicon glyphicon-cd pull-left"></span>
+                  <span class="glyphicon glyphicon-cd pull-right"></span>
+                </div>
               </div>
-              <div class="row bottom-icons">
-                <span class="glyphicon glyphicon-cd pull-left"></span>
-                <span class="glyphicon glyphicon-cd pull-right"></span>
+            </section>
+          </div>
+
+          <div class="row cta-buttons">
+            <div class="btn-group btn-group-justified" role="group">
+              <div class="btn-group">
+                <button type="button" class="btn btn-success" ng-click="leaveGame()"><span class="glyphicon glyphicon-arrow-left"></span> Leave</button>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-info" ng-click="goHome()"><span class="glyphicon glyphicon-home"></span> Home</button>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-success" ng-click="startGame()">Start <span class="glyphicon glyphicon-arrow-right" ></span></button>
               </div>
             </div>
-          </section>
-
-
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Players</th>
-                <th class="color-header">Color</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="player in grid.players">
-                <td> {{player.user.username}} <span class="glyphicon glyphicon-wrench"></span></td>
-                <td> <div ng-style="{ background: player.color }" class="color-square"></div> </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="button-container"> 
-            <button class="btn btn-lg btn-primary" ng-click="startGame()">Start Game</button>
-            <button class="btn btn-lg btn-danger" ng-click="leaveGame()">Leave Game <span class="glyphicon glyphicon-share-alt" ></span></button>
           </div>
         </div>
+
+        <div class="row bottom-icons">
+          <span class="glyphicon glyphicon-cd pull-left"></span>
+          <span class="glyphicon glyphicon-cd pull-right"></span>
+        </div>
+
       </div>
-      <div class="col-xs-6">
+
+      <div class="col-xs-6 right-column">
         <div class="row top-row">
           
         </div>
@@ -61,6 +77,7 @@
           <chat key="key" me="me.username"></chat>
         </div>
       </div>
-  </div>
+
+    </div>
   </div>
 </div>

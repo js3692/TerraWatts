@@ -32,6 +32,10 @@ app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, Firebase
 		BeforeGameFactory.start($scope.grid.id, $scope.grid.players);
 	};
 
+  $scope.goHome = function() {
+    $state.go('home');
+  }
+
 	$scope.leaveGame = function() {
     angular.element("#grid")
       .addClass("fadeOutRightBig")
