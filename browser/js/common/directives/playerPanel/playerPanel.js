@@ -8,7 +8,7 @@ app.directive('playerPanel', function(SliderFactory, PlayGameFactory){
             
             scope.getTurnOrder = PlayGameFactory.getTurnOrder;
             scope.open = SliderFactory.slideOut.bind(null, 'right');
-            scope.toggleArrows = scope.toggleArrows = SliderFactory.toggleSliderArrowsHandler('left');
+            scope.toggleArrows = scope.toggleArrows = SliderFactory.toggleSliderArrowsHandler('right');
         }
     };
 });

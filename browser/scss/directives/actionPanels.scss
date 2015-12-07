@@ -31,7 +31,9 @@ resource-action, city-action, bureaucracy-action {
     
     
     button.btn.btn-lg,
-    button.btn.btn-lg:hover {
+    button.btn.btn-lg:hover,
+    button.btn,
+    button.btn:hover {
         color: white;
         font-weight: 100;
         background-color: $main-background;
@@ -67,10 +69,10 @@ bureaucracy-action {
     .bureaucracy-stats {
         text-align: center;
     }
-    
     .btn-col {
-        .btn-group {
-            margin-top: 30px;
+        text-align: center;
+        button.btn {
+            margin: 70px 0 0 0;
         }
     }
     
@@ -80,6 +82,7 @@ bureaucracy-action {
         padding-top: 10px;
         table {
             margin-bottom: 0;
+            .btn-group {}
         }
         td {
             text-align: left;
