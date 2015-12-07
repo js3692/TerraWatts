@@ -373,21 +373,21 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 					poppedCities.forEach(function(city) {
 						var cityName = city.name.replace(/[\s.]/g, '');
 						for(var i = 0; i < city.players.length; i++) {
-							d3.select('#' + cityName + ' #slot10Towers #leftTower')
+							d3.select('#' + cityName + ' #slot' + (10+(i*5)) + 'Towers #leftTower')
 								.transition()
 								.duration(1000)
 								.attr('height', leftTowerHeight)
 								.attr('y', cityBoxYOffset + rectDimension - leftTowerHeight)
 								.style('fill', d3.rgb(city.players[i].color).darker(0.6));
 
-							d3.select('#' + cityName + ' #slot10Towers #midTower')
+							d3.select('#' + cityName + ' #slot' + (10+(i*5)) + 'Towers #midTower')
 								.transition()
 								.duration(1000)
 								.attr('height', midTowerHeight)
 								.attr('y', cityBoxYOffset + rectDimension - midTowerHeight)
 								.attr('fill', city.players[i].color);
 
-							d3.select('#' + cityName + ' #slot10Towers #rightTower')
+							d3.select('#' + cityName + ' #slot' + (10+(i*5)) + 'Towers #rightTower')
 								.transition()
 								.duration(1000)
 								.attr('height', rightTowerHeight)
