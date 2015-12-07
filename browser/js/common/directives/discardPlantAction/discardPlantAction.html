@@ -1,0 +1,10 @@
+<div class="discard-plant-action-container">
+    <div>
+        <h3>Choose a plant to discard</h3>
+        <plant ng-class="{ 'slide-down' : isPlantToDiscard() }"
+               rank="{{ plant.rank }}"
+               ng-repeat="plant in getMyPlants()"
+               ng-click="isPlantToDiscard(plant) ? unsetAsPlantToDiscard(plant) : setAsPlantToDiscard(plant)"></plant>
+        <button class="btn btn-lg">Submit</button>
+    </div>
+</div>

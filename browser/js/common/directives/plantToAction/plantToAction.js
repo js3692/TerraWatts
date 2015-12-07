@@ -6,8 +6,10 @@ app.directive('plantToAction', function(SliderFactory, PlayGameFactory, $rootSco
         },
         link: function(scope, elem, attrs){
             elem.bind('click', function(event){
-                PlayGameFactory.setPlantToBidOn(scope.plant);
-                $rootScope.$digest();
+                if(+attrs.index < 4 || PlayGameFactory.getStep() === 3) {
+                    PlayGameFactory.setPlantToBidOn(scope.plant);
+                    $rootScope.$digest();
+                }
             });
         }
     }

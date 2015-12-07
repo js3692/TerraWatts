@@ -11,7 +11,11 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
             oil: 0,
             trash: 0,
             nuke: 0
-        };    
+        }, 
+        resourcesForHybrids = {
+            coal: 0,
+            oil: 0
+        };
 
     function toData(response){
         return response.data;
@@ -113,6 +117,21 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
         return wishlist;
     }
     
+    PGFactory.getResourcesToUseForHybrids = function(){
+        return resourcesForHybrids;
+    }
+    
+    PGFactory.changeResourcesToUseForHybrids = function(resourceType, quantity){
+        resourcesForHybrids[resourceType] += quantity;
+    }
+    
+    PGFactory.clearResourcesToUseForHybrids = function(){
+        resourcesForHybrids = {
+            oil: 0,
+            coal: 0
+        };
+    }
+    
     PGFactory.clearWishlist = function() {
         wishlist = {
             coal: 0,
@@ -132,6 +151,10 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     
     PGFactory.getMyResources = function(){
         return PGFactory.getMe().resources;
+    }
+    
+    PGFactory.getStep = function(){
+        return +PGFactory.getGame().step;
     }
     
     return PGFactory;

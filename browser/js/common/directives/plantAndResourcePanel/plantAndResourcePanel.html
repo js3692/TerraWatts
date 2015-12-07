@@ -3,7 +3,8 @@
             panel-default
             plant-slider">
     <plant plant-to-action
-           ng-style="{ opacity: firstFour($index) }"
+           index="{{$index}}"
+           ng-style="{ opacity: firstFourOrStepThree($index) }"
            ng-show="plantsTrueResourcesFalse"
            ng-repeat="plant in getPlantMarket()" 
            plant="plant"
