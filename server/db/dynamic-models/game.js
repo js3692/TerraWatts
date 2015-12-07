@@ -74,7 +74,7 @@ schema.methods.initialize = function (map, players, selectedRegions) {
       shuffledPlants.splice(0,4);
     }
     if(numPlayers < 4) {
-      shuffledPlants.splice(0,27);
+      shuffledPlants.splice(0,4);
     }
     return shuffledPlants;
   }
