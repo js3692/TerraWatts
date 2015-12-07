@@ -7,7 +7,6 @@ app.directive('chat', function(FirebaseFactory, PlayGameFactory){
             key: '='
         },
         link: function(scope, elem, attrs){
-            
             scope.key = scope.key || PlayGameFactory.getKey();
             
             scope.chatBox = document.getElementById('chat-window');

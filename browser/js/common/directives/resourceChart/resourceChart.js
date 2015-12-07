@@ -1,11 +1,12 @@
-app.directive('resourceBars', function ($parse) {
+app.directive('resourceBars', function($parse, PlayGameFactory) {
     return {
         restrict: 'E',
         replace: true,
         template: '<div id="resourceChart"></div>',
         scope: {
-            data: '=',
-            resourceColors: '='
+            resourceMarket: '=',
+            resourceColors: '=',
+            resourceWishlist: '='
         },
         link: function (scope, element, attrs) {
 
@@ -29,40 +30,27 @@ app.directive('resourceBars', function ($parse) {
                 .range([0, width])
                 .domain([13,1]);
 
-            // var xNukePrice = d3.scale.ordinal()
-            //     .rangeRoundBands([0, width])
-            //     .domain([16,14,12,10,8,7,6,5,4,3,2,1]);
-
-
-
             var y = d3.scale.ordinal()
                 .rangeRoundBands([0, height]);
 
-            var xAmountAxis = d3.svg.axis()
-                .scale(xAmount)
-                .orient('top')
-                .tickValues([3,6,9,12,15,18,21,24])
-                .tickSize(3,0);
-
-            var xNukeAmountAxis = d3.svg.axis()
-                .scale(xNukeAmount)
-                .orient('top')
-                // .tickValues([3,6,9,12,15,18,21,24])
-                .tickSize(3,0);
+            var ticks = [];
+            for(var i = 1; i < 8.9; i+=(1/3)) ticks.push(i.toFixed(4))
 
             var xPriceAxis = d3.svg.axis()
                 .scale(xPrice)
                 .orient('bottom')
-                .tickValues([1,2,3,4,5,6,7,8])
-                .tickSize(3,0)
-                .tickFormat(function(d) { return "$"+d; });
+                .tickValues(ticks)
+                .tickSize(5,0)
+                .tickFormat(function(d) {
+                    if(d % 1 !== 0) return;
+                    return "$" + Math.floor(d);
+                });
 
             var xNukePriceAxis = d3.svg.axis()
                 .scale(xNukePrice)
                 .orient('bottom')
-                // .tickValues([1,2,3,4,5,6,7,8,10,12,14,16])
                 .tickValues([1,2,3,4,5,6,7,8])
-                .tickSize(3,0)
+                .tickSize(5,0)
                 .tickFormat(function(d) { return "$"+d; });
 
             var yAxis = d3.svg.axis()
@@ -78,106 +66,147 @@ app.directive('resourceBars', function ($parse) {
                 .attr('id', 'collection')
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            scope.$watch('data', function (data) {
-                var resources = [];
-                if(data) {
-                    for (var key in data) {
-                        if(key !== 'nuke') resources.push({ value: data[key], type: key, color: scope.resourceColors[key]});
-                    }
-                    resources.push({ value: data['nuke'], type: 'nuke', color: scope.resourceColors['nuke']});
+            svg.selectAll('#priceAxis')
+                .data(['coal', 'oil', 'trash', 'nuke']).enter()
+                .append('g')
+                .attr('id', 'priceAxis')
+                .attr("transform", function(d,i) {return "translate(0," + (27+(i*51)) + ")"})
+                .attr('class', 'xPrice axis')
+                .attr('fill', 'white')
+                .attr('visibility', function(d,i) {
+                    if(d === 'nuke') return 'hidden';
+                })
+                .call(xPriceAxis);
 
-                    y.domain(resources.map(function(resource) { return resource.type; }));
-                    // x.domain([0, d3.max(resources, function(resource) { return resource.value; })]);
+            svg.selectAll('#priceNukeAxis')
+                .data(['coal', 'oil', 'trash', 'nuke']).enter()
+                .append('g')
+                .attr('id', 'priceNukeAxis')
+                .attr("transform", function(d,i) {return "translate(0," + (27+(i*51)) + ")"})
+                .attr('class', 'xNukePrice axis')
+                .attr('fill', 'white')
+                .attr('visibility', function(d,i) {
+                    if(d !== 'nuke') return 'hidden';
+                })
+                .call(xNukePriceAxis);
 
-                    svg.selectAll('#priceAxis')
-                        .data(resources)
-                        .enter()
-                        .append('g')
-                        .attr('id', 'priceAxis')
-                        .attr("transform", function(d,i) {return "translate(0," + (27+(i*51)) + ")"})
-                        .attr('class', 'xPrice axis')
-                        .attr('fill', 'white')
-                        .attr('visibility', function(d,i) {
-                            if(d.type === 'nuke') return 'hidden';
-                        })
-                        .call(xPriceAxis);
+             var nukeTicksCollection = svg.selectAll('#nukeTicks')
+                .data([16,14,12,10]).enter()
+                .append('g')
+                .attr('id', 'nukeTicks')
+                .attr('class', 'axis')
+                .attr("transform", function(d,i) {return "translate(" + ((i+1)*(35+(5/6))) + ",180)"});
 
-                    svg.selectAll('#priceNukeAxis')
-                        .data(resources)
-                        .enter()
-                        .append('g')
-                        .attr('id', 'priceNukeAxis')
-                        .attr("transform", function(d,i) {return "translate(0," + (27+(i*51)) + ")"})
-                        .attr('class', 'xNukePrice axis')
-                        .attr('fill', 'white')
-                        .attr('visibility', function(d,i) {
-                            if(d.type !== 'nuke') return 'hidden';
-                        })
-                        .call(xNukePriceAxis);
-
-                    var nukeTicksCollection = svg.selectAll('#nukeTicks')
-                        .data([16,14,12,10])
-                        .enter()
-                        .append('g')
-                        // .attr('id', 'nukeTicks')
-                        .attr('id', function(d,i) { return 'nukeTicks' + d; })
-                        .attr("transform", function(d,i) {return "translate(" + ((i+1)*(35+(5/6))) + ",180)"})
-
-                    var nukeLine = nukeTicksCollection
-                        .each(function(d,i) {
-                            d3.select(this)
-                                .append('line')
-                                .attr('y2', 3)
-                                .attr('x2', 0)
-                                .attr('fill', 'none')
-                                .attr('stroke', 'white')
-
-                            d3.select(this)
-                                .append('text')
-                                .attr('dy', '.71em')
-                                .attr('y', 6)
-                                .attr('x', 0)
-                                .attr("text-anchor", "middle")
-                                .text(function(d) { return '$' + d; })
-                                .attr("font-family", "sans-serif")
-                                .attr('font-size', 10)
-                                .attr("fill", "white");
-                        })
-
-
-
-
-                    svg.selectAll('.bar')
-                        .data(resources)
-                        .enter()
-                        .append('rect')
-                        .attr('class', 'bar')
-                        .style('fill', function(d) { return d.color; })
-                        .attr('id', function(d,i) { return d.type; })
-                        .attr('x', 0)
-                        .attr('width', function(d,i) {
-                            if(d.type === 'nuke') return xNukeAmount(d.value);
-                            return xAmount(d.value);
-                        })
-                        .attr('y', function(d) { return y(d.type); })
-                        .attr('height', 25);
-
-                    svg.selectAll('.text')
-                        .data(resources)
-                        .enter()
+             var nukeTicks = nukeTicksCollection
+                .each(function(d,i) {
+                    d3.select(this)
+                        .append('line')
+                        .attr('y2', 5)
+                        .attr('x2', 0)
+                        .attr('fill', 'none')
+                        .attr('stroke', 'white');
+                    d3.select(this)
                         .append('text')
-                        .attr('class', 'text')
-                        .attr('x', 5)
-                        // .attr("transform", function(d,i) {return "translate(0," + (40+(i*51)) + ")"})
-                        .attr("transform", function(d,i) {return "translate(0," + (17+(i*51)) + ")"})
-                        .text(function(d) { return d.type; })
+                        .attr('dy', '.71em')
+                        .attr('y', 8)
+                        .attr('x', 0)
+                        .attr("text-anchor", "middle")
+                        .text(function(d) { return '$' + d; })
                         .attr("font-family", "sans-serif")
-                        .attr("font-size", 9)
-                        .attr("fill", "white")
+                        .attr('font-size', 10)
+                        .attr("fill", "white");
+                });
 
+            svg.selectAll('.text')
+                .data(['coal', 'oil', 'trash', 'nuke']).enter()
+                .append('text')
+                .attr('class', 'text')
+                .attr('x', 5)
+                .attr("transform", function(d,i) {return "translate(0," + (17+(i*51)) + ")"})
+                .text(function(d) { return d; })
+                .attr("font-family", "sans-serif")
+                .attr("font-size", 9)
+                .attr("fill", "white");
+
+            y.domain(['coal', 'oil', 'trash', 'nuke']);
+
+            var resourceColors = {
+                coal: '#C8824D',
+                oil: 'black',
+                trash: '#A8A818',
+                nuke: 'red'
+            };
+
+            var resourceBars = svg.selectAll('.bar')
+                .data(['coal', 'oil', 'trash', 'nuke']).enter()
+                .insert('rect', '.text')
+                .attr('class', 'bar')
+                .style('fill', function(d) { return resourceColors[d]; })
+                .attr('id', function(d) { return d; })
+                .attr('y', function(d) { return y(d); })
+                .attr('height', 25);
+
+            var wishlistBars = svg.selectAll('.wishlistBar')
+                .data(['coal', 'oil', 'trash', 'nuke']).enter()
+                .insert('rect', '.text')
+                .attr('class', 'wishlistBar')
+                .style('fill', 'white')
+                .attr('opacity', 0.5)
+                .attr('id', function(d) { return 'wishlist' + d; })
+                .attr('y', function(d) { return y(d); })
+                .attr('height', 25);
+
+
+            scope.$watch('resourceMarket', function(resourceMarket) {
+                if(resourceMarket) {
+                    var resources = [];
+                    for (var key in resourceMarket) {
+                        if(key !== 'nuke') resources.push({ value: resourceMarket[key], type: key, color: scope.resourceColors[key] });
+                    }
+                    resources.push({ value: resourceMarket['nuke'], type: 'nuke', color: scope.resourceColors['nuke']});
+                    
+                    resources.forEach(function(resource) {
+                        var resourceVal = resource.value;
+                        var resourceType = resource.type;
+                        
+                        d3.select('#' + resource.type)
+                            .transition().duration(2000).ease('elastic')
+                            .attr('width', function(resource) {
+                                if(resourceType === 'nuke') return xNukeAmount(resourceVal);
+                                return xAmount(resourceVal);
+                            });
+                    });
                 }
 
-            })
+            }, true);
+
+
+            scope.$watch('resourceWishlist', function(wishlistObj) {
+                if(wishlistObj && scope.resourceMarket) {
+                    var wishlist = [];
+                    for(var key in wishlistObj) {
+                        wishlist.push({ value: wishlistObj[key], type: key, color: scope.resourceColors[key] })
+                    }
+                    wishlist.forEach(function(resource) {
+                        var wishlistVal = resource.value;
+                        var wishlistType = resource.type;
+                        var actualVal = scope.resourceMarket[wishlistType];
+
+                        d3.select('#wishlist' + resource.type)
+                            .transition().duration(1000)
+                            .attr('x', function(resource) {
+                                if(wishlistType === 'nuke') return xNukeAmount(actualVal - wishlistVal);
+                                return xAmount(actualVal - wishlistVal);
+                                })
+                            .attr('width', function(resource) {
+                                if(wishlistType === 'nuke') return xNukeAmount(wishlistVal);
+                                return xAmount(wishlistVal);
+                            })
+                    })
+                }
+
+            }, true);
+
         }
     };
 });
