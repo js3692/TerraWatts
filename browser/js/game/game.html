@@ -1,10 +1,9 @@
 <div>
-   <game-map grid='grid' ng-model='showCityBuyPanel'></game-map>
+   <game-map grid='grid' city-cart='cityCart'></game-map>
     <plant-and-resource-panel 
                  player="me()"
                  auction="grid.state.auction"
                  players="grid.players"></plant-and-resource-panel>
     <player-panel></player-panel>
-    <zoom-map game='grid.game' grid='grid' me='me()' ng-model='cityShoppingCart'></zoom-map>
     <game-action-panel></game-action-panel>
 </div>

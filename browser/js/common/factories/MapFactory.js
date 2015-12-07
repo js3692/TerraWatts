@@ -2,16 +2,16 @@ app.factory('MapFactory', function ($http) {
 
 	var MapFactory = {};
 
-	MapFactory.drawConnections = function(connections, collection) {
-
-		console.log('in it')
-
-		var connectionVector = collection.selectAll('path')
+	MapFactory.drawConnectionVector = function(connections, collection) {
+		collection.selectAll('path')
 			.data(connections).enter()
 			.append('path')
 			.attr('id', function(d) { return d.properties.cityNames; })
-			.attr('class', 'connectionLines')
+			.attr('class', 'connectionVector')
 			.attr('fill', 'none');
+	}
+
+	MapFactory.drawConnectionDistVector = function(distMarkers, collection) {
 
 	}
 
