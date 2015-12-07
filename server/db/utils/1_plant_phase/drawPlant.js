@@ -22,6 +22,6 @@ function initStepThree(game, state) {
 		game.discardedPlants.push(game.plantMarket.shift());
 		game.step = 3;
 	}
-	game.plantDeck = shuffle(game.phase3Plants);
+	game.plantDeck = shuffle(game.stepThreePlants);
 	return game;
 }

@@ -138,7 +138,7 @@ schema.methods.end = function (game) {
 	if(this.phase === 'plant') {
 		if (this.numPasses === game.turnOrder.length) {
 			game.discardedPlants.push(game.plantMarket.shift());
-			game = drawPlant(game);
+			game = drawPlant(game, this);
 		}
 		if(game.step === 2.5) {
 			game.discardedPlants.push(game.plantMarket.shift());
@@ -146,7 +146,7 @@ schema.methods.end = function (game) {
 		}		
 	} // end of 'plant'
 	if (this.phase === 'bureaucracy') {
-		endTurn(game);
+		endTurn(game, this);
 	} // end of 'bureaucracy'
 
 	this.phase = phases[phases.indexOf(this.phase) + 1] || phases[0];
@@ -175,7 +175,7 @@ schema.methods.transaction = function(update, game) {
 				player.plants.push(plant);
 				loseResources(player, game);
 
-				game = drawPlant(game);
+				game = drawPlant(game, self);
 				self.log(player.user.username, 'the ' + plant.rank, update.data.bid);
 			} // end of 'plant'
 			else if (self.phase === 'resource') {
@@ -199,7 +199,7 @@ schema.methods.transaction = function(update, game) {
 				// remove plant from market if necessary
 				while (player.cities.length >= game.plantMarket[0].rank) {
 					game.discardedPlants.push(game.plantMarket.shift());
-					game = drawPlant(game);
+					game = drawPlant(game, self);
 				}
 				self.log(player.user.username, '' + citiesToAdd.length + ' cities', price)
 			} // end of 'city'

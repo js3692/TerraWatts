@@ -70,7 +70,7 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                 .data(['coal', 'oil', 'trash', 'nuke']).enter()
                 .append('g')
                 .attr('id', 'priceAxis')
-                .attr("transform", function(d,i) {return "translate(0," + (27+(i*51)) + ")"})
+                .attr("transform", function(d,i) {return "translate(0," + (24+(i*51)) + ")"})
                 .attr('class', 'xPrice axis')
                 .attr('fill', 'white')
                 .attr('visibility', function(d,i) {
@@ -82,7 +82,7 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                 .data(['coal', 'oil', 'trash', 'nuke']).enter()
                 .append('g')
                 .attr('id', 'priceNukeAxis')
-                .attr("transform", function(d,i) {return "translate(0," + (27+(i*51)) + ")"})
+                .attr("transform", function(d,i) {return "translate(0," + (24+(i*51)) + ")"})
                 .attr('class', 'xNukePrice axis')
                 .attr('fill', 'white')
                 .attr('visibility', function(d,i) {
@@ -95,7 +95,7 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                 .append('g')
                 .attr('id', 'nukeTicks')
                 .attr('class', 'axis')
-                .attr("transform", function(d,i) {return "translate(" + ((i+1)*(35+(5/6))) + ",180)"});
+                .attr("transform", function(d,i) {return "translate(" + ((i+1)*(35+(5/6))) + ",177)"});
 
              var nukeTicks = nukeTicksCollection
                 .each(function(d,i) {
@@ -112,7 +112,7 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                         .attr('x', 0)
                         .attr("text-anchor", "middle")
                         .text(function(d) { return '$' + d; })
-                        .attr("font-family", "sans-serif")
+                        .attr("font-family", "orbitron")
                         .attr('font-size', 10)
                         .attr("fill", "white");
                 });
@@ -122,9 +122,9 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                 .append('text')
                 .attr('class', 'text')
                 .attr('x', 5)
-                .attr("transform", function(d,i) {return "translate(0," + (17+(i*51)) + ")"})
+                .attr("transform", function(d,i) {return "translate(0," + (14+(i*51)) + ")"})
                 .text(function(d) { return d; })
-                .attr("font-family", "sans-serif")
+                .attr("font-family", "orbitron")
                 .attr("font-size", 9)
                 .attr("fill", "white");
 
@@ -143,7 +143,7 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                 .attr('class', 'bar')
                 .style('fill', function(d) { return resourceColors[d]; })
                 .attr('id', function(d) { return d; })
-                .attr('y', function(d) { return y(d); })
+                .attr('y', function(d) { return y(d) - 3; })
                 .attr('height', 25);
 
             var wishlistBars = svg.selectAll('.wishlistBar')
@@ -153,7 +153,7 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                 .style('fill', 'white')
                 .attr('opacity', 0.5)
                 .attr('id', function(d) { return 'wishlist' + d; })
-                .attr('y', function(d) { return y(d); })
+                .attr('y', function(d) { return y(d) - 3; })
                 .attr('height', 25);
 
 
