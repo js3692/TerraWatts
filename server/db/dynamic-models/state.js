@@ -146,7 +146,7 @@ schema.methods.end = function (game) {
 		}		
 	} // end of 'plant'
 	if (this.phase === 'bureaucracy') {
-		endTurn(game);
+		endTurn(game, this);
 	} // end of 'bureaucracy'
 
 	this.phase = phases[phases.indexOf(this.phase) + 1] || phases[0];
