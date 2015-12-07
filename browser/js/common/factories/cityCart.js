@@ -12,7 +12,6 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
             }
         }
         cityCart.push(city);
-        console.log('cityCart', cityCart)
         $rootScope.$digest();
         
     };
@@ -47,6 +46,7 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
                             if(populatedCities[i].id === city.id) {
                                 populatedCities[i].players.push(currPlayer);
                                 hasCity = true;
+                                break;
                             }
                         }
                         if(!hasCity) populatedCities.push(currCity);
