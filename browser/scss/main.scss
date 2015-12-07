@@ -17,7 +17,7 @@ body {
 }
 
 #main {
-    margin: auto;
+  margin: auto;
 }
 
 @import 'directives/_main';
@@ -37,6 +37,7 @@ body {
 @import 'directives/map';
 @import 'home/main';
 @import 'about/main';
+@import 'profile/main';
 @import 'tutorial/main';
 @import 'login/main';
 @import 'signup/main';
