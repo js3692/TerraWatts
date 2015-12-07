@@ -3,6 +3,25 @@ $main-background: #132330;
     box-sizing: border-box;
 }
 
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Orbitron'), url('/orbitron-light.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Orbitron';
+  font-weight: 500;
+  src: local('Orbitron'), url('/orbitron-medium.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Orbitron';
+  font-weight: 700;
+  src: local('Orbitron'), url('/orbitron-bold.otf') format('opentype');
+}
+
 body {
   background: $main-background;
   font-family: 'Orbitron', sans-serif;
