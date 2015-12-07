@@ -1,18 +1,18 @@
 #grid {
-  // -webkit-animation-delay: 0.5s;
-  // -moz-animation-delay: 0.5s;
-  // -ms-animation-delay: 0.5s;
   background: $main-background;
-  color: #ddd;
+  color: #dfdfdf;
   min-height: 100vh;
   height: 100%;
   width: 100%;
-  padding-top: 60px;
+  padding-top: 30px;
 
+  .col-xs-6 {
+    height: inherit;
+  }
   .button-container {
-    width: 50vh ;
-    margin-left: auto ;
-    margin-right: auto ;
+    // width: 50vh;
+    // margin-left: auto;
+    // margin-right: auto;
   }
 
   .color-square {
@@ -20,17 +20,19 @@
     height: 50px;
     display: block;
     float: left;
-    margin-right: 10px;
-    margin-bottom: 10px;
-
-
+    border-radius: 12px;
+    span {
+      line-height: 50px;
+      font-size: 35px;
+    }
   }
 
   ul {
     li {
-        clear: both;
+      clear: both;
     }
   }
+
   .table {
     border-top: .15em solid $main-background;
     width: 20%;
@@ -38,34 +40,59 @@
     margin-top: 5%;
     clear: both;
   }
+
+  .player-container {
+    margin: 0 auto;
+    border: 1px solid white;
+    border-radius: 12px;
+    box-shadow: 0 0 24px #888888;
+    height: 100px;
+    width: 75%;
+    padding: 5px;
+    .top-icons, .bottom-icons {
+      display: block;
+      margin: 0;
+      height: 15px;
+    }
+    .player-info {
+      display: table-cell;
+      vertical-align: middle;
+      width: inherit;
+      height: 58px;
+      padding-left: 30px;
+      h2 {
+        text-align: right;
+        margin-top: 5px;
+        margin-bottom: 0;
+      }
+    }
+  }
+
   tr {
-
     th, td {
-        text-align: center;
+      text-align: center;
     }
-    
     .button-container {
-        text-align: center;
+      text-align: center;
     }
-
   }
 
   button {
     margin-top: 10%;
   }
+
   .color-header {
     text-align: left;
   }
   
   chat {
-      .chat-body {
-          height: 80vh;
-          border: 1px solid black;
-          border-radius: 4px;
-          margin-bottom: 5px;
-          background-color: $main-background;
-          color: white;    
-      }
-      
+    .chat-body {
+      height: 50%;
+      border: 1px solid black;
+      border-radius: 4px;
+      margin-bottom: 5px;
+      background-color: $main-background;
+      color: white;    
+    }
   }
 }
