@@ -78,14 +78,22 @@
     background-color: #ccba99;
     border: 1px solid white;
     border-radius: 12px;
-    height: 90px;
+    height: 60px;
     width: 100%;
     padding: 5px;
+    position: relative;
+
+    .bottom-icons {
+      margin-top: 20px;
+    }
 
     .player-info {
+      position: absolute;
+      transform: translateY(-29%);
       text-align: center;
       margin: 0 14px;
       display: block;
+      width: 90%;
       h4 {
         font-size: 1.5em;
       }
@@ -107,12 +115,13 @@
   
   chat {
     .chat-body {
-      height: 50%;
+      height: calc(100vh - 100px);
       border: 1px solid black;
       border-radius: 4px;
       margin-bottom: 5px;
       background-color: $main-background;
-      color: white;    
+      color: white;
+      overflow: scroll; 
     }
   }
 }

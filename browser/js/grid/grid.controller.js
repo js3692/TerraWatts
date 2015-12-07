@@ -1,12 +1,22 @@
 app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, FirebaseFactory, AppConstants, theUser, gridId, key) {
   $scope.grid = FirebaseFactory.getConnection(key);
-  FirebaseFactory.getConnection(key).$loaded()
-    .then(function (grid) {
-      var emptySlots = grid.maxPlayers - grid.players.length;
-      $scope.players = grid.players.concat(_.fill(Array(emptySlots), null));
-    })
+  var waiting = _.fill(Array(5), {
+    color: '#808080',
+    user: {
+      username: 'Waiting...'
+    }
+  });
+
+  $scope.$watch('grid.players', function (players) {
+    if(players !== undefined && players.length) {
+      var emptySlots = $scope.grid.maxPlayers - players.length;
+      $scope.players = players.concat(waiting.slice(0, emptySlots));
+    }
+  }, true);
   $scope.key = key;
   $scope.me = theUser;
+
+
 
   $scope.selected = theUser.color;
   $scope.colors = ['purple', 'yellow', 'green', 'blue', 'red', 'black'];

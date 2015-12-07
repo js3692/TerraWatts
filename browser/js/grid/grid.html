@@ -25,7 +25,7 @@
           </div>
 
           <div class="row">
-            <section ng-repeat="player in grid.players">
+            <section ng-repeat="player in players track by $index">
               <div class="player-container">
                 <div class="row top-icons">
                   <span class="glyphicon glyphicon-cd pull-left"></span>
@@ -70,9 +70,9 @@
       </div>
 
       <div class="col-xs-6 right-column">
-        <div class="row top-row">
+        <!-- <div class="row top-row">
           
-        </div>
+        </div> -->
         <div class="row bottom-row">
           <chat key="key" me="me.username"></chat>
         </div>
