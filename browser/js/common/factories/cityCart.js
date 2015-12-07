@@ -4,18 +4,32 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
         CCFactory = {};
     
     CCFactory.toggle = function(city){
-        
-        for(var i = 0; i < cityCart.length; i++){
-            if(city.id === cityCart[i].id) {
-                cityCart.splice(i, 1);
-                $rootScope.$digest();
-                return;
+        if(this.isValidCityClick(city)) {
+            for(var i = 0; i < cityCart.length; i++){
+                if(city.id === cityCart[i].id) {
+                    cityCart.splice(i, 1);
+                    $rootScope.$digest();
+                    return;
+                }
             }
-        }
-        cityCart.push(city);
-        $rootScope.$digest();
-        
+            cityCart.push(city);
+            $rootScope.$digest();
+        }     
     };
+
+    CCFactory.isValidCityClick = function(city) {
+        var player = PlayGameFactory.getMe();
+        var populatedCity = populatedCities.filter(function (_city) {
+            return _city.id === city.id;
+        });
+        if(!populatedCity.length) return true;
+        else populatedCity = populatedCity[0];
+        var alreadyInCity = populatedCity.players.some(function (_player) {
+            return _player.id === player._id;
+        });
+        var openSlots = populatedCity.players.length < PlayGameFactory.getGame().step;
+        return !alreadyInCity && openSlots;
+    }
     
     CCFactory.clearCart = function(){
         cityCart = [];
