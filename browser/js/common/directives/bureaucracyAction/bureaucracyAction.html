@@ -35,13 +35,21 @@
         <div class="col-lg-6" ng-hide="hybridChoice === true">
             <div>
                 <div class='button-down'>
-                    <button class="btn" ng-click="powerPlants()">Power</button>
-                    <button class="btn" ng-click="powerNone()">Pass</button>
+                    <button class="btn pick"
+                            ng-disabled="nonePowered() || notEnoughResources()" 
+                            ng-click="powerPlants()">Power
+                    </button>
+                    <button class="btn pass" ng-click="powerNone()">Pass</button>
                 </div>
                 <div  class='bureaucracy-stats' ng-show="plantCart.length">
                     <hr>
-                    <span>You'll power {{ getNumberOfCitiesPowered() }} cities.</span><br>
-                    <span>You'll make ${{ calculateProfits() }}.</span>
+                    <div ng-hide="notEnoughResources()">
+                        <span>You'll power {{ getNumberOfCitiesPowered() }} cities.</span><br>
+                        <span>You'll make ${{ calculateProfits() }}.</span>
+                    </div>
+                    <div ng-show="notEnoughResources()">
+                        <span>Not enough resources.</span>
+                    </div>
                 </div>
             </div>
         </div>

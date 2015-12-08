@@ -9,6 +9,16 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
             
             scope.plantCart = [];
             
+            scope.notEnoughResources = function(){
+                var myResources = _.cloneDeep(PlayGameFactory.getMyResources());
+                for(var i = 0; i < scope.plantCart.length; i++) {
+                    var plantResourceType = scope.plantCart[i].resourceType;
+                    myResources[plantResourceType] -= scope.plantCart[i].numResources;
+                    if(myResources[plantResourceType] < 0) return true;
+                }
+                return false;
+            }
+            
             scope.getMyPlants = PlayGameFactory.getMyPlants;
             
             scope.togglePlant = function(plant) {
@@ -61,10 +71,15 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
                 scope.madeChoice = true;
             }
             
+            scope.nonePowered = function(){
+                return scope.plantCart.length === 0;
+            }
+            
             function iHaveBothOilAndCoal() {
                 var myResources = PlayGameFactory.getMyResources();
                 return myResources['oil'] > 0 && myResources['oil'] > 0; 
             }
+            
             
             function showHybridChoice() {
                 if(!iHaveBothOilAndCoal()) return false;

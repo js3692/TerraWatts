@@ -69,7 +69,7 @@ player-panel {
     chat {
         #chat-window {
             height: 455px;
-            overflow: scroll;
+            overflow-y: scroll;
         }
         form, .chat-input {
             color: white;

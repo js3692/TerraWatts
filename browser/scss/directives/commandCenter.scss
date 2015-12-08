@@ -9,13 +9,14 @@ command-center {
     .command-text {
         text-align: left;
         margin-top: 50px;
-        padding-left: 30px;
+        padding-left: 35px;
+        overflow-x: hidden;
         div {
             margin-top: 10px;
         }
     }
     
-    .top-right-cd, .top-left-cd{
+    .top-right-cd, .top-left-cd, .bottom-right-cd, .bottom-left-cd{
         color: white;
         font-size: 1.5em;
         position: fixed;
@@ -23,8 +24,12 @@ command-center {
         margin: 5px;
     }
     
-    .top-right-cd {
+    .top-right-cd, .bottom-right-cd {
         right: 0px;
+    }
+    
+    .bottom-right-cd, .bottom-left-cd {
+        top: 170px;
     }
     
 }

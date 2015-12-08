@@ -57,6 +57,7 @@ bureaucracy-action {
         img {
             border-radius: 6px;
             max-width: 60px;
+            margin-left: 0px;
         }
     }
     .picked-plant {
@@ -64,6 +65,10 @@ bureaucracy-action {
     }
     .bureaucracy-stats {
         text-align: center;
+        position: fixed;
+        left: 0;
+        top: 100px;
+        width: 200px;
     }
     .btn-col {
         text-align: center;

@@ -6,7 +6,7 @@
            ng-click="isPlantToDiscard(plant) ? unsetAsPlantToDiscard(plant, $index) : setAsPlantToDiscard(plant, $index)"
            ng-class="{'discard-plant': isPlantToDiscard(plant)}">
     </plant>
-    <button class="btn"
+    <button class="btn pick"
             ng-click="choosePlantToDiscard()" 
             ng-disabled='!plantHasBeenChosen()'>Submit
     </button>

@@ -15,13 +15,10 @@ app.directive('plantAndResourcePanel', function(SliderFactory, PlayGameFactory, 
             scope.plantsTrueResourcesFalse = true;
             scope.open = SliderFactory.slideOut.bind(null, 'plant');
             scope.toggleArrows = SliderFactory.toggleSliderArrowsHandler('left');
+            scope.plantsOrResources = 'plant';
             
             scope.changeView = function(view){
-                var viewObj = {
-                    plants: true,
-                    resources: false
-                };
-                scope.plantsTrueResourcesFalse = viewObj[view];
+                scope.plantsOrResources = view;
             }
             scope.firstFourOrStepThreeOpacity = function(index){
                 if(PlayGameFactory.getStep() === 3 || index < 4) return 1;
@@ -40,6 +37,15 @@ app.directive('plantAndResourcePanel', function(SliderFactory, PlayGameFactory, 
                 trash: '#A8A818',
                 nuke: 'red'
             };
+            
+            
+            scope.$watch(PlayGameFactory.getGamePhase, function(newVal, oldVal) {
+                if(newVal === 'plant' || newVal === 'resource') {
+                    if(newVal !== oldVal || !oldVal) {
+                        scope.plantsOrResources = newVal;  
+                    }
+                }
+            });
         }
     }
 })
