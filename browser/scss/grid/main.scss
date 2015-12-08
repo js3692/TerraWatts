@@ -21,7 +21,7 @@
     background-color: #133020;
     border: 1px solid white;
     border-radius: 12px;
-    box-shadow: 0 0 24px #888888;
+    box-shadow: 0 0 12px #888888;
     padding: 5px;
     color: white;
   }
@@ -100,6 +100,9 @@
       span.glyphicon-flash {
         color: white;
       }
+      span.glyphicon-tower {
+        color: #ffcf13;
+      }
     }
   }
 
@@ -111,17 +114,63 @@
     margin-right: 60px;
     bottom: 35px;
     position: absolute;
+
+    .btn-info {
+      background-color: #302013;
+      border: #302013;
+      &:hover {
+        background-color: #dabca2;
+        border: #dabca2;
+      }
+    }
+    .btn-warning {
+      background-color: #67294b;
+      border-color: #67294b;
+      &:hover {
+        background-color: #b394a5;
+        border-color: #b394a5;
+      }
+    }
+    .btn-success {
+      background-color: #4e89b9;
+      border: #4e89b9;
+      &:hover {
+        background-color: #a6c4dc;
+        border: #a6c4dc;
+      }
+    }
   }
   
+  .right-column {
+    .top-row, .bottom-row {
+      background-color: #133020;
+      border: 1px solid white;
+      padding: 5px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px #888888;
+      span {
+        color: white;
+      }
+    }
+    .top-row {
+      height: 50%;
+      margin-bottom: 5px;
+    }
+    .bottom-row {
+      height: calc(50% - 5px);
+    }
+  }
   chat {
     .chat-body {
-      height: calc(100vh - 100px);
-      border: 1px solid black;
-      border-radius: 4px;
-      margin-bottom: 5px;
-      background-color: $main-background;
+      margin-left: 14px;
+      margin-right: 14px;
+      height: calc(100% - 67px);
       color: white;
       overflow: scroll; 
+    }
+    form {
+      width: calc(100% - 58px);
+      margin: 0 auto;
     }
   }
 }

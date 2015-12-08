@@ -1,6 +1,9 @@
 var mongoose = require('mongoose');
 var Promise = require('bluebird');
 mongoose.Promise = Promise;
+
+var _ = require('lodash');
+
 var firebaseHelper = require('../../firebase');
 
 var Region = mongoose.model('Region');
@@ -116,11 +119,19 @@ schema.post('save', function (grid) {
          
           if(err) throw err;
           // This is mainly for '/join' and '/leave' of players
+          // console.log(deepPopulatedGrid.availableColors);
+          firebaseHelper
+            .getConnection(deepPopulatedGrid.key)
+            .update({
+              'availableColors': deepPopulatedGrid.availableColors.slice()
+            })
+            
           firebaseHelper
             .getConnection(deepPopulatedGrid.key)
             .update({
                 'players': deepPopulatedGrid.players.map(player => player.toObject())
             });
+
 
           // This means the game was initialized and started
           if(deepPopulatedGrid.game) {
@@ -137,7 +148,7 @@ schema.post('save', function (grid) {
               });
           }
 
-          firebaseHelper.disconnect(deepPopulatedGrid.key);
+          // firebaseHelper.disconnect(deepPopulatedGrid.key);
 
         })
       })
@@ -165,9 +176,7 @@ schema.methods.addPlayer = function (newPlayer) {
 
   if (this.players.some(player => player.user.equals(newPlayer.user))) throw new Error('The Player is already in the game')
 
-  var colorIdx = this.availableColors.indexOf(newPlayer.color);
-  this.availableColors.splice(colorIdx, 1);
-
+  this.availableColors.pull(newPlayer.color);
 	this.players.push(newPlayer);
 
 	return this.save();
@@ -178,9 +187,10 @@ schema.methods.removePlayer = function (userId) {
 
   return Player.findOne({ user: userId })
     .then(function (foundPlayer) {
-    	var playerIdx = self.players.indexOf(foundPlayer._id);
-    	self.players.splice(playerIdx, 1);
+    	var playerIdx = _.findIndex(self.players, player => player._id.equals(foundPlayer._id));
+      self.players.splice(playerIdx, 1);
       self.availableColors.push(foundPlayer.color);
+      self.markModified('availableColors');
       return foundPlayer.remove();
     })
     .then(function () {
