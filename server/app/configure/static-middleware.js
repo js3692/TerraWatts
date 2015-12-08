@@ -14,7 +14,7 @@ module.exports = function (app) {
     var plantPath = path.join(root, './symbols/plants');
     var resourcePath = path.join(root, './symbols/resources');
     var fontPath = path.join(root, './server/app/views/Orbitron');
-    var splashImagesPath = path.join(root, './server/app/views/backgroundImages');
+    var splashImagesPath = path.join(root, './server/app/views/Background');
 
     app.use(favicon(app.getValue('faviconPath')));
     app.use(express.static(npmPath));
