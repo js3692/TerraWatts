@@ -95,13 +95,14 @@ app.factory('RegionSelectorFactory', function () {
 		var height = angular.element("#region-selector").height();
 
 		console.log(width, height);
+		
 		window.d3.select(id).selectAll(".state")
 			.data(uStatePaths)
 			.enter().append("path")
 			.attr("class","state")
 			.attr("d",function(d){ return d.d; })
 			// .attr("viewBox", "0 0 100 100")
-			.attr("transform", "scale(.1)")
+			.attr("transform", "scale(" + width + ", " + height + ")")
 			// .transform("scale(x, y)");
 			// .style("fill",function(d){ return data[d.id].color; })
 			// .on("mouseover", mouseOver).on("mouseout", mouseOut);
