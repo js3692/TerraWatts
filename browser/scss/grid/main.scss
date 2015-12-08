@@ -76,7 +76,7 @@
   .player-container {
     color: black;
     background-color: #ccba99;
-    border: 1px solid white;
+    border: 1px solid #d8d8d8;
     border-radius: 12px;
     height: 60px;
     width: 100%;
@@ -85,6 +85,9 @@
 
     .bottom-icons {
       margin-top: 20px;
+    }
+    span.glyphicon-cd {
+      color: #d8d8d8;
     }
 
     .player-info {
@@ -160,13 +163,18 @@
       height: calc(50% - 5px);
     }
   }
+
+  .region-selector {
+
+  }
+
   chat {
     .chat-body {
       margin-left: 14px;
       margin-right: 14px;
       height: calc(100% - 67px);
       color: white;
-      overflow: scroll; 
+      overflow-y: scroll; 
     }
     form {
       width: calc(100% - 58px);

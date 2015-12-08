@@ -36,7 +36,7 @@
                     <div ng-style="{ background: player.color }" class="color-square"><span class="glyphicon glyphicon-flash"></span></div>
                   </div>
                   <div class="col-xs-9">
-                    <h4>{{ player.user.username }} <span class="glyphicon glyphicon-wrench" ng-if="$index !== 0"></span><span class="glyphicon glyphicon-tower" ng-if="$index === 0"></span></h4>
+                    <h4 ng-class="{ 'animated pulse infinite': player.user.username === me.username }">{{ player.user.username }} <span class="glyphicon glyphicon-wrench" ng-class="{ 'animated pulse infinite': player.user.username === me.username }" ng-if="$index !== 0"></span><span class="glyphicon glyphicon-tower" ng-if="$index === 0"></span></h4>
                   </div>
                 </div>
                 <div class="row bottom-icons">
@@ -56,7 +56,7 @@
                 <button type="button" class="btn btn-info" ng-click="goHome()"><span class="glyphicon glyphicon-home"></span> Home</button>
               </div>
               <div class="btn-group">
-                <button type="button" class="btn btn-success" ng-click="startGame()">Start <span class="glyphicon glyphicon-arrow-right" ></span></button>
+                <button type="button" class="btn btn-success" ng-click="startGame()" ng-disabled="!owner">{{ owner? 'Start' : 'Waiting...' }}<span class="glyphicon glyphicon-arrow-right" ng-if="owner"></span></button>
               </div>
             </div>
           </div>
@@ -74,6 +74,9 @@
           <div class="row top-icons">
             <span class="glyphicon glyphicon-cd pull-left"></span>
             <span class="glyphicon glyphicon-cd pull-right"></span>
+          </div>
+          <div id="region-selector">
+            
           </div>
           <div class="row bottom-icons">
             <span class="glyphicon glyphicon-cd pull-left"></span>
