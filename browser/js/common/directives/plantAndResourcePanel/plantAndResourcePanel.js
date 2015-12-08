@@ -14,7 +14,7 @@ app.directive('plantAndResourcePanel', function(SliderFactory, PlayGameFactory, 
             scope.getResourceWishlist = PlayGameFactory.getWishlist;
             scope.plantsTrueResourcesFalse = true;
             scope.open = SliderFactory.slideOut.bind(null, 'plant');
-            scope.toggleArrows = SliderFactory.toggleSliderArrowsHandler('right');
+            scope.toggleArrows = SliderFactory.toggleSliderArrowsHandler('left');
             
             scope.changeView = function(view){
                 var viewObj = {
@@ -23,7 +23,8 @@ app.directive('plantAndResourcePanel', function(SliderFactory, PlayGameFactory, 
                 };
                 scope.plantsTrueResourcesFalse = viewObj[view];
             }
-            scope.firstFour = function(index){
+            scope.firstFourOrStepThree = function(index){
+                if(PlayGameFactory.getStep() === 3) return 1;
                 if(index < 4) return 1;
                 return .5;
             } 

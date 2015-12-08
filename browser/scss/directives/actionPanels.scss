@@ -1,7 +1,9 @@
-resource-action, city-action, bureaucracy-action {
+resource-action,
+city-action,
+bureaucracy-action, 
+discard-plant-action, {
     font-weight: 100;
     color: white;
-    
     .waiting-container {
         box-sizing: border-box;
         padding-top: 60px;
@@ -10,28 +12,23 @@ resource-action, city-action, bureaucracy-action {
             text-align: center;
         }
     }
-    
     .row {
-        
         tbody {
-            border-top: 2px solid transparent;    
+            border-top: 2px solid transparent;
         }
-        
         .table {
             margin-left: 20px;
         }
     }
-    
     .btn-col {
         .btn-group {
             margin-top: 60px;
             margin-left: 35px;
-        }   
+        }
     }
     
-    
-    button.btn.btn-lg,
-    button.btn.btn-lg:hover {
+    button.btn,
+    button.btn:hover {
         color: white;
         font-weight: 100;
         background-color: $main-background;
@@ -39,7 +36,6 @@ resource-action, city-action, bureaucracy-action {
         border: 1px solid white;
         text-align: center;
     }
-    
 }
 
 city-action {
@@ -47,6 +43,9 @@ city-action {
         padding: 20px 30px 0;
         display: block;
         float: left;
+    }
+    .col-lg-6 {
+        padding-top: 50px;
     }
 }
 
@@ -56,39 +55,37 @@ bureaucracy-action {
         float: left;
         margin-top: 10px;
         img {
-            border-radius: 6px;   
+            border-radius: 6px;
         }
     }
-    
     .picked-plant {
         box-shadow: 0px 0px 20px #fff;
     }
-    
     .bureaucracy-stats {
         text-align: center;
     }
-    
     .btn-col {
-        .btn-group {
-            margin-top: 30px;
+        text-align: center;
+        button.btn {
+            margin: 70px 0 0 0;
         }
     }
-    
     .choice-container {
         width: 100%;
         text-align: center;
         padding-top: 10px;
         table {
             margin-bottom: 0;
+            .btn-group {}
         }
         td {
             text-align: left;
         }
     }
-    
 }
 
-resource-action, bureaucracy-action {
+resource-action,
+bureaucracy-action {
     td {
         img {
             margin-top: 9px;
@@ -96,3 +93,12 @@ resource-action, bureaucracy-action {
         }
     }
 }
+
+discard-plant-action {
+    .slide-down {
+        img{
+            transform: translateY(20px);
+        }
+    } 
+}
+

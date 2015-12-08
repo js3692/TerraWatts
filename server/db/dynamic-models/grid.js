@@ -84,7 +84,11 @@ var fieldsToPopulate = [
     'state.auction.activePlayer.user',  
     'state.auction.remainingPlayers', 
     'state.auction.remainingPlayers.user', 
-    'state.auction.plant'
+    'state.auction.plant',
+    'state.auction.choice',
+    'state.auction.choice.player',
+    'state.auction.choice.user'
+    
   ];
 
 schema.plugin(deepPopulate, {

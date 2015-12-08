@@ -17,16 +17,36 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
                 else scope.plantCart.push(plant);
             }
             
-            scope.powerPlants = function(){
+            scope.submitHybridChoice = function(){
                 var update = {
                     player: PlayGameFactory.getMe(),
                     phase: 'bureaucracy',
                     data: {
-                        plantsToPower: scope.plantCart
-                    } 
-                }
+                        plantsToPower: scope.plantCart,
+                    },
+                    choice: {
+                        resourcesToUseForHybrids: PlayGameFactory.getResourcesToUseForHybrids()
+                    }
+                };
                 PlayGameFactory.continue(update);
+                PlayGameFactory.clearResourcesToUseForHybrids();
                 scope.madeChoice = true;
+            }
+            
+            scope.powerPlants = function(){
+                if(showHybridChoice()){
+                    scope.hybridChoice = true;
+                } else {  
+                    var update = {
+                        player: PlayGameFactory.getMe(),
+                        phase: 'bureaucracy',
+                        data: {
+                            plantsToPower: scope.plantCart
+                        } 
+                    }
+                    PlayGameFactory.continue(update);
+                    scope.madeChoice = true;
+                }
             } 
             
             scope.powerNone = function(){
@@ -46,17 +66,18 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
                 return myResources['oil'] > 0 && myResources['oil'] > 0; 
             }
             
-            scope.choiceIfHybrid = function(plant) {
-                if(plant.resourceType === 'hybrid' && iHaveBothOilAndCoal()) scope.hybridChoice = true;
+            function showHybridChoice() {
+                if(!iHaveBothOilAndCoal()) return false;
+                var myPlants = PlayGameFactory.getMyPlants();
+                for(var i = 0; i < myPlants.length; i++){
+                    if(myPlants[i].resourceType === 'hybrid') return true;    
+                }
+                return false;
             };
             
-            scope.backToMainView = function(){
-                console.log('in back to main view');
-                scope.hybridChoice = false;
-            }
             
             scope.getNumberOfCitiesPowered = function(){
-                var capacity = scope.getMyPlants()
+                var capacity = scope.plantCart
                     .reduce((total, plant) => {
                         return total += plant.capacity;
                     }, 0);

@@ -1,5 +1,6 @@
 app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     var baseUrl = '/api/play/continue/',
+        chooseUrl = '/api/play/choose/',
         user,
         gridId,
         gridKey,
@@ -11,7 +12,11 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
             oil: 0,
             trash: 0,
             nuke: 0
-        };    
+        }, 
+        resourcesForHybrids = {
+            coal: 0,
+            oil: 0
+        };
 
     function toData(response){
         return response.data;
@@ -22,6 +27,12 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
         return $http.post(baseUrl + gridId, update)
             .then(toData);
     };  
+    
+    
+    PGFactory.choose = function(update){
+        return $http.post(chooseUrl + gridId, update)
+            .then(toData);
+    }
     
     PGFactory.setGridId = function(_gridId){
         gridId = _gridId;
@@ -88,7 +99,10 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     };
     
     PGFactory.getGamePhase = function(){
-        if(grid && grid.state) return grid.state.phase;
+        if(grid && grid.state) {
+            if(grid.state.auction && grid.state.auction.choice) return "plantDiscard";
+            else return grid.state.phase;
+        }
     };
     
     PGFactory.iAmActivePlayer = function(){
@@ -101,6 +115,32 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
         if(auction) return auction.activePlayer._id === PGFactory.getMe()._id;
     }
     
+    PGFactory.getWaitingOnPlayer = function(){
+        if(PGFactory.iAmActiveAuctionPlayer() || PGFactory.iAmActiveDiscarder()) return null;
+        if(PGFactory.iAmActivePlayer() && !PGFactory.getAuction()) return null;
+        var auction = PGFactory.getAuction();
+        
+        if(auction) {
+            if(auction.choice) return auction.choice.player.user.username;
+            else return auction.activePlayer.user.username;
+        } else {
+            var activePlayer = PGFactory.getActivePlayer();
+            if(activePlayer) return activePlayer.user.username;
+        }
+    }
+    
+    PGFactory.iAmActiveDiscarder = function(){
+        var auction = PGFactory.getAuction();
+        if(auction && auction.choice) { 
+            return auction.choice.player._id === PGFactory.getMe()._id; 
+        }
+    }
+    
+    PGFactory.getActiveDiscarder = function(){
+        var auction = PGFactory.getAuction();
+        if(auction) return auction.choice.player;
+    }
+    
     PGFactory.getAuction = function(){
         if(grid && grid.state) return grid.state.auction;
     };
@@ -111,6 +151,23 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     
     PGFactory.getWishlist = function(){
         return wishlist;
+    }
+    
+    
+    
+    PGFactory.getResourcesToUseForHybrids = function(){
+        return resourcesForHybrids;
+    }
+    
+    PGFactory.changeResourcesToUseForHybrids = function(resourceType, quantity){
+        resourcesForHybrids[resourceType] += quantity;
+    }
+    
+    PGFactory.clearResourcesToUseForHybrids = function(){
+        resourcesForHybrids = {
+            oil: 0,
+            coal: 0
+        };
     }
     
     PGFactory.clearWishlist = function() {
@@ -132,6 +189,18 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     
     PGFactory.getMyResources = function(){
         return PGFactory.getMe().resources;
+    }
+    
+    PGFactory.getStep = function(){
+        return +PGFactory.getGame().step;
+    }
+    
+    PGFactory.getTurn = function(){
+        return PGFactory.getGame().turn;
+    }
+    
+    PGFactory.getStep = function(){
+        return PGFactory.getGame().step;
     }
     
     return PGFactory;

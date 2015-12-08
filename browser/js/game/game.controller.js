@@ -3,4 +3,8 @@ app.controller('GameCtrl', function($scope, FirebaseFactory, PlayGameFactory, Ci
     $scope.grid = PlayGameFactory.getGrid();
     $scope.cityCart = CityCartFactory.getCart();
     $scope.showCityBuyPanel = false;
+    $scope.hideGameAction = function(){
+        if(PlayGameFactory.getGamePhase() === 'bureaucracy') return false;
+        return Boolean(PlayGameFactory.getWaitingOnPlayer());
+    }
 }); 

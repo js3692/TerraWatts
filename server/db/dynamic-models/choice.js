@@ -18,16 +18,20 @@ var schema = new mongoose.Schema({
 });
 
 schema.methods.initialize = function() {
+    var self = this;
 	return Player.findById(this.player._id || this.player)
-	.then(function(foundPlayer) {	
-		this.choices = this.player.plants.slice();
-		this.markModified('choices');
-		return this.save();
+    .populate('plants')
+	.then(function(foundPlayer) {
+		self.choices = foundPlayer.plants.slice();
+		self.markModified('choices');
+		return self.save();
 	})
 }
 
 schema.methods.continue = function(update, game) {
-	if(this.player.equals(update.player)) {
+    console.log(this.player, update.player, 'this.player, update.player')
+    var self = this;
+	if(this.player.equals(update.player._id)) {
 		var index = update.choice.index;
 		return Player.findById(this.player._id || this.player)
 		.then(function (foundPlayer) {
@@ -36,7 +40,7 @@ schema.methods.continue = function(update, game) {
 			return foundPlayer.save();
 		})
 		.then(function () {
-			return mongoose.model('Auction').findById(this.parentAuction)
+			return mongoose.model('Auction').findById(self.parentAuction)
 		})
 		.then(function(auction) {
 			return auction.go(game)

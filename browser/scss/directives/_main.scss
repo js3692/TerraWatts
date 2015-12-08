@@ -35,3 +35,19 @@ player-panel .glyphicon-triangle-right {
 player-panel .glyphicon-triangle-left {
     margin-top: 41px;
 }
+
+resource-buyer {
+        margin-left: 6px;
+        color: white;   
+        button.btn, button.btn:hover {
+            color: white;
+            background-color: $main-background;
+            border: 1px solid white;
+            height: 35px;
+            width: 40px;
+        }
+        
+        button.btn.display-number {
+            width: 50px;
+        }
+    }

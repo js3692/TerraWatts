@@ -3,7 +3,8 @@
             panel-default
             plant-slider">
     <plant plant-to-action
-           ng-style="{ opacity: firstFour($index) }"
+           index="{{$index}}"
+           ng-style="{ opacity: firstFourOrStepThree($index) }"
            ng-show="plantsTrueResourcesFalse"
            ng-repeat="plant in getPlantMarket()" 
            plant="plant"
@@ -31,5 +32,5 @@
     </div>
 </div>
 <div class="plant-slider  tab-container main-pull-tab" ng-click="open(); toggleArrows()">
-    <span class="glyphicon glyphicon-triangle-right">
+    <span class="glyphicon glyphicon-triangle-left">
 </div>
