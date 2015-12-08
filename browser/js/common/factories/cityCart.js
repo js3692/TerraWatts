@@ -58,7 +58,10 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
                         var hasCity = false;
                         for(var i = 0; i < populatedCities.length; i++) {
                             if(populatedCities[i].id === city.id) {
-                                populatedCities[i].players.push(currPlayer);
+                                var hasPlayer = populatedCities[i].players.some(function(currPlayer) {
+                                    return currPlayer.id === player._id;
+                                });
+                                if(!hasPlayer) populatedCities[i].players.push(currPlayer);
                                 hasCity = true;
                                 break;
                             }
