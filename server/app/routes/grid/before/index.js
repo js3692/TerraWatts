@@ -7,6 +7,7 @@ var fbHelper = require('../../../../firebase');
 
 var Game = mongoose.model('Game');
 var Player = mongoose.model('Player');
+var Grid = mongoose.model('Grid');
 
 // Current URL: 'api/grid/before/:gridId'
 
@@ -27,12 +28,12 @@ router.post('/join', function (req, res, next) {
 
 router.post('/leave', function (req, res, next) {
   req.grid.removePlayer(req.user)
-    .then(function () {
-      if(req.grid.players.length > 0) res.sendStatus(201);
-      else return req.grid.remove().then(function () { 
-        fbHelper.getConnection(req.grid.key).remove();
-        res.sendStatus(201);
-      });
+    .then(function (updatedGrid) {
+      if(updatedGrid.players.length > 0) res.sendStatus(201);
+      else return updatedGrid.remove().then(function () { 
+          fbHelper.getConnection(req.grid.key).remove();
+          res.sendStatus(201);
+        });
     })
     .catch(next);
 });
