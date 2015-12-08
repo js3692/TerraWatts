@@ -1,4 +1,4 @@
-app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, FirebaseFactory, AppConstants, theUser, gridId, key) {
+app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, FirebaseFactory, RegionSelectorFactory, AppConstants, theUser, gridId, key) {
   $scope.grid = FirebaseFactory.getConnection(key);
   var waiting = _.fill(Array(5), {
     color: '#808080',
@@ -17,8 +17,6 @@ app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, Firebase
   $scope.key = key;
   $scope.me = theUser;
 
-
-
   $scope.selected = theUser.color;
   $scope.colors = ['purple', 'yellow', 'green', 'blue', 'red', 'black'];
   $scope.changeColor = BeforeGameFactory.changeColor.bind(null, gridId, theUser._id)
@@ -34,7 +32,8 @@ app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, Firebase
     return false;
   };
 
-    
+  RegionSelectorFactory.draw("#region-selector");
+  
   $scope.$watch('grid.game', function(game){
       if(game) $state.go('game', { id: gridId, key: key });
   });

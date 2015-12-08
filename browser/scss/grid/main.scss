@@ -33,8 +33,13 @@
   }
 
   .header {
+    margin-top: 15px;
     text-align: center;
-    height: 70px;
+    height: 40px;
+    h3 {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
     h3 span:first-child {
       margin-right: 30px;
     }
@@ -45,11 +50,12 @@
 
   .body {
     width: 100%;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 157px);
     padding: 0 60px;
   }
 
   .color-picker {
+    margin-bottom: 0;
     tbody tr td {
       border-top: none;
       div:hover {
@@ -114,7 +120,7 @@
   }
 
   .cta-buttons {
-    margin-right: 60px;
+    margin-right: 65px;
     bottom: 35px;
     position: absolute;
 
@@ -164,8 +170,11 @@
     }
   }
 
-  .region-selector {
-
+  #region-selector {
+    margin-left: 14px;
+    margin-right: 14px;
+    height: calc(100% - 38px);
+    width: calc(100% - 28px);
   }
 
   chat {
