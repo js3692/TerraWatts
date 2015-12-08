@@ -31,7 +31,7 @@ var schema = new mongoose.Schema({
   step: {
     type: Number,
     enum: [1, 2, 2.5, 3],
-    default: 1
+    default: 2
   },
   resourceMarket: {
     type: Object,

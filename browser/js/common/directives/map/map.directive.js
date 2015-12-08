@@ -370,8 +370,10 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 				if(players) {
 					d3.selectAll('#pulsingCity').remove();
 					var poppedCities = CityCartFactory.getPopulatedCities(players);
+					console.log('poppedCities', poppedCities)
 					poppedCities.forEach(function(city) {
 						var cityName = city.name.replace(/[\s.]/g, '');
+						console.log('city', city)
 						for(var i = 0; i < city.players.length; i++) {
 							d3.select('#' + cityName + ' #slot' + (10+(i*5)) + 'Towers #leftTower')
 								.transition()
