@@ -58,12 +58,11 @@ schema.virtual('chatKey').get(function() {
 	return baseUrl + this.key + '/chat';
 })
 
-schema.methods.log = function(name, bought, price) {
+schema.methods.log = function(name, action) {
 	var fbRef = new Firebase(this.chatKey);
-	var message = name + ' has bought ' + bought;
-	if(price) message += ' for $' + price;
+	var message = name + ' ' + action;
 	fbRef.push({
-		user: 'GRID GOD',
+		user: 'LOG',
 		message: message
 	})
 }
@@ -178,18 +177,24 @@ schema.methods.transaction = function(update, game) {
 				loseResources(player, game);
 
 				game = drawPlant(game, self);
-				self.log(player.user.username, 'the ' + plant.rank, update.data.bid);
+				self.log(player.user.username, 'got the ' + plant.rank + ' for $' + update.data.bid);
 			} // end of 'plant'
 			else if (self.phase === 'resource') {
 				var wishlist = update.data.wishlist;
-				player.money -= resourcePrice(wishlist, game.resourceMarket);
+				var price = resourcePrice(wishlist, game.resourceMarket);
+				player.money -= price;
+				var resourceLog = [];
 				for(var resource in wishlist) {
 					game.resourceMarket[resource] -= wishlist[resource];
 					player.resources[resource] += wishlist[resource];
-					if (wishlist[resource]) {
-						self.log(player.user.username, '' + wishlist[resource] + ' ' + resource);
+					if(wishlist[resource]) {
+						resourceLog.push({resource: resource, num: wishlist[resource]});
 					}
 				}
+				resourceLog = resourceLog.map(function(resourceGroup) {
+					return '' + resourceGroup.num + ' ' + resourceGroup.resource;
+				})
+				self.log(player.user.username, 'bought ' + resourceLog.join(', ') + ' for $' + price);
 			} // end of 'resource'
 			else if (self.phase === 'city') {
 				var citiesToAdd = update.data.citiesToAdd;
@@ -203,7 +208,7 @@ schema.methods.transaction = function(update, game) {
 					game.discardedPlants.push(game.plantMarket.shift());
 					game = drawPlant(game, self);
 				}
-				self.log(player.user.username, '' + citiesToAdd.length + ' cities', price)
+				self.log(player.user.username, 'bought ' + citiesToAdd.length + ' cities for $' + price)
 			} // end of 'city'
 			else if (self.phase === 'bureaucracy') {
 
@@ -230,7 +235,7 @@ schema.methods.transaction = function(update, game) {
 
 				player.numPowered = Math.min(player.cities.length, totalCapacity);
 				player.money += payments[player.numPowered];
-
+				self.log(player.user.username, 'powered ' + player.numPowered + ' cities for $' + payments[player.numPowered]);
 			} // end of 'bureaucracy'
 
 			delete player.resources.green;
