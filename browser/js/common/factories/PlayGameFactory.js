@@ -100,9 +100,10 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     
     PGFactory.getGamePhase = function(){
         if(grid && grid.state) {
-            console.log(grid.state.auction)
-            if(grid.state.auction && grid.state.auction.choice) return "plantDiscard"; 
-//            return grid.state.phase;
+            if(grid.state.auction && grid.state.auction.choice) {
+                return "plantDiscard";
+            } 
+            else return grid.state.phase;
         }
     };
     
@@ -117,10 +118,10 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     }
     
     PGFactory.getWaitingOnPlayer = function(){
-        if(PGFactory.iAmActiveDiscarder()) return null;
         var auction = PGFactory.getAuction();
         if(auction) {
             if(auction.choice) {
+                if(PGFactory.iAmActiveDiscarder()) return null;
                 return auction.choice.player.user.username;
             }
             if(PGFactory.iAmActiveAuctionPlayer()) return null;

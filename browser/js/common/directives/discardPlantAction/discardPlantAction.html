@@ -1,15 +1,13 @@
-<div class="discard-plant-action-container">
-    <div ng-hide="!iAmActiveDiscarder()">
-        <h3>Waiting on {{ getActiveDiscarder().user.username }} to discard a plant. </h3>
-    </div>
-    <div ng-show="iAmActiveDiscarder()">
-        <h3>Choose a plant to discard</h3>
-        <plant ng-class="{ 'slide-down' : isPlantToDiscard(plant) }"
-               rank="{{ plant.rank }}"
-               ng-repeat="plant in getMyPlants()"
-               ng-click="isPlantToDiscard(plant) ? unsetAsPlantToDiscard(plant, $index) : setAsPlantToDiscard(plant, $index)"
-               ng-class="{'discard-plant': isPlantToDiscard(plant)}"></plant>
-        <button class="btn btn-lg" ng-click="choosePlantToDiscard()" 
-                                             ng-disabled='!plantHasBeenChosen()'>Submit</button>
-    </div>
+<div class="discard-plant-action-container" ng-show="iAmActiveDiscarder()">
+    <h5>Discard a plant</h5>
+    <plant ng-class="{ 'slide-down' : isPlantToDiscard(plant) }"
+           rank="{{ plant.rank }}"
+           ng-repeat="plant in getMyPlants()"
+           ng-click="isPlantToDiscard(plant) ? unsetAsPlantToDiscard(plant, $index) : setAsPlantToDiscard(plant, $index)"
+           ng-class="{'discard-plant': isPlantToDiscard(plant)}">
+    </plant>
+    <button class="btn"
+            ng-click="choosePlantToDiscard()" 
+            ng-disabled='!plantHasBeenChosen()'>Submit
+    </button>
 </div>
