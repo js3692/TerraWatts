@@ -21,13 +21,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="grid in getLiveJoinableGames()">
-          <td style="text-align: center;">{{ $index + 1 }}</td>
+        <tr ng-repeat="grid in getAllGrids().reverse()">
+          <td>{{ $index + 1 }}</td>
           <td>{{ grid.name }}</td>
-          <td style="text-align: center;">{{ grid.players.length || 0 }} / {{ grid.maxPlayers }}</td>
-          <td style="text-align: center;" ng-class="{ 'animated flash infinite': currentlyInGame(grid) }">Waiting</td>
-          <td style="text-align: center;">
-            <button ng-click="joinGame(grid)" class="btn btn-success" ng-if="!currentlyInGame(grid)">Join</button>
+          <td>{{ grid.players.length || 0 }} / {{ grid.maxPlayers }}</td>
+          <td ng-class="{ 'animated flash infinite': currentlyInGame(grid) }">{{ status(grid) }}</td>
+          <td>
+            <button ng-click="joinGame(grid)" class="btn btn-success" ng-if="!currentlyInGame(grid)" ng-disabled="status(grid) === 'Playing' || status(grid) === 'Full'">Join</button>
             <button ng-click="goBackIn(grid)" class="btn btn-warning" ng-if="currentlyInGame(grid)">Go Back</button>
           </td>
         </tr>

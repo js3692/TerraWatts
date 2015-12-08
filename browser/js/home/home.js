@@ -19,14 +19,20 @@ app.controller('HomeCtrl', function ($scope, $state, $uibModal, AuthService, Ses
   else if (fromState === "grid") angular.element("#home").addClass("fadeInLeftBig");
 
   /* populates joinable game from backend, then uses live updates from firebase */
-  $scope.games = FirebaseFactory.getBase();
-  $scope.getLiveJoinableGames = FirebaseFactory.getLiveJoinableGames.bind(null, $scope);
+  $scope.grids = FirebaseFactory.getBase();
+  $scope.getAllGrids = FirebaseFactory.getAllGrids.bind(null, $scope);
 
   $scope.me = Session.user.username;
 
+  $scope.status = function (grid) {
+    if (grid.game == null) { 
+      if(grid.players.length < grid.maxPlayers) return "Waiting";
+      else return "Full"
+    } else return "Playing"
+  }
 
-  $scope.currentlyInGame = function (liveGame) {
-    return liveGame.players.some(function (player) {
+  $scope.currentlyInGame = function (grid) {
+    return grid.players.some(function (player) {
       if(player.user.id === Session.user.id) return true;
     });
   };

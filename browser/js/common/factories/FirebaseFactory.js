@@ -15,15 +15,15 @@ app.factory('FirebaseFactory', function($firebaseObject){
             if(key) return this.setConnection(key);
             return localConnection;
         },
-        getLiveJoinableGames: function(scope){
-            if(!scope.games) return joinableGames;
-            // The firebase object is not an array of games -- and it also contains keys that aren't games.
-            var joinableGames = [];
-            for(let gameKey in scope.games){
-                var gameObject = scope.games[gameKey]
-                if(gameObject && gameKey[0] === '-' && !gameObject.game) joinableGames.push(gameObject);  
+        getAllGrids: function(scope){
+            var allGrids = [];
+            if(!scope.grids) return allGrids;
+
+            for(let gridKey in scope.grids) {
+                var grid = scope.grids[gridKey]
+                if(grid && gridKey[0] === '-') allGrids.push(grid);
             }
-            return joinableGames;
+            return allGrids;
         },
         getChat: function(key){
             return new Firebase(baseUrl + key + '/chat');
