@@ -326,17 +326,19 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 
 			}, true);
 
-
+			var cartCounter = 0;
 			scope.$watch('cityCart', function(cart) {
+				cartCounter++
+				d3.selectAll('#pulsingCity')
+					.transition().duration(300)
+					.attr('r', 0)
+					.remove();
 				if(cart.length) {
-					d3.selectAll('#pulsingCity').remove();
 					var activePlayer = PlayGameFactory.getActivePlayer();
 					var me = PlayGameFactory.getMe();
-
 					if(activePlayer._id === me._id) {
 						cart.forEach(function(city) {
-							var cityName = city.name.replace(/[\s.]/g, '');
-
+							var cityName = city.name.replace(/[\s.,]/g, '');
 							var pulsingCircle = d3.select('#' + cityName)
 								.insert('circle', 'rect')
 								.attr('id', 'pulsingCity')
@@ -349,10 +351,10 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 
 							(function pulse() {
 								pulsingCircle
-									.transition().duration(1500)
+									.transition().duration(1200)
 									.attr('r', 50)
 									.ease('sine')
-									.transition().duration(1500)
+									.transition().duration(1200)
 									.attr('r', 20)
 									.ease('sine')
 									.each('end', pulse);
@@ -368,12 +370,15 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 			// Player watch
 			scope.$watch('grid.players', function(players) {
 				if(players) {
-					d3.selectAll('#pulsingCity').remove();
+					d3.selectAll('#pulsingCity')
+					.transition().duration(1000)
+					.attr('r', 400)
+					.attr('opacity', 0)
+					.remove();
+
 					var poppedCities = CityCartFactory.getPopulatedCities(players);
-					console.log('poppedCities', poppedCities)
 					poppedCities.forEach(function(city) {
-						var cityName = city.name.replace(/[\s.]/g, '');
-						console.log('city', city)
+						var cityName = city.name.replace(/[\s.,]/g, '');
 						for(var i = 0; i < city.players.length; i++) {
 							d3.select('#' + cityName + ' #slot' + (10+(i*5)) + 'Towers #leftTower')
 								.transition()
@@ -434,7 +439,7 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 		    	
 		    	cityVector
 		    		.attr('id', function(d) {
-		    			var cityName = d.properties.name.replace(/[\s.]/g, '');
+		    			var cityName = d.properties.name.replace(/[\s.,]/g, '');
 		    			return cityName;
 		    		})
 		    		.attr('region', function(d) { return d.properties.region })
