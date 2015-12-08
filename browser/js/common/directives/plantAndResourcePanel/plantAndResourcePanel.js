@@ -23,11 +23,17 @@ app.directive('plantAndResourcePanel', function(SliderFactory, PlayGameFactory, 
                 };
                 scope.plantsTrueResourcesFalse = viewObj[view];
             }
-            scope.firstFourOrStepThree = function(index){
-                if(PlayGameFactory.getStep() === 3) return 1;
-                if(index < 4) return 1;
+            scope.firstFourOrStepThreeOpacity = function(index){
+                if(PlayGameFactory.getStep() === 3 || index < 4) return 1;
                 return .5;
-            } 
+            }
+            
+            scope.firstFourOrStepThreeTruthyAndNotAuction = function(index){
+                if(PlayGameFactory.getGamePhase() !== 'plant' || !PlayGameFactory.iAmActivePlayer()) return false;
+                if(PlayGameFactory.getStep() === 3 || index < 4) return true;
+                return false;
+            }
+            
             scope.resourceColors = {
                 coal: '#C8824D',
                 oil: 'black',

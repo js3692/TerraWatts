@@ -5,6 +5,7 @@
             panel-default
             game-action-slider
             game-action-slider-pull">
+    {{getGamePhase()}}
     <div class='big-action-container'>
         <plant-action ng-switch-when="plant" plant="getPlantToBidOn()"></plant-action>
         <discard-plant-action ng-switch-when="plantDiscard"></discard-plant-action>

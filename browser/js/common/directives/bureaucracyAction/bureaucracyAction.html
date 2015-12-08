@@ -10,8 +10,8 @@
                 </div>
             </div>
         </div>
-        <div class="container choice-container" ng-show="hybridChoice === true">
-                Which resources do you want to use to power your hybrid plants?
+        <div class="container choice-container hybrid-choice" ng-show="hybridChoice === true">
+                Pick your resources.
             <table class="table">
                 <tr>
                     <td>
@@ -30,13 +30,13 @@
                     </td>
                 </tr>
             </table>
-            <button class="btn btn-lg" ng-click="submitHybridChoice()">Submit</button>
+            <button class="btn submit-hybrid-choice" ng-click="submitHybridChoice()">Submit</button>
         </div>
         <div class="col-lg-6 btn-col" ng-hide="hybridChoice === true">
             <div>
                 <div>
-                    <button class="btn" ng-click="powerPlants()">Power Plants</button>
-                    <button class="btn" ng-click="powerNone()">Power None</button>
+                    <button class="btn" ng-click="powerPlants()">Power</button>
+                    <button class="btn" ng-click="powerNone()">Pass</button>
                 </div>
                 <div  class='bureaucracy-stats' ng-show="plantCart.length">
                     <hr>

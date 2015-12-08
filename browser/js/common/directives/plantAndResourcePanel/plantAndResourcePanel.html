@@ -4,7 +4,8 @@
             plant-slider">
     <plant plant-to-action
            index="{{$index}}"
-           ng-style="{ opacity: firstFourOrStepThree($index) }"
+           ng-style="{ opacity: firstFourOrStepThreeOpacity($index) }"
+           ng-class="{ plantHover : firstFourOrStepThreeTruthyAndNotAuction($index)}"
            ng-show="plantsTrueResourcesFalse"
            ng-repeat="plant in getPlantMarket()" 
            plant="plant"

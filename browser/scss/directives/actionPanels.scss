@@ -56,6 +56,7 @@ bureaucracy-action {
         margin-top: 10px;
         img {
             border-radius: 6px;
+            max-width: 60px;
         }
     }
     .picked-plant {
@@ -74,9 +75,14 @@ bureaucracy-action {
         width: 100%;
         text-align: center;
         padding-top: 10px;
+        .submit-hybrid-choice {
+            position: fixed;
+            right: 250px;
+        }
         table {
+            margin-top: 10px;
             margin-bottom: 0;
-            .btn-group {}
+            width: 170px;
         }
         td {
             text-align: left;
@@ -91,6 +97,13 @@ bureaucracy-action {
             margin-top: 9px;
             max-width: 18px;
         }
+    }
+}
+
+resource-action, .hybrid-choice {
+    img {
+        filter: invert(100%);
+        -webkit-filter: invert(100%);
     }
 }
 

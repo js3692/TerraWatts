@@ -70,7 +70,9 @@ app.directive('plantAction', function(PlayGameFactory){
                     Boolean(PlayGameFactory.getAuction())
                 ].every(valid => valid);
             }
-            
+            scope.stepIsOne = function() {
+                return PlayGameFactory.getStep() === 1;
+            }   
         }
     }
 });

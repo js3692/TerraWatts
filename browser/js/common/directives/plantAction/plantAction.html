@@ -20,12 +20,14 @@
             <div ng-hide="getAuction()">
                 <div ng-hide="getPlantToBidOn() || getAuction()">
                     <h2>Pick a Plant</h2>
-                    <h4>&#8212   or   &#8212</h4>
-                    <button class="btn" ng-click="pass()">Pass</button>
+                    <div ng-hide="stepIsOne()">
+                        <h4>&#8212   or   &#8212</h4>
+                        <button class="btn" ng-click="pass()">Pass</button>
+                    </div>
                 </div>
                 <div ng-show="getPlantToBidOn()" class="buttons-sidebyside">
                     <button class="btn" ng-click="pickPlant()">Pick</button>
-                    <button class="btn" ng-click="pass()">Pass</button>
+                    <button class="btn" ng-hide="stepIsOne()" ng-click="pass()">Pass</button>
                 </div>
             </div>
             <div ng-show="shouldSeeAuctionButtons()" class="buttons-sidebyside">

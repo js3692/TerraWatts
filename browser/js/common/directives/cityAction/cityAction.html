@@ -1,7 +1,4 @@
 <div class="city-action-container">
-    <div class="waiting-container" ng-hide="shouldAllowCityBuying()">
-        <h2>Waiting on {{ getActivePlayer().user.username }} to buy cities...</h2>
-    </div>
     <div class="row" ng-show="shouldAllowCityBuying()">
         <div class="col-lg-6">
             Total: ${{ getCartPrice() }}

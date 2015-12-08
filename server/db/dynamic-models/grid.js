@@ -90,7 +90,7 @@ var fieldsToPopulate = [
     'state.auction.plant',
     'state.auction.choice',
     'state.auction.choice.player',
-    'state.auction.choice.user'
+    'state.auction.choice.player.user'
     
   ];
 

@@ -10,6 +10,9 @@ app.directive('commandCenter', function(PlayGameFactory){
             }
             
             scope.getWaitingOnPlayer = PlayGameFactory.getWaitingOnPlayer;
+            scope.isBureaucracyState = function(){
+                return PlayGameFactory.getGamePhase() === 'bureaucracy';
+            }
             scope.getTurn = PlayGameFactory.getTurn;
             scope.getStep = PlayGameFactory.getStep;
         }

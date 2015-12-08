@@ -68,9 +68,8 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
             
             function showHybridChoice() {
                 if(!iHaveBothOilAndCoal()) return false;
-                var myPlants = PlayGameFactory.getMyPlants();
-                for(var i = 0; i < myPlants.length; i++){
-                    if(myPlants[i].resourceType === 'hybrid') return true;    
+                for(var i = 0; i < plantCart.length; i++){
+                    if(plantCart[i].resourceType === 'hybrid') return true;    
                 }
                 return false;
             };
