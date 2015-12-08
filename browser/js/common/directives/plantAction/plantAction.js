@@ -8,7 +8,7 @@ app.directive('plantAction', function(PlayGameFactory){
         link: function(scope, elem, attrs){
             scope.getPlantToBidOn = PlayGameFactory.getPlantToBidOn;
             scope.getActivePlayer = PlayGameFactory.getActivePlayer;
-            
+            scope.justPicked = false;
             
             var update = {
                 phase: 'plant',
@@ -22,8 +22,8 @@ app.directive('plantAction', function(PlayGameFactory){
                     .then(function(){
                         update.data = {};
                     });
-                
-            }
+                scope.justPicked = true;
+            };
     
             scope.pickPlant = function(){
                 update.player = PlayGameFactory.getMe();
@@ -31,11 +31,16 @@ app.directive('plantAction', function(PlayGameFactory){
                 update.data.bid = scope.bid;
                 PlayGameFactory.continue(update);
                 PlayGameFactory.setPlantToBidOn(null);
+                scope.justPicked = true;
             };
             
-            scope.pickAnotherPlant = function(){
-                PlayGameFactory.setPlantToBidOn(null);
-            };
+            scope.$watch('auction', function(newVal, oldVal){
+                if(newVal) scope.justPicked = false;
+            })
+            
+//            scope.pickAnotherPlant = function(){
+//                PlayGameFactory.setPlantToBidOn(null);
+//            };
             
             scope.getAuction = function(){
                 scope.auction = PlayGameFactory.getAuction();

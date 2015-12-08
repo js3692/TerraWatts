@@ -57,8 +57,8 @@ app.directive('resourceAction', function(PlayGameFactory){
                         wishlist: PlayGameFactory.getWishlist()
                     }
                 };
-                PlayGameFactory.continue(update);
-                PlayGameFactory.clearWishlist();
+                PlayGameFactory.continue(update)
+                    .then(PlayGameFactory.clearWishlist);
             };
             
             scope.pass = function(){

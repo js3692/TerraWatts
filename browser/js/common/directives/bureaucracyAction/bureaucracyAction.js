@@ -13,7 +13,7 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
                 var myResources = _.cloneDeep(PlayGameFactory.getMyResources());
                 for(var i = 0; i < scope.plantCart.length; i++) {
                     var plantResourceType = scope.plantCart[i].resourceType;
-                    myResources[plantResourceType] -= scope.plantCart[i].numResources;
+                    myResources[plantResourceType] -= scope.plantCart[i].numResources;  
                     if(myResources[plantResourceType] < 0) return true;
                 }
                 return false;
