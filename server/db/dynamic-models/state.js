@@ -95,7 +95,9 @@ schema.methods.go = function (game) {
     game.markModified('turnOrder');
 		return Promise.all([this.save(), game.save()])
 	} else {
-		this.save();
+		delete game.resourceBank.green;
+		game.markModified('resourceBank');
+		Promise.all([this.save(), game.save()]);
 	}
 };
 
