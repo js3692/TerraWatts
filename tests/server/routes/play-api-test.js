@@ -388,7 +388,7 @@ describe('Play Route: ', function () {
             phase: 'resource',
             player: playersByTurnOrder[1],
             data: {
-              wishlist: { coal: 2 }
+              wishlist: { coal: 3 }
             }
           })
           .expect(201)
@@ -397,9 +397,9 @@ describe('Play Route: ', function () {
 
             Grid.findById(gridId).deepPopulate(fieldsToDeepPopulate).exec()
               .then(function (deepPopulatedGrid) {
-                expect(deepPopulatedGrid.game.turnOrder[1].resources.coal).to.equal(2);
-                expect(deepPopulatedGrid.game.turnOrder[1].money).to.equal(playersByTurnOrder[1].money - 2)
-                expect(deepPopulatedGrid.game.resourceMarket.coal).to.equal(22);
+                expect(deepPopulatedGrid.game.turnOrder[1].resources.coal).to.equal(3);
+                expect(deepPopulatedGrid.game.turnOrder[1].money).to.equal(playersByTurnOrder[1].money - 3)
+                expect(deepPopulatedGrid.game.resourceMarket.coal).to.equal(21);
                 done();
               }).catch(done);
           });
@@ -423,10 +423,10 @@ describe('Play Route: ', function () {
               .then(function (deepPopulatedGrid) {
                 expect(deepPopulatedGrid.game.turnOrder[0].resources.coal).to.equal(2);
                 expect(deepPopulatedGrid.game.turnOrder[0].resources.oil).to.equal(2);
-                expect(deepPopulatedGrid.game.resourceMarket.coal).to.equal(20);
+                expect(deepPopulatedGrid.game.resourceMarket.coal).to.equal(19);
                 expect(deepPopulatedGrid.game.resourceMarket.oil).to.equal(16);
 
-                expect(deepPopulatedGrid.game.turnOrder[0].money).to.equal(playersByTurnOrder[0].money - 9)
+                expect(deepPopulatedGrid.game.turnOrder[0].money).to.equal(playersByTurnOrder[0].money - 10)
 
                 agentsByTurnOrder = [];
                 deepPopulatedGrid.game.turnOrder.forEach(function (player) {
@@ -550,9 +550,10 @@ describe('Play Route: ', function () {
                 expect(deepPopulatedGrid.state.remainingPlayers.length).to.equal(2);
                 expect(deepPopulatedGrid.state.phase).to.equal('plant');
                 expect(deepPopulatedGrid.game.turnOrder[1].money).to.equal(playersByTurnOrder[1].money + 22);
-                expect(deepPopulatedGrid.game.turnOrder[1].resources.coal).to.equal(0);
+                expect(deepPopulatedGrid.game.turnOrder[1].resources.coal).to.equal(1);
                 expect(deepPopulatedGrid.game.turn).to.equal(2);
                 expect(deepPopulatedGrid.game.stepThreePlants.length).to.equal(1);
+                expect(deepPopulatedGrid.game.resourceMarket.coal).to.equal(21)
 
                 agentsByTurnOrder = [];
                 deepPopulatedGrid.game.turnOrder.forEach(function (player) {
@@ -575,7 +576,7 @@ describe('Play Route: ', function () {
         var nextTurnIdx;
         var regionsInPlay, citiesInPlay; */
 
-      it('should validate and proceed game with first player\'s bid at 7', function (done) {
+      xit('should validate and proceed game with first player\'s bid at 7', function (done) {
         Plant.findOne({ rank: 7 })
           .then(function (plantSeven) {
             agentsByTurnOrder[0]
@@ -611,7 +612,7 @@ describe('Play Route: ', function () {
           });
       });
 
-      it('should validate and proceed game with next player\'s decision to pass', function (done) {
+      xit('should validate and proceed game with next player\'s decision to pass', function (done) {
         agentsByClockwiseOrder[nextTurnIdx]
           .post(baseUrl + gridId)
           .send({
@@ -643,7 +644,7 @@ describe('Play Route: ', function () {
           });
       });
 
-      it('should validate and proceed game with second player\'s decision to buy the 8', function (done) {
+      xit('should validate and proceed game with second player\'s decision to buy the 8', function (done) {
         Plant.findOne({ rank: 8 })
           .then(function (plantEight) {
             agentsByTurnOrder[1]
