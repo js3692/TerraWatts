@@ -100,7 +100,9 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     
     PGFactory.getGamePhase = function(){
         if(grid && grid.state) {
-            if(grid.state.auction && grid.state.auction.choice) return "plantDiscard";
+            if(grid.state.auction && grid.state.auction.choice) {
+                return "plantDiscard";
+            } 
             else return grid.state.phase;
         }
     };
@@ -116,17 +118,18 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     }
     
     PGFactory.getWaitingOnPlayer = function(){
-        if(PGFactory.iAmActiveAuctionPlayer() || PGFactory.iAmActiveDiscarder()) return null;
-        if(PGFactory.iAmActivePlayer() && !PGFactory.getAuction()) return null;
         var auction = PGFactory.getAuction();
-        
         if(auction) {
-            if(auction.choice) return auction.choice.player.user.username;
-            else return auction.activePlayer.user.username;
-        } else {
-            var activePlayer = PGFactory.getActivePlayer();
-            if(activePlayer) return activePlayer.user.username;
+            if(auction.choice) {
+                if(PGFactory.iAmActiveDiscarder()) return null;
+                return auction.choice.player.user.username;
+            }
+            if(PGFactory.iAmActiveAuctionPlayer()) return null;
+            return auction.activePlayer.user.username;
         }
+        if(PGFactory.iAmActivePlayer() && !PGFactory.getAuction()) return null;
+        var activePlayer = PGFactory.getActivePlayer();
+        if(activePlayer) return activePlayer.user.username;
     }
     
     PGFactory.iAmActiveDiscarder = function(){
@@ -196,11 +199,13 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     }
     
     PGFactory.getTurn = function(){
-        return PGFactory.getGame().turn;
+        var game = PGFactory.getGame();
+        if(game) return game.turn;
     }
     
     PGFactory.getStep = function(){
-        return PGFactory.getGame().step;
+        var game = PGFactory.getGame();
+        if(game) return game.step;
     }
     
     return PGFactory;

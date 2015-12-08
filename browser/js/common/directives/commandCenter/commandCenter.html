@@ -1,13 +1,15 @@
 <div>
     <div class="glyphicon glyphicon-cd top-right-cd"></div>
     <div class="glyphicon glyphicon-cd top-left-cd"></div>
+    <div class="glyphicon glyphicon-cd bottom-right-cd"></div>
+    <div class="glyphicon glyphicon-cd bottom-left-cd"></div>
     <div class="command-text">
         <div class="phase-text">
             PHASE: <small>{{ getGamePhase() }}</small> <br>
             TURN: <small>{{ getTurn() }} </small><br>
             STEP: <small>{{ getStep() }} </small>
         </div>
-        <div class="waiting-on-text" ng-show="getWaitingOnPlayer()">
+        <div class="waiting-on-text" ng-show="getWaitingOnPlayer()" ng-hide="isBureaucracyState()">
             Waiting on {{ getWaitingOnPlayer() }}...
         </div>
     </div>

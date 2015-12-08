@@ -1,7 +1,4 @@
 <div class="resource-action-container">
-    <div class="waiting-container" ng-hide="shouldShowResourceButtons()">
-        <h2>Waiting on {{ getActivePlayer().user.username }} to buy resources...</h2>
-    </div>
     <div class="row" ng-show="shouldShowResourceButtons()">
         <div class="col-lg-6">
             <table class="table" border="0">
@@ -17,8 +14,8 @@
         </div>
         <div class="col-lg-6 btn-col">
             <div class="btn-group">
-                <button class="btn" ng-click="buyResources()">Buy</button>
-                <button class="btn" ng-click="pass()">Pass</button>
+                <button class="btn pick" ng-click="buyResources()">Buy</button>
+                <button class="btn pass" ng-click="pass()">Pass</button>
             </div>
         </div>
     </div>

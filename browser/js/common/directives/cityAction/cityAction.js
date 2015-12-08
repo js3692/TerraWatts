@@ -8,6 +8,10 @@ app.directive('cityAction', function(PlayGameFactory, CityCartFactory){
             scope.shouldAllowCityBuying = PlayGameFactory.iAmActivePlayer;
             scope.getCartPrice = CityCartFactory.getCartPrice.bind(null, scope.getCart());
             
+            scope.notEnoughMoney = function(){
+                return scope.getCartPrice() >= PlayGameFactory.getMe().money;
+            }
+            
             scope.buyCities = function(){
                 var update = {
                     phase: 'city',
@@ -17,8 +21,8 @@ app.directive('cityAction', function(PlayGameFactory, CityCartFactory){
                     }
                 };
                 
-                PlayGameFactory.continue(update);
-                CityCartFactory.clearCart();
+                PlayGameFactory.continue(update)
+                    .then(CityCartFactory.clearCart);
             };
             
             scope.pass = function(){
@@ -29,9 +33,8 @@ app.directive('cityAction', function(PlayGameFactory, CityCartFactory){
                         citiesToAdd: []
                     }
                 };
-                PlayGameFactory.continue(update);
-                
-                CityCartFactory.clearCart();
+                PlayGameFactory.continue(update)
+                    .then(CityCartFactory.clearCart);                
             }
         }
     }

@@ -14,23 +14,22 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div ng-show="auction && !shouldSeeAuctionButtons()">
-                Waiting on {{ auction.activePlayer.user.username }} to bid...
-            </div>
             <div ng-hide="getAuction()">
-                <div ng-hide="getPlantToBidOn() || getAuction()">
+                <div ng-hide="getPlantToBidOn() || getAuction() || justPicked">
                     <h2>Pick a Plant</h2>
-                    <h4>&#8212   or   &#8212</h4>
-                    <button class="btn" ng-click="pass()">Pass</button>
+                    <div ng-hide="turnIsOne()">
+                        <h4>&#8212   or   &#8212</h4>
+                        <button class="btn pass" ng-click="pass()">Pass</button>
+                    </div>
                 </div>
                 <div ng-show="getPlantToBidOn()" class="buttons-sidebyside">
-                    <button class="btn" ng-click="pickPlant()">Pick</button>
-                    <button class="btn" ng-click="pass()">Pass</button>
+                    <button class="btn pick" ng-click="pickPlant()">Pick</button>
+                    <button class="btn pass" ng-hide="turnIsOne()" ng-click="pass()">Pass</button>
                 </div>
             </div>
             <div ng-show="shouldSeeAuctionButtons()" class="buttons-sidebyside">
-                    <button class="btn" ng-click="bidFor(bid)">Bid</button>
-                    <button class="btn" ng-click="pass()">Pass</button>
+                    <button class="btn pick" ng-click="bidFor(bid)">Bid</button>
+                    <button class="btn pass" ng-click="pass()">Pass</button>
             </div>
         </div>
         <div ng-show="auction" class="col-lg-4">
