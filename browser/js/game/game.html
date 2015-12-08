@@ -4,6 +4,6 @@
                  auction="grid.state.auction"
                  players="grid.players"></plant-and-resource-panel>
     <player-panel></player-panel>
-    <game-action-panel></game-action-panel>
+    <game-action-panel ng-class="{'game-action-hide': hideGameAction()}"></game-action-panel>
 	<game-map grid='grid' city-cart='cityCart'></game-map>
 </div>

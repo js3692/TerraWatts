@@ -26,8 +26,7 @@ discard-plant-action, {
             margin-left: 35px;
         }
     }
-    button.btn.btn-lg,
-    button.btn.btn-lg:hover,
+    
     button.btn,
     button.btn:hover {
         color: white;
@@ -44,6 +43,9 @@ city-action {
         padding: 20px 30px 0;
         display: block;
         float: left;
+    }
+    .col-lg-6 {
+        padding-top: 50px;
     }
 }
 

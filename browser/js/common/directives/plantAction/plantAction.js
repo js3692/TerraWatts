@@ -50,7 +50,7 @@ app.directive('plantAction', function(PlayGameFactory){
                 PlayGameFactory.continue(update);
             }
             
-            scope.showWaitingMessage = function() {
+            scope.hideAuction = function() {
                 return [
                     !PlayGameFactory.iAmActivePlayer(),
                     !PlayGameFactory.getAuction()

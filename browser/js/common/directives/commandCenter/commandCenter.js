@@ -9,10 +9,9 @@ app.directive('commandCenter', function(PlayGameFactory){
                 return phase;
             }
             
-            scope.getWaitingOnPlayer = function() {
-                
-                return PlayGameFactory.getWaitingOnPlayer();
-            }
+            scope.getWaitingOnPlayer = PlayGameFactory.getWaitingOnPlayer;
+            scope.getTurn = PlayGameFactory.getTurn;
+            scope.getStep = PlayGameFactory.getStep;
         }
     }
 });

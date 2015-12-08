@@ -3,7 +3,9 @@
     <div class="glyphicon glyphicon-cd top-left-cd"></div>
     <div class="command-text">
         <div class="phase-text">
-            PHASE: {{ getGamePhase() }}
+            PHASE: <small>{{ getGamePhase() }}</small> <br>
+            TURN: <small>{{ getTurn() }} </small><br>
+            STEP: <small>{{ getStep() }} </small>
         </div>
         <div class="waiting-on-text" ng-show="getWaitingOnPlayer()">
             Waiting on {{ getWaitingOnPlayer() }}...

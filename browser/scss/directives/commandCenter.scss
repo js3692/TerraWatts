@@ -7,14 +7,15 @@ command-center {
     height: 200px;
     width: 200px;
     .command-text {
-        text-align: center;
-        margin-top: 30px;
+        text-align: left;
+        margin-top: 50px;
+        padding-left: 30px;
         div {
             margin-top: 10px;
         }
     }
     
-    .top-right-cd, .top-left-cd {
+    .top-right-cd, .top-left-cd{
         color: white;
         font-size: 1.5em;
         position: fixed;

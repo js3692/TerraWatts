@@ -1,5 +1,5 @@
 <div class="plant-action-container">
-    <div class="row">
+    <div class="row" ng-hide="hideAuction()">
         <div class="col-lg-4">
             <div ng-if="getPlantToBidOn() || auction">
                 <div ng-show="auction" class="auction-text">
@@ -9,7 +9,7 @@
                 </plant>
                 <bid ng-show="shouldSeeBidButtons()"
                      start="{{ auction ? auction.bid + 1 : getPlantToBidOn().rank}}" 
-                     ng-model="$parent.$parent.bid">
+                     ng-model="$parent.bid">
                 </bid>
             </div>
         </div>
@@ -21,21 +21,20 @@
                 <div ng-hide="getPlantToBidOn() || getAuction()">
                     <h2>Pick a Plant</h2>
                     <h4>&#8212   or   &#8212</h4>
+                    <button class="btn" ng-click="pass()">Pass</button>
                 </div>
-                <div ng-class="{ 'buttons-down' : plant}">
-                    <button class="btn btn-lg" ng-show="getPlantToBidOn()" ng-click="pickPlant()">Pick This Plant</button>
-                    <button class="btn btn-lg" ng-click="pass()">Pass</button>
+                <div ng-show="getPlantToBidOn()" class="buttons-sidebyside">
+                    <button class="btn" ng-click="pickPlant()">Pick</button>
+                    <button class="btn" ng-click="pass()">Pass</button>
                 </div>
             </div>
-            <div ng-show="shouldSeeAuctionButtons()" class="buttons-down">
-                <div>
-                    <button class="btn btn-lg" ng-click="bidFor(bid)">Bid</button>
-                    <button class="btn btn-lg" ng-click="pass()">Pass</button>
-                </div>
+            <div ng-show="shouldSeeAuctionButtons()" class="buttons-sidebyside">
+                    <button class="btn" ng-click="bidFor(bid)">Bid</button>
+                    <button class="btn" ng-click="pass()">Pass</button>
             </div>
         </div>
         <div ng-show="auction" class="col-lg-4">
-            Players still in auction:
+            Still in auction:
             <table class="table">
                 <tr ng-repeat="player in auction.remainingPlayers">
                     <td>

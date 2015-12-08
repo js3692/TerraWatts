@@ -3,7 +3,7 @@
         <h2>Waiting on {{ getActivePlayer().user.username }} to buy resources...</h2>
     </div>
     <div class="row" ng-show="shouldShowResourceButtons()">
-        <div class="col-lg-4">
+        <div class="col-lg-6">
             <table class="table" border="0">
                 <tr ng-repeat="resource in listBuyableResources()">
                     <td>
@@ -15,10 +15,10 @@
                 </tr>
             </table>
         </div>
-        <div class="col-lg-4 col-lg-offset-4 btn-col">
+        <div class="col-lg-6 btn-col">
             <div class="btn-group">
-                <button class="btn btn-lg" ng-click="buyResources()">Buy</button>
-                <button class="btn btn-lg" ng-click="pass()">Pass</button>
+                <button class="btn" ng-click="buyResources()">Buy</button>
+                <button class="btn" ng-click="pass()">Pass</button>
             </div>
         </div>
     </div>

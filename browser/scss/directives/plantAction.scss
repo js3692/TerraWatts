@@ -3,6 +3,12 @@ plant-action {
     font-weight: 100;
     text-align: center;
     
+    plant {
+        img {
+            border-radius: 10px;
+        }
+    }
+    
     .table {
         margin-top: 5px;
         font-size: .6em;
@@ -10,15 +16,25 @@ plant-action {
     .auction-text {
         padding-left: 10px;        
     }
-    .plant-action-container {
-        padding-top: 20px;
-    }
+
     .row, col-lg-4 {
         width: 100%;
     }
     
     bid {
         margin-left: 6px;
+        color: white;   
+        button.btn, button.btn:hover {
+            color: white;
+            background-color: $main-background;
+            border: 1px solid white;
+            height: 35px;
+            width: 40px;
+        }
+        
+        button.btn.display-number {
+            width: 50px;
+        }
     }
     
     hr {
@@ -33,8 +49,8 @@ plant-action {
         padding-top: 10px;
         text-align: center;
     }
-    button.btn.btn-lg,
-    button.btn.btn-lg:hover {
+    button.btn,
+    button.btn:hover {
         color: white;
         font-weight: 100;
         background-color: $main-background;
@@ -44,5 +60,10 @@ plant-action {
     
     .buttons-down {
         margin-top: 40px;
+    }
+
+    
+    .buttons-sidebyside {
+        margin-top: 50px;
     }
 }

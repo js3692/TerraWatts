@@ -124,7 +124,8 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
             if(auction.choice) return auction.choice.player.user.username;
             else return auction.activePlayer.user.username;
         } else {
-            return PGFactory.getActivePlayer().user.username;
+            var activePlayer = PGFactory.getActivePlayer();
+            if(activePlayer) return activePlayer.user.username;
         }
     }
     
@@ -192,6 +193,14 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     
     PGFactory.getStep = function(){
         return +PGFactory.getGame().step;
+    }
+    
+    PGFactory.getTurn = function(){
+        return PGFactory.getGame().turn;
+    }
+    
+    PGFactory.getStep = function(){
+        return PGFactory.getGame().step;
     }
     
     return PGFactory;
