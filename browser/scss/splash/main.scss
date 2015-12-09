@@ -13,6 +13,11 @@
 		}
 	}
 
+	.title, .enter-button {
+		-webkit-animation-delay: 1s;
+		-moz-animation-delay: 1s;
+		-ms-animation-delay: 1s;
+	}
 	.enter-button {
 		margin-top: 15px;
 		text-align: center;
