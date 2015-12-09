@@ -345,12 +345,13 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 							var pulsingCircle = d3.select('#' + cityName)
 								.insert('circle', 'rect')
 								.attr('id', 'pulsingCity')
-								.attr('stroke', '#132330')
+								// .attr('stroke', '#132330')
+								.attr('stroke', 'white')
 								.attr('stroke-width', 3)
 								.attr('r', 20)
 								.attr('cx', cityWidth/2)
 								.attr('cy', cityHeight/2)
-								.attr('opacity', 0.5);
+								.attr('opacity', 0.7);
 
 							(function pulse() {
 								pulsingCircle
