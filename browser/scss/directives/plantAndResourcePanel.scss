@@ -77,12 +77,19 @@ plant-and-resource-panel {
             border-radius: 6px;
         }
     }
-    plant:hover {
+    
+    .plantHover {
         img {
-            border: 4px solid $main-background;
-            border-radius: 8px;
-        }    
+             transition: all .2s ease-in-out; 
+        }
     }
+
+    .plantHover:hover {
+        img {
+            transform: scale(.7);
+        }
+    }
+
 
     .selectedPlantOrResource, .selectedPlantOrResource:hover {
         background-color: #FA5349;

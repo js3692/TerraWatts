@@ -56,6 +56,8 @@ bureaucracy-action {
         margin-top: 10px;
         img {
             border-radius: 6px;
+            max-width: 60px;
+            margin-left: 0px;
         }
     }
     .picked-plant {
@@ -63,6 +65,10 @@ bureaucracy-action {
     }
     .bureaucracy-stats {
         text-align: center;
+        position: fixed;
+        left: 0;
+        top: 100px;
+        width: 200px;
     }
     .btn-col {
         text-align: center;
@@ -74,13 +80,22 @@ bureaucracy-action {
         width: 100%;
         text-align: center;
         padding-top: 10px;
+        .submit-hybrid-choice {
+            position: fixed;
+            right: 250px;
+        }
         table {
+            margin-top: 10px;
             margin-bottom: 0;
-            .btn-group {}
+            width: 170px;
         }
         td {
             text-align: left;
         }
+    }
+    
+    .button-down {
+        margin-top: 20px;
     }
 }
 
@@ -91,6 +106,13 @@ bureaucracy-action {
             margin-top: 9px;
             max-width: 18px;
         }
+    }
+}
+
+resource-action, .hybrid-choice {
+    img {
+        filter: invert(100%);
+        -webkit-filter: invert(100%);
     }
 }
 

@@ -1,32 +1,34 @@
 <div class="menu-panel-body
             panel 
             panel-default
-            plant-slider">
+            plant-slider"
+     ng-switch on="plantsOrResources">
     <plant plant-to-action
            index="{{$index}}"
-           ng-style="{ opacity: firstFourOrStepThree($index) }"
-           ng-show="plantsTrueResourcesFalse"
+           ng-style="{ opacity: firstFourOrStepThreeOpacity($index) }"
+           ng-class="{ plantHover : firstFourOrStepThreeTruthyAndNotAuction($index)}"   
            ng-repeat="plant in getPlantMarket()" 
            plant="plant"
-           rank="{{plant.rank}}">
+           rank="{{plant.rank}}"
+           ng-switch-when="plant">
     </plant>
     <resource-bars resource-market="getResourceMarket()" 
           resource-colors="resourceColors"
           resource-wishlist="getResourceWishlist()"
-          ng-hide="plantsTrueResourcesFalse"
-          ng-click="buyResources()">
+          ng-click="buyResources()"
+          ng-switch-when="resource">
     </resource-bars>
 </div>
 <div class="plant-slider">
     <div class="menu-tab plant-menu-tab"
-         ng-click="changeView('plants')"
-         ng-class="{ selectedPlantOrResource: plantsTrueResourcesFalse}">
+         ng-click="changeView('plant')"
+         ng-class="{ selectedPlantOrResource: plantsOrResources === 'plant'}">
         <span class="glyphicon glyphicon-off">
         </span>
     </div>
     <div class="menu-tab resource-menu-tab"
-         ng-click="changeView('resources')"
-         ng-class="{ selectedPlantOrResource: !plantsTrueResourcesFalse}">
+         ng-click="changeView('resource')"
+         ng-class="{ selectedPlantOrResource: plantsOrResources === 'resource'}">
         <span class="glyphicon glyphicon-oil">
         </span>
     </div>

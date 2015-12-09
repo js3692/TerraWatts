@@ -114,6 +114,9 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 					const revisedConnections = game.connections.map(function(connection) { return connectionType(connection); });
 					const revisedDistMarkers = game.connections.map(function(connection) { return connectionDistType(connection); });
 
+					var center = projection(MapFactory.getMapCenter(revisedCities));
+				    zoom.translate([width - center[0], height - center[1]]);
+
 					svg.call(zoom);
 
 					cityGroups = citiesCollection.selectAll('g')
@@ -450,8 +453,6 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 					});
 
 		    	connectionVector
-			  //   	.attr('stroke', '#132330')
-					// .attr('stroke-width', '1px')
 			    	.attr('d', connectionPath);
 
 		    	connectionDistVector

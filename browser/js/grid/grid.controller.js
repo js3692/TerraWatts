@@ -12,6 +12,7 @@ app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, Firebase
       var emptySlots = $scope.grid.maxPlayers - players.length;
       $scope.players = players.concat(waiting.slice(0, emptySlots));
       $scope.owner = players[0].user.username === theUser.username;
+      
     }
   }, true);
   $scope.key = key;
