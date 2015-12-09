@@ -1,5 +1,12 @@
-<img ng-src="{{getImageUrl()}}" id="splash-background">
-<h1 id="terrawatts-title" ng-style="{color: imageInfo.color}" class="animated fadeIn">TerraWatts</h1>
-<div class="button-wrapper">
-	<button ng-style="{color: imageInfo.color, borderColor: imageInfo.color}" class="animated fadeInLeft" id="enter" ui-sref="login">Enter</button>
+<div id="splash-main" preload-bg-image="{{ getImageUrl() }}" animation-type="fadeIn">
+	<div class="row title">
+		<div class="col-xs-4 col-xs-offset-2">
+			<h1 ng-style="{color: imageInfo.color}" class="animated fadeInDown">TerraWatts</h1>
+		</div>
+	</div>
+	<div class="row enter-button">
+		<div class="col-xs-4 col-xs-offset-2">
+			<button ng-style="{color: imageInfo.color, 'border-color': imageInfo.color}" class="animated fadeInUp" ui-sref="login">Enter</button>
+		</div>
+	</div>
 </div>

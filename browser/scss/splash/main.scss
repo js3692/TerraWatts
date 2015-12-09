@@ -1,28 +1,32 @@
-#splash-background {
+#splash-main {
+	min-height: 100vh;
+	height: 100%;
 	width: 100%;
-	z-index: 0;
-}
+	padding-top: 10%;
+	background: no-repeat center center;
+  background-size: cover;
 
-#terrawatts-title {
-	position: absolute;
-	top: 10%;
-	left: 20%;
-	font-size: 80px;
-	z-index: 1;
-}
+	.title {
+		text-align: center;
+		h1 {
+			font-size: 4.5em;
+		}
+	}
 
-.button-wrapper {
-	text-align: center;
-	z-index: 1;
-}
+	.enter-button {
+		margin-top: 15px;
+		text-align: center;
+	}
 
-#enter {
-	position: absolute;
-	width: 120px;
-	height: 70px;
-	top: 30%;
-	left: 35%;
-	font-size: 25px;
-	background: transparent;
-	border: 2px solid;
+	button {
+		text-align: center;
+		width: 200px;
+		height: 50px;
+		font-size: 25px;
+		background: transparent;
+		border: 2px solid;
+		&:hover {
+			background: #4e89b9;
+		}
+	}
 }
