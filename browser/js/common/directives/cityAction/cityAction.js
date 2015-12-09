@@ -9,7 +9,7 @@ app.directive('cityAction', function(PlayGameFactory, CityCartFactory){
             scope.getCartPrice = CityCartFactory.getCartPrice.bind(null, scope.getCart());
             
             scope.notEnoughMoney = function(){
-                return scope.getCartPrice() >= PlayGameFactory.getMe().money;
+                return scope.getCartPrice() > PlayGameFactory.getMe().money;
             }
             
             scope.buyCities = function(){
