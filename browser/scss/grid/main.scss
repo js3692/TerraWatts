@@ -90,7 +90,7 @@
     position: relative;
 
     .bottom-icons {
-      margin-top: 20px;
+      margin-top: 18px;
     }
     span.glyphicon-cd {
       color: #d8d8d8;
@@ -175,6 +175,24 @@
     margin-right: 14px;
     height: calc(100% - 38px);
     width: calc(100% - 28px);
+    .region-one {
+      fill: purple;
+    }
+    .region-two {
+      fill: yellow;
+    }
+    .region-three {
+      fill: brown;
+    }
+    .region-four {
+      fill: blue;
+    }
+    .region-five {
+      fill: red;
+    }
+    .region-six {
+      fill: green;
+    }
   }
 
   chat {
