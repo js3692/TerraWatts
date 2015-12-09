@@ -118,7 +118,7 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                 });
 
             svg.selectAll('.text')
-                .data(['coal', 'oil', 'trash', 'nuke']).enter()
+                .data(['coal', 'oil', 'trash', 'uranium']).enter()
                 .append('text')
                 .attr('class', 'text')
                 .attr('x', 5)
