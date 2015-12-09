@@ -32,7 +32,7 @@ app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, Firebase
     return false;
   };
 
-  RegionSelectorFactory.draw("#region-selector");
+  RegionSelectorFactory.draw();
   
   $scope.$watch('grid.game', function(game){
       if(game) $state.go('game', { id: gridId, key: key });
