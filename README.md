@@ -1,1 +1,1 @@
-# Grid
+# TerraWatts
