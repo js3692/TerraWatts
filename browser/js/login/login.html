@@ -10,32 +10,32 @@
     </div>
     <form id="login-form" class="form-horizontal animated flipInX" name="loginForm" ng-submit="loginForm.$valid && sendLogin(login)" ng-if="!loggedIn">
       <div class="form-group">
-        <label for="username" class="col-sm-offset-3 col-sm-2 control-label">Username</label>
-        <div class="col-sm-3">
+        <label for="username" class="col-xs-offset-2 col-xs-2 control-label">Username</label>
+        <div class="col-xs-6">
           <input type="text" ng-model="login.username" required class="form-control" id="username" placeholder="Enter username">
         </div>
       </div>
       <div class="form-group">
-        <label for="login-password" class="col-sm-offset-3 col-sm-2 control-label">Password</label>
-        <div class="col-sm-3">
+        <label for="login-password" class="col-xs-offset-2 col-xs-2 control-label">Password</label>
+        <div class="col-xs-6">
           <input type="password" ng-model="login.password" required class="form-control" id="login-password" placeholder="Password">
         </div>
       </div>
-      <div class="col-sm-offset-4 col-sm-4">
+      <div class="col-xs-offset-4 col-xs-6">
         <uib-alert type="danger" ng-show="error">
             {{ error }}
         </uib-alert>
       </div>
       <br ng-if="!loggedIn">
       <div class="form-group">
-        <div class="col-sm-offset-4 col-sm-4">
+        <div class="col-xs-offset-2 col-xs-8">
           <button type="submit" class="btn btn-primary btn-block">Log In</button>
         </div>
       </div>
     </form>
     <br>
     <div class="row animated fadeInUp" ng-if="!loggedIn">
-      <div class="col-sm-offset-4 col-sm-4 signup-message">
+      <div class="col-xs-offset-4 col-xs-4 signup-message">
         <hr>
         <br>
         <h4>
@@ -44,7 +44,7 @@
       </div>
     </div>
     <div class="row" ng-if="loggedIn">
-      <div class="col-sm-offset-4 col-sm-4">
+      <div class="col-xs-offset-4 col-xs-4">
         <button class="btn btn-success btn-block btn-lg animated slideInDown" ng-click="continue()">Continue as {{ username }}</button>
         <div class="animated fadeInUp">
           <br>
