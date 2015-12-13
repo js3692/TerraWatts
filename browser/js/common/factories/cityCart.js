@@ -74,7 +74,7 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
         return populatedCities;
     }
     
-    //city price algorithm -- needs dij and num residents -- rename;
+    //city price algorithm -- needs dij and num residents.
     
     function totalCost(game, citiesToAdd, player) {
         var network = player.cities || [];
