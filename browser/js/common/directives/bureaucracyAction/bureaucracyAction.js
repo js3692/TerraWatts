@@ -3,11 +3,11 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
         restrict: 'E',
         templateUrl: 'js/common/directives/bureaucracyAction/bureaucracyAction.html',
         link: function(scope, elem, attrs){
-            scope.madeChoice = false;
-            scope.hybridChoice = false;
+            scope.madeChoice = false, scope.hybridChoice = false, scope.plantCart = [];
             
-            
-            scope.plantCart = [];
+            function clearPlantCart(){
+                scope.plantCart = [];
+            }
             
             scope.notEnoughResources = function(){
                 var myResources = _.cloneDeep(PlayGameFactory.getMyResources());
@@ -38,7 +38,8 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
                         resourcesToUseForHybrids: PlayGameFactory.getResourcesToUseForHybrids()
                     }
                 };
-                PlayGameFactory.continue(update);
+                PlayGameFactory.continue(update)
+                    .then(clearPlantCart);
                 PlayGameFactory.clearResourcesToUseForHybrids();
                 scope.madeChoice = true;
             }
@@ -54,7 +55,8 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
                             plantsToPower: scope.plantCart
                         } 
                     }
-                    PlayGameFactory.continue(update);
+                    PlayGameFactory.continue(update)
+                        .then(clearPlantCart);
                     scope.madeChoice = true;
                 }
             } 
@@ -67,27 +69,47 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
                         plantsToPower: []    
                     } 
                 };
-                PlayGameFactory.continue(update);
+                PlayGameFactory.continue(update)
+                    .then(clearPlantCart);
                 scope.madeChoice = true;
             }
             
             scope.nonePowered = function(){
                 return scope.plantCart.length === 0;
             }
-            
-            function iHaveBothOilAndCoal() {
-                var myResources = PlayGameFactory.getMyResources();
-                return myResources['oil'] > 0 && myResources['oil'] > 0; 
-            }
-            
+                
             
             function showHybridChoice() {
-                if(!iHaveBothOilAndCoal()) return false;
-                for(var i = 0; i < scope.plantCart.length; i++){
-                    if(scope.plantCart[i].resourceType === 'hybrid') return true;    
+                var myResources = PlayGameFactory.getMyResources();
+                var hybridResourcesNeeded = scope.plantCart
+                    .reduce((resourcesNeeded, plant) => {
+                        if(plant.resourceType === 'hybrid') resourcesNeeded += plant.numResources;
+                        return resourcesNeeded;
+                    }, 0);
+                
+                var hybridOptions = [];
+
+                for(var i = 0; i <= hybridResourcesNeeded; i++) {
+                    hybridOptions.push({coal: i, oil: hybridResourcesNeeded - i});
                 }
-                return false;
+                
+                var myResources = _.cloneDeep(PlayGameFactory.getMyResources());
+                for(var i = 0; i < scope.plantCart.length; i++) {
+                    var plantResourceType = scope.plantCart[i].resourceType;
+                    if(plantResourceType !== 'hybrid') myResources[plantResourceType] -= scope.plantCart[i].numResources;  
+                } 
+                
+                
+                hybridOptions = hybridOptions.filter(function (option) {
+                    var hasCoal = myResources.coal >= option.coal;
+                    var hasOil = myResources.oil >= option.oil;
+                    return hasCoal && hasOil;
+                });
+                
+                return hybridOptions.length > 1;    
             };
+            
+            
             
             
             scope.getNumberOfCitiesPowered = function(){

@@ -1,10 +1,10 @@
-<div class="menu-panel-body panel panel-default right-slider" ng-switch on="view">
-    <div ng-switch-when="players" class="panel-body">
+<div class="menu-panel-body panel panel-default right-slider">
+    <div ng-show="view === 'players'" class="panel-body">
         <player player="player"
                 ng-repeat="player in getTurnOrder()">
         </player>
     </div>
-    <div ng-switch-when="chat">
+    <div ng-show="view === 'chat'">
         <chat></chat>
     </div>
 </div>
