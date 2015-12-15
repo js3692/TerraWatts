@@ -87,17 +87,12 @@ schema.methods.initialize = function (game) {
 
 schema.methods.go = function (game) {
 	if (!this.remainingPlayers.length) return this.end(game);
-
-	if (this.phase !== 'bureaucracy' || this.remainingPlayers.length === game.turnOrder.length) {
-		this.activePlayer = this.remainingPlayers[0];
+	this.activePlayer = this.remainingPlayers[0];
     game.markModified('resourceMarket');
     game.markModified('turnOrder');
-		return Promise.all([this.save(), game.save()])
-	} else {
-		delete game.resourceBank.green;
-		game.markModified('resourceBank');
-		Promise.all([this.save(), game.save()]);
-	}
+	delete game.resourceBank.green;
+	game.markModified('resourceBank');
+	return Promise.all([this.save(), game.save()]);
 };
 
 schema.methods.continue = function(update, game) {
@@ -249,7 +244,7 @@ schema.methods.transaction = function(update, game) {
 };
 
 schema.methods.setRemainingPlayers = function (game) {
-	if (this.phase === 'plant') return game.turnOrder.slice();
+	if (this.phase === 'plant' || this.phase === 'bureaucracy') return game.turnOrder.slice();
 	else return game.turnOrder.slice().reverse();
 };
 
