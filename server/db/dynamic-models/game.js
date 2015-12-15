@@ -85,6 +85,8 @@ schema.methods.initialize = function (map, players, selectedRegions) {
 
   var self = this;
 
+  console.log('map', map)
+
   return City.find({ countryCode: countryCode[map], region: { $in: selectedRegions } })
     .then(function (citiesInPlay) {
       citiesInPlay = grabObjectId(citiesInPlay);

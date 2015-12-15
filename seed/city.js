@@ -218,212 +218,212 @@ var seedCities = function () {
     {
       name: 'Flensburg',
       region: 1,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Kiel',
       region: 1,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Cuxhaven',
       region: 1,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Wilhelmshaven',
       region: 1,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Bremen',
       region: 1,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Hamburg',
       region: 1,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Hannover',
       region: 1,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Lubeck',
       region: 2,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Rostock',
       region: 2,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Torgelow',
       region: 2,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Schwerin',
       region: 2,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Magdeberg',
       region: 2,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Berlin',
       region: 2,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Frankfurt',
       region: 2,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Osnabruck',
       region: 3,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Munster',
       region: 3,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Duisburg',
       region: 3,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Essen',
       region: 3,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Dortmund',
       region: 3,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Dusseldorf',
       region: 3,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Kassel',
       region: 3,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Halle',
       region: 4,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Leipzig',
       region: 4,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Dresden',
       region: 4,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Erfurt',
       region: 4,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Fulda',
       region: 4,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Wurzburg',
       region: 4,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Nurnburg',
       region: 4,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Aachen',
       region: 5,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Koln',
       region: 5,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Trier',
       region: 5,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Wiesbaden',
       region: 5,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Frankfurt an der Oder',
       region: 5,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Saarbrucken',
       region: 5,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Mannheim',
       region: 5,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Freiburg',
       region: 6,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Stuttgart',
       region: 6,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Konstanz',
       region: 6,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Augsburg',
       region: 6,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Regensberg',
       region: 6,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Munchen',
       region: 6,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
     {
       name: 'Passau',
       region: 6,
-      countryCode: 'ger'
+      countryCode: 'de'
     },
   ];
 

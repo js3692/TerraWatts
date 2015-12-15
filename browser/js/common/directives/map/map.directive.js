@@ -23,7 +23,8 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 
 			var zoom = d3.behavior.zoom()
 			    .scale(projection.scale() * 2 * Math.PI)
-			    .scaleExtent([1 << 13, 1 << 14])
+			    // .scaleExtent([1 << 13, 1 << 14])
+			    .scaleExtent([1 << 13, 1 << 16])
 			    .translate([width - center[0], height - center[1]])
 			    .on("zoom", zoomed);
 
@@ -67,8 +68,11 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 
 			var mapRendered = false;
 			scope.$watch('grid.game', function(game) {
-				if(game && !mapRendered) {
+				// if(game && !mapRendered) {
+				if(game) {
+					console.log('game', game)
 					mapRendered = true;
+					console.log('game.cities', game.cities)
 					const revisedCities = MapFactory.cityTypeMapper(game.cities);
 					const revisedConnections = MapFactory.connectionTypeMapper(game.connections);
 					const revisedDistMarkers = MapFactory.connectionDistTypeMapper(game.connections);
