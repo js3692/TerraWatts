@@ -90,7 +90,10 @@ var seedConnections = function () {
     { cityNames: ['San Francisco', 'Los Angeles'], distance:9 },
     { cityNames: ['Los Angeles', 'San Diego'], distance:3 },
     { cityNames: ['Phoenix', 'San Diego'], distance:14 },
-    { cityNames: ['Las Vegas', 'San Diego'], distance:9 }
+    { cityNames: ['Las Vegas', 'San Diego'], distance:9 },
+
+    { cityNames: ['Flensburg', 'Kiel'], distance:4 },
+    { cityNames: ['Kiel', 'Lubeck'], distance:4 }
   ];
 
   return Promise.each(connections, function (connection) { return Connection. create(connection); });
