@@ -55,64 +55,24 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 			var citiesCollection = svg.append("g")
 				.attr('class', 'citiesCollection');
 
-			var connectionDistVector,
-				cityGroups,
-				connectionVector,
+			var cityGroups,
 				cityVector,
-				distText,
 				distCentroids = {},
 				cityCentroids = {};
 
-			// City Shape Variables:
+			// cityWidth based off of 80
 			var cityWidth = zoom.scale()/105 > 120 ? 120 : zoom.scale()/105,
-			// var cityWidth = 80,
-				cityHeight = cityWidth/2,
-				rectDimension = cityWidth/4,
-				cityBoxBuffer = cityWidth/16,
-				cityBoxYOffset = cityWidth*(3/16),
-				textYOffset = cityWidth/8,
-				textFontSize = cityWidth/8,
-				leftTowerWidth = rectDimension*0.25,
-				leftTowerHeight = rectDimension*0.5,
-				midTowerWidth = rectDimension*0.3,
-				midTowerHeight = rectDimension*0.8,
-				rightTowerWidth = rectDimension*0.25,
-				rightTowerHeight = rectDimension*0.65;
+				cityHeight = cityWidth/2;
 
-			function cityType(d) {
-				return {
-					type: 'Feature',
-					properties: {name: d.name, region: d.region, id: d.id},
-					geometry: {type: 'Point', coordinates: [d.location[1], d.location[0]]}
-				}
-			}
-
-			function connectionDistType(d) {
-				var coordinates = [(d.cities[0].location[1]+d.cities[1].location[1])/2, (d.cities[0].location[0]+d.cities[1].location[0])/2];
-				return {
-					type: 'Feature',
-					properties: {distance: d.distance, cities: d.cities, cityNames: d.cityNames},
-					geometry: {type: 'Point', coordinates: coordinates}
-				}
-			}
-
-			function connectionType(d) {
-				var coordinates = [[d.cities[0].location[1], d.cities[0].location[0]], [d.cities[1].location[1], d.cities[1].location[0]]];
-				return {
-					type: 'Feature',
-					properties: {distance: d.distance, cities: d.cities, cityNames: d.cityNames},
-					geometry: {type: 'LineString', coordinates: coordinates}
-				}
-			}
-			
 
 			var mapRendered = false;
 			scope.$watch('grid.game', function(game) {
-				if(game && !mapRendered) {
+				// if(game && !mapRendered) {
+				if(game) {
 					mapRendered = true;
-					const revisedCities = game.cities.map(function(city) { return cityType(city); });
-					const revisedConnections = game.connections.map(function(connection) { return connectionType(connection); });
-					const revisedDistMarkers = game.connections.map(function(connection) { return connectionDistType(connection); });
+					const revisedCities = MapFactory.cityTypeMapper(game.cities);
+					const revisedConnections = MapFactory.connectionTypeMapper(game.connections);
+					const revisedDistMarkers = MapFactory.connectionDistTypeMapper(game.connections);
 
 					var center = projection(MapFactory.getMapCenter(revisedCities));
 				    zoom.translate([width - center[0], height - center[1]]);
@@ -126,202 +86,9 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 							CityCartFactory.toggle(d.properties);
 						});
 
-					cityVector = cityGroups
-						.each(function(d,i) {
-							d3.select(this)
-								.append('path')
-								.attr('id', function(d,i) { return 'cityPath' + i; });
-
-							var cityBox = d3.select(this)
-								.append('rect')
-								.attr('class', 'cityBox')
-								.attr('width', cityWidth)
-								.attr('height', cityHeight)
-								.attr('rx', 5)
-								.attr('ry', 5)
-								.attr('fill', '#132330')
-								.attr('opacity', 0.85)
-								.attr('id', function(d,i) { return 'cityBox' + i; });
-
-							var leftRect = d3.select(this)
-								.append('rect')
-								.attr('id', 'leftRect')
-								.attr('width', rectDimension)
-								.attr('height', rectDimension)
-								.attr('rx', 2)
-								.attr('ry', 2)
-								.attr('x', cityBoxBuffer)
-								.attr('y', cityBoxYOffset)
-								.attr('fill', 'white')
-								.attr('opacity', 0.95);
-
-							var midRect = d3.select(this)
-								.append('rect')
-								.attr('id', 'midRect')
-								.attr('width', rectDimension)
-								.attr('height', rectDimension)
-								.attr('rx', 2)
-								.attr('ry', 2)
-								.attr('x', 2*cityBoxBuffer + rectDimension)
-								.attr('y', cityBoxYOffset)
-								.attr('fill', 'white')
-								.attr('opacity', 0.95);
-
-							var rightRect = d3.select(this)
-								.append('rect')
-								.attr('id', 'rightRect')
-								.attr('width', rectDimension)
-								.attr('height', rectDimension)
-								.attr('rx', 2)
-								.attr('ry', 2)
-								.attr('x', 3*cityBoxBuffer + 2*rectDimension)
-								.attr('y', cityBoxYOffset)
-								.attr('fill', 'white')
-								.attr('opacity', 0.95);
-
-							var cityText = d3.select(this)
-								.append('text')
-								.text(function(d) {return d.properties.name})
-								.attr("text-anchor", "middle")
-								.attr("font-family", "orbitron")
-								.attr("font-size", textFontSize)
-								.attr('word-spacing', '-.31em')
-								.attr("fill", "white")
-								.attr('x', cityWidth/2)
-								.attr('y', textYOffset);
-
-							var slot10Towers = d3.select(this)
-								.append('g')
-								.attr('id', 'slot10Towers')
-								.each(function(d,j) {
-									d3.select(this)
-										.append('rect')
-										.attr('id', 'leftTower')
-										.attr('fill', 'grey')
-										.attr('stroke', 'black')
-										.attr('stroke-width', '1px')
-										.attr('width', rectDimension*.25)
-										.attr('height', 0)
-										.attr('x', cityBoxBuffer + rectDimension/10)
-										.attr('y', cityBoxYOffset + rectDimension);
-									d3.select(this)
-										.append('rect')
-										.attr('id', 'midTower')
-										.attr('fill', 'grey')
-										.attr('stroke', 'black')
-										.attr('stroke-width', '1px')
-										.attr('width', rectDimension*.3)
-										.attr('height', 0)
-										.attr('x', cityBoxBuffer + rectDimension*(7/20))
-										.attr('y', cityBoxYOffset + rectDimension);
-									d3.select(this)
-										.append('rect')
-										.attr('id', 'rightTower')
-										.attr('fill', 'grey')
-										.attr('stroke', 'black')
-										.attr('stroke-width', '1px')
-										.attr('width', rectDimension*.25)
-										.attr('height', 0)
-										.attr('x', cityBoxBuffer + rectDimension*(13/20))
-										.attr('y', cityBoxYOffset + rectDimension);
-								});
-
-							var slot15Towers = d3.select(this)
-								.append('g')
-								.attr('id', 'slot15Towers')
-								.each(function(d,j) {
-									d3.select(this)
-										.append('rect')
-										.attr('id', 'leftTower')
-										.attr('fill', 'grey')
-										.attr('stroke', 'black')
-										.attr('stroke-width', '1px')
-										.attr('width', rectDimension*.25)
-										.attr('height', 0)
-										.attr('x', 2*cityBoxBuffer + rectDimension/10 + rectDimension)
-										.attr('y', cityBoxYOffset + rectDimension);
-									d3.select(this)
-										.append('rect')
-										.attr('id', 'midTower')
-										.attr('fill', 'grey')
-										.attr('stroke', 'black')
-										.attr('stroke-width', '1px')
-										.attr('width', rectDimension*.3)
-										.attr('height', 0)
-										.attr('x', 2*cityBoxBuffer + rectDimension*(7/20) + rectDimension)
-										.attr('y', cityBoxYOffset + rectDimension);
-									d3.select(this)
-										.append('rect')
-										.attr('id', 'rightTower')
-										.attr('fill', 'grey')
-										.attr('stroke', 'black')
-										.attr('stroke-width', '1px')
-										.attr('width', rectDimension*.25)
-										.attr('height', 0)
-										.attr('x', 2*cityBoxBuffer + rectDimension*(13/20) + rectDimension)
-										.attr('y', cityBoxYOffset + rectDimension);
-								});
-
-							var slot20Towers = d3.select(this)
-								.append('g')
-								.attr('id', 'slot20Towers')
-								.each(function(d,j) {
-									d3.select(this)
-										.append('rect')
-										.attr('id', 'leftTower')
-										.attr('fill', 'grey')
-										.attr('stroke', 'black')
-										.attr('stroke-width', '1px')
-										.attr('width', rectDimension*.25)
-										.attr('height', 0)
-										.attr('x', 3*cityBoxBuffer + rectDimension/10 + 2*rectDimension)
-										.attr('y', cityBoxYOffset + rectDimension);
-									d3.select(this)
-										.append('rect')
-										.attr('id', 'midTower')
-										.attr('fill', 'grey')
-										.attr('stroke', 'black')
-										.attr('stroke-width', '1px')
-										.attr('width', rectDimension*.3)
-										.attr('height', 0)
-										.attr('x', 3*cityBoxBuffer + rectDimension*(7/20) + 2*rectDimension)
-										.attr('y', cityBoxYOffset + rectDimension);
-									d3.select(this)
-										.append('rect')
-										.attr('id', 'rightTower')
-										.attr('fill', 'grey')
-										.attr('stroke', 'black')
-										.attr('stroke-width', '1px')
-										.attr('width', rectDimension*.25)
-										.attr('height', 0)
-										.attr('x', 3*cityBoxBuffer + rectDimension*(13/20) + 2*rectDimension)
-										.attr('y', cityBoxYOffset + rectDimension);
-								});
-
-						});
-
-					connectionVector = connectionCollection.selectAll('path')
-						.data(revisedConnections).enter()
-						.append('path')
-						.attr('id', function(d) { return d.properties.cityNames; })
-						.attr('class', 'connectionLines')
-						.attr('fill', 'none');
-
-					connectionDistVector = connectionDistCollection.selectAll("path")
-						.data(revisedDistMarkers).enter()
-						.append('path')
-						// .attr('opacity', 0.9)
-						.attr('id', function(d,i) { return "path_" + i; });
-
-
-					distText = connectionDistCollection.selectAll('text')
-						.data(revisedDistMarkers).enter()
-						.append('text')
-						.text(function(d) { return d.properties.distance; })
-						.attr("text-anchor", "middle")
-						.attr('alignment-baseline', 'middle')
-						.attr("font-family", "orbitron")
-						.attr("fill", "white")
+					MapFactory.drawCities(cityGroups, cityWidth);
+					MapFactory.drawConnections(connectionCollection, revisedConnections);
+					MapFactory.drawConnectionDists(connectionDistCollection, revisedDistMarkers);
 
 					zoomed();
 
@@ -329,9 +96,7 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 
 			}, true);
 
-			var cartCounter = 0;
 			scope.$watch('cityCart', function(cart) {
-				cartCounter++
 				d3.selectAll('#pulsingCity')
 					.transition().duration(300)
 					.attr('r', 0)
@@ -370,7 +135,6 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 			}, true);
 
 
-
 			// Player watch
 			scope.$watch('grid.players', function(players) {
 				if(players) {
@@ -406,16 +170,13 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 								.style('fill', d3.rgb(city.players[i].color).darker(0.3));
 						}
 					})
-
-
-
 				}
 			}, true);
 
 
 
 			function renderOnCentroid() {
-				distText
+				d3.selectAll('.distText')
 					.attr("transform", function(d,i) {return "translate(" + distCentroids[i] + ")"})
 					.attr("font-size", function(d) {
 						if(zoom.scale()/1000 < 10) return zoom.scale()/1000;
@@ -441,7 +202,7 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 			    	.scale(zoom.scale() / 2 / Math.PI)
 			    	.translate(zoom.translate());
 		    	
-		    	cityVector
+		    	d3.selectAll('.cityVector')
 		    		.attr('id', function(d) {
 		    			var cityName = d.properties.name.replace(/[\s.,]/g, '');
 		    			return cityName;
@@ -453,10 +214,10 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 		    			cityCentroids[i] = cityPath.centroid(d);
 					});
 
-		    	connectionVector
+			    d3.selectAll('.connectionLines')
 			    	.attr('d', connectionPath);
 
-		    	connectionDistVector
+		    	d3.selectAll('.connectionDists')
 		    		.attr('distance', function(d) { return d.properties.distance })
 		    		.attr('stroke', '#132330')
 					.attr('stroke-width', '1px')
