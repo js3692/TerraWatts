@@ -67,8 +67,7 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 
 			var mapRendered = false;
 			scope.$watch('grid.game', function(game) {
-				// if(game && !mapRendered) {
-				if(game) {
+				if(game && !mapRendered) {
 					mapRendered = true;
 					const revisedCities = MapFactory.cityTypeMapper(game.cities);
 					const revisedConnections = MapFactory.connectionTypeMapper(game.connections);
@@ -91,7 +90,6 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 					MapFactory.drawConnectionDists(connectionDistCollection, revisedDistMarkers);
 
 					zoomed();
-
 				}
 
 			}, true);
@@ -172,7 +170,6 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 					})
 				}
 			}, true);
-
 
 
 			function renderOnCentroid() {
