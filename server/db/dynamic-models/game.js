@@ -59,7 +59,11 @@ var schema = new mongoose.Schema({
   stepThreePlants: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Plant'
-  }]
+  }],
+  maxCities: {
+    type: Number,
+    default: 0
+  }
 });
 
 schema.methods.initialize = function (map, players, selectedRegions) {
