@@ -7,12 +7,8 @@ var determineTurnOrder =	require('../0_basic_rules/turnOrder');
 
 
 module.exports = function endTurn(game, state) {
-	var maxCities = game.turnOrder.reduce(function (prev, curr) {
-		return Math.max(prev, curr.cities.length);
-	}, 0);
-
 	// check end game condition
-	if (maxCities >= endGame[game.turnOrder.length]) {
+	if (game.maxCities >= endGame[game.turnOrder.length]) {
 		// sort the players by win condition
 		var winningOrder = game.turnOrder.sort(function(player1, player2) {
 			if (player1.numPowered > player2.numPowered) return -1;
@@ -23,7 +19,7 @@ module.exports = function endTurn(game, state) {
 		// return gameOver(winningOrder)
 	}
 	// start step 2 if necessary
-	if (game.step === 1 && maxCities >= stepTwo[game.turnOrder.length]) {
+	if (game.step === 1 && game.maxCities >= stepTwo[game.turnOrder.length]) {
 		game.step = 2;
 		game.discardedPlants.push(game.plantMarket.shift());
 		game = drawPlant(game, state);

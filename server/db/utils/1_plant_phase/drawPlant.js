@@ -10,6 +10,10 @@ module.exports = function drawPlant(game, state) {
 	game.plantMarket.sort(function (plant1, plant2) {
 		return plant1.rank < plant2.rank ? -1 : 1;
 	});
+	if(game.maxCities >= game.plantMarket[0].rank) {
+		game.discardedPlants.push(game.plantMarket.shift());
+		return drawPlant(game, state);
+	}
 	return game;
 };
 

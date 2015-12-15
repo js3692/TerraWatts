@@ -203,6 +203,7 @@ schema.methods.transaction = function(update, game) {
 				citiesToAdd.forEach(function (city) {
 					player.cities.push(city.id);
 				})
+				if(player.cities.length > game.maxCities) game.maxCities = player.cities.length;
 				// remove plant from market if necessary
 				while (player.cities.length >= game.plantMarket[0].rank) {
 					game.discardedPlants.push(game.plantMarket.shift());
