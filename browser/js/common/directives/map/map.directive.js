@@ -23,7 +23,7 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 
 			var zoom = d3.behavior.zoom()
 			    .scale(projection.scale() * 2 * Math.PI)
-			    .scaleExtent([1 << 13, 1 << 14])
+			    .scaleExtent([1 << 13, 1 << 16])
 			    .translate([width - center[0], height - center[1]])
 			    .on("zoom", zoomed);
 
@@ -108,7 +108,6 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 							var pulsingCircle = d3.select('#' + cityName)
 								.insert('circle', 'rect')
 								.attr('id', 'pulsingCity')
-								// .attr('stroke', '#132330')
 								.attr('stroke', 'white')
 								.attr('stroke-width', 3)
 								.attr('r', 20)
@@ -132,8 +131,6 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 
 			}, true);
 
-
-			// Player watch
 			scope.$watch('grid.players', function(players) {
 				if(players) {
 					d3.selectAll('#pulsingCity')
@@ -226,7 +223,7 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 				renderOnCentroid();
 
 	    		distancePath
-	    			.pointRadius(zoom.scale()/1200);
+	    			.pointRadius(zoom.scale()/1200 > 10 ? 10 : zoom.scale()/1200);
 
 				var image = raster
 			    	.attr("transform", "scale(" + tiles.scale + ")translate(" + tiles.translate + ")")
