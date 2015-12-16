@@ -9,7 +9,7 @@
             TURN: <small>{{ getTurn() }} </small><br>
             STEP: <small>{{ getStep() }} </small>
         </div>
-        <div class="waiting-on-text" ng-show="getWaitingOnPlayer() && !isBureaucracyState()">
+        <div class="waiting-on-text" ng-show="getWaitingOnPlayer()">
             Waiting on {{ getWaitingOnPlayer() }}...
         </div>
     </div>

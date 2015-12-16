@@ -8,8 +8,7 @@ app.directive('player', function(PlayGameFactory){
         link: function(scope, elem, attrs){
             scope.isActive = function(){
                 return [
-                        PlayGameFactory.getActivePlayer()._id === scope.player._id,
-                        PlayGameFactory.getGamePhase() !== 'bureaucracy'
+                        PlayGameFactory.getActivePlayer()._id === scope.player._id
                     ].every(valid => valid);
             }
 
