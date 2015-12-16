@@ -34,24 +34,32 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                 .rangeRoundBands([0, height]);
 
             var ticks = [];
-            for(var i = 1; i < 8.9; i+=(1/3)) ticks.push(i.toFixed(4))
+            for(let i = 1; i < 9; i++) ticks.push(i, i+0.33, i+0.5, i+0.67);
 
             var xPriceAxis = d3.svg.axis()
                 .scale(xPrice)
                 .orient('bottom')
                 .tickValues(ticks)
-                .tickSize(5,0)
+                .tickSize(4,0)
                 .tickFormat(function(d) {
-                    if(d % 1 !== 0) return;
+                    if((d-0.5) % 1 !== 0) return;
                     return "$" + Math.floor(d);
                 });
+
+            var nukeTicks = [];
+            for(let i = 1; i <= 12; i++) nukeTicks.push(i, i+0.5);
 
             var xNukePriceAxis = d3.svg.axis()
                 .scale(xNukePrice)
                 .orient('bottom')
-                .tickValues([1,2,3,4,5,6,7,8])
-                .tickSize(5,0)
-                .tickFormat(function(d) { return "$"+d; });
+                .tickValues(nukeTicks)
+                .tickSize(4,0)
+                .tickFormat(function(d) {
+                    if(d % 1 !== 0) {
+                        if(d > 9) return '$'+(2*d-9);
+                        return '$'+(d-0.5);
+                    }
+                });
 
             var yAxis = d3.svg.axis()
                 .scale(y)
@@ -78,6 +86,13 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                 })
                 .call(xPriceAxis);
 
+            d3.selectAll('#priceAxis g.tick line')
+                .attr('y2', function(d) {
+                    if((d-0.5) % 1 === 0) return 0;
+                    if(d % 1 === 0) return 7;
+                    return 4;
+                });
+
             svg.selectAll('#priceNukeAxis')
                 .data(['coal', 'oil', 'trash', 'nuke']).enter()
                 .append('g')
@@ -90,31 +105,10 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                 })
                 .call(xNukePriceAxis);
 
-             var nukeTicksCollection = svg.selectAll('#nukeTicks')
-                .data([16,14,12,10]).enter()
-                .append('g')
-                .attr('id', 'nukeTicks')
-                .attr('class', 'axis')
-                .attr("transform", function(d,i) {return "translate(" + ((i+1)*(35+(5/6))) + ",177)"});
-
-             var nukeTicks = nukeTicksCollection
-                .each(function(d,i) {
-                    d3.select(this)
-                        .append('line')
-                        .attr('y2', 5)
-                        .attr('x2', 0)
-                        .attr('fill', 'none')
-                        .attr('stroke', 'white');
-                    d3.select(this)
-                        .append('text')
-                        .attr('dy', '.71em')
-                        .attr('y', 8)
-                        .attr('x', 0)
-                        .attr("text-anchor", "middle")
-                        .text(function(d) { return '$' + d; })
-                        .attr("font-family", "orbitron")
-                        .attr('font-size', 10)
-                        .attr("fill", "white");
+            d3.selectAll('#priceNukeAxis g.tick line')
+                .attr('y2', function(d) {
+                    if(d % 1 !== 0) return 0;
+                    return 7;
                 });
 
             svg.selectAll('.text')
@@ -201,8 +195,8 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                             .attr('width', function(resource) {
                                 if(wishlistType === 'nuke') return xNukeAmount(wishlistVal);
                                 return xAmount(wishlistVal);
-                            })
-                    })
+                            });
+                    });
                 }
 
             }, true);
