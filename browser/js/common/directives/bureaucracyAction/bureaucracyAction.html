@@ -1,8 +1,5 @@
-<div class="bureaucracy-action-container" ng-switch on='madeChoice'>
-    <div class="waiting-container" ng-switch-when="true">
-        <h2>Waiting on other players to power plants.</h2>
-    </div>
-    <div ng-switch-when="false" class="row">
+<div class="bureaucracy-action-container">
+    <div class="row">
         <div class="col-lg-6">
             <div class='container' ng-show="hybridChoice === false">
                 <div class="bureaucracy-plant" ng-repeat="plant in getMyPlants()">

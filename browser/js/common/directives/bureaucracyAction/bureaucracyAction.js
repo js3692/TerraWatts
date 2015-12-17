@@ -3,7 +3,7 @@ app.directive('bureaucracyAction', function(PlayGameFactory){
         restrict: 'E',
         templateUrl: 'js/common/directives/bureaucracyAction/bureaucracyAction.html',
         link: function(scope, elem, attrs){
-            scope.madeChoice = false, scope.hybridChoice = false, scope.plantCart = [];
+            scope.hybridChoice = false, scope.plantCart = [];
             
             function clearPlantCart(){
                 scope.plantCart = [];

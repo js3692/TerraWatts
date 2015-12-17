@@ -4,6 +4,7 @@ app.directive('commandCenter', function(PlayGameFactory){
         templateUrl: 'js/common/directives/commandCenter/commandCenter.html',
         scope: true,
         link: function(scope, elem, attrs){
+            
             scope.getGamePhase = function() {
                 var phase = PlayGameFactory.getGamePhase();
                 if(phase === 'plantDiscard') return 'auction';
@@ -11,9 +12,6 @@ app.directive('commandCenter', function(PlayGameFactory){
             }
             
             scope.getWaitingOnPlayer = PlayGameFactory.getWaitingOnPlayer;
-            scope.isBureaucracyState = function(){
-                return PlayGameFactory.getGamePhase() === 'bureaucracy';
-            }
             scope.getTurn = PlayGameFactory.getTurn;
             scope.getStep = PlayGameFactory.getStep;
         }
