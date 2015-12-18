@@ -1,4 +1,5 @@
-$main-background: #132330;
+$main-background: #0C161E;
+
 * {
     box-sizing: border-box;
 }
@@ -23,16 +24,20 @@ $main-background: #132330;
 }
 
 body {
-  background: $main-background;
+  background: no-repeat center center;
+  background-size: cover;
+  background-image: url('/nasa_nighttime.jpg');
+  height: 100vh;
+  width: 100vw;
   font-family: 'Orbitron', sans-serif;
 }
 
 @mixin clearfix {
-    &:after {
-        content: "";
-        display: table;
-        clear: both;
-    }
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 }
 
 #main {
