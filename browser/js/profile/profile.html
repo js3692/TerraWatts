@@ -1,4 +1,33 @@
 <section id="profile" class="animated fadeIn">
-	<pre>{{ user }}</pre>
-	<a ui-sref="home">Go Back</a>
+	<div class="row info">
+		<div class="col-sm-offset-4 col-sm-4 card">
+			<div class="row top-icons">
+        <span class="glyphicon glyphicon-cd pull-left"></span>
+        <span class="glyphicon glyphicon-cd pull-right"></span>
+      </div>
+			<span class="glyphicon glyphicon-wrench profile-pic"></span>
+			<div class="row player-info">
+				<div class="col-sm-4 key">Email:</div>
+				<div class="col-sm-8 value">{{ user.email }}</div>
+			</div>
+			<div class="row player-info">
+				<div class="col-sm-4 key">Username:</div>
+				<div class="col-sm-8 value">{{ user.username }}</div>
+			</div>
+			<div class="row player-info">
+				<div class="col-sm-4 key">Victories:</div>
+				<div class="col-sm-8 value">0 / 0</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col-sm-offset-1 col-sm-10">
+					<button class="btn btn-danger btn-block" ui-sref="home">Go Back</button>
+				</div>
+			</div>
+			<div class="row bottom-icons">
+	      <span class="glyphicon glyphicon-cd pull-left"></span>
+	      <span class="glyphicon glyphicon-cd pull-right"></span>
+	    </div>
+		</div>
+	</div>
 </section>

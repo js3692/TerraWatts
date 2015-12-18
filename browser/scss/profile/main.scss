@@ -1,3 +1,55 @@
 #profile {
   color: #dfdfdf;
+  height: 100vh;
+  width: 100vw;
+  .info {
+  	margin: 0;
+  	position: relative;
+	  top: 50%;
+	  transform: translateY(-50%);
+  	text-align: center;
+
+  	.card {
+  		background-color: #133020;
+	    box-shadow: 0 0 12px #888888;
+  		border-radius: 12px;
+  		padding-top: 15px;
+  		padding-bottom: 15px;
+  	}
+
+		.top-icons, .bottom-icons {
+	    display: block;
+	    margin: 0;
+	    height: 15px;
+	  }
+
+	  .player-info {
+	  	margin-top: 10px;
+	  	.key {
+	  		text-align: right;
+	  	}
+	  }
+
+	  span.profile-pic {
+	  	margin: 15px 0;
+	  	height: 140px;
+	  	width: 140px;
+	  	background-color: #4e89b9;
+	  	border-radius: 100%;
+	  	line-height: 140px;
+	  	font-size: 75px;
+	  	text-align: center;
+	  	vertical-align: middle;
+	  }
+
+	  button.btn-danger {
+      background-color: #67294b;
+      border-color: #67294b;
+      &:hover {
+        background-color: #b394a5;
+        border-color: #b394a5;
+      }
+      margin-bottom: 15px;
+    }
+  }
 }
