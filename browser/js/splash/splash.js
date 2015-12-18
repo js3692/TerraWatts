@@ -10,13 +10,13 @@ app.controller('SplashCtrl', function ($scope) {
 	var imagesHolder = [
 	{
 		imageUrl: 'wind-turbines',
-		color: 'black',
+		color: '#0C161E',
 	},{
 		imageUrl: 'nuclear-winter',
-		color: 'white',
+		color: '#ddd',
 	},{
 		imageUrl: 'plant-on-water',
-		color: 'white',
+		color: '#ddd',
 	}]
 
 	$scope.imageInfo = imagesHolder[Math.floor(Math.random()*imagesHolder.length)];

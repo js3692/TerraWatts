@@ -18,6 +18,14 @@
 		label {
 			font-weight: 300;
 		}
+		.btn-primary {
+      background-color: #153013;
+      border-color: #153013;
+      &:hover {
+        background-color: #8a9789;
+        border-color: #8a9789;
+      }
+    }
 	}
 	.signup-message {
 		text-align: center;
