@@ -1,5 +1,6 @@
-app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, FirebaseFactory, RegionSelectorFactory, AppConstants, theUser, gridId, key) {
+app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, FirebaseFactory, RegionSelectorFactory, AppConstants, theUser, gridId, key) {
   $scope.grid = FirebaseFactory.getConnection(key);
+
   var waiting = _.fill(Array(5), {
     color: '#808080',
     user: {
@@ -7,12 +8,22 @@ app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, Firebase
     }
   });
 
+  $scope.selectedRegions = [];
+  function selector (regionNumber) {
+    $scope.selectedRegions.push(regionNumber + 1);
+  }
+
+  $scope.$watch('grid.randomRegions', function (randomRegions) {
+    $scope.randomRegionsSelected = randomRegions;
+  });
+
+  RegionSelectorFactory.draw(selector);
+
   $scope.$watch('grid.players', function (players) {
     if(players !== undefined && players.length) {
       var emptySlots = $scope.grid.maxPlayers - players.length;
       $scope.players = players.concat(waiting.slice(0, emptySlots));
       $scope.owner = players[0].user.username === theUser.username;
-      
     }
   }, true);
   $scope.key = key;
@@ -47,16 +58,9 @@ app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, Firebase
 
     return false;
   };
-
-  $scope.selectedRegions = [];
-  function selector (regionNumber) {
-    $scope.selectedRegions.push(regionNumber + 1);
-  }
-
-  RegionSelectorFactory.draw(selector);
   
   $scope.$watch('grid.game', function(game){
-      if(game) $state.go('game', { id: gridId, key: key });
+    if(game) $state.go('game', { id: gridId, key: key });
   });
     
 	$scope.startGame = function() {

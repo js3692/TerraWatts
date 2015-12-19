@@ -49,7 +49,7 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, AppC
       .one(AppConstants.animationEndEvent, function () {
         BeforeGameFactory.newGame(gameSettings)
           .then(function (grid) {
-            $state.go('grid', { id: grid._id, key: grid.key });
+            $state.go('grid', { id: grid._id, key: grid.key, randomRegionsSelected: $scope.gameSettings.makeRandom });
           });
       });
   };
