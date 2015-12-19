@@ -40,8 +40,8 @@ router.post('/leave', function (req, res, next) {
 
 router.put('/start', function(req, res, next) {
   var gridToUse;
-  
-  Promise.resolve(req.grid.randomRegions ? req.grid.makeRandomRegions(req.grid.players.length) : req.grid)
+
+  Promise.resolve(req.grid.randomRegions ? req.grid.makeRandomRegions(req.grid.players.length) : req.grid.setSelectedRegions(req.body.regions))
     .then(function (grid) {
       gridToUse = grid;
       return Game.create({});

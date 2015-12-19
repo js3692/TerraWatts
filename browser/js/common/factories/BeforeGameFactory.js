@@ -13,10 +13,6 @@ app.factory('BeforeGameFactory', function ($http, $q) {
 		return grid;
 	}
 
-	function organizePlayersForStart (users) {
-		return users.map(user => { return { user: user, color: user.color }; });
-	}
-
 	BeforeGameFactory.newGame = function (gameSettings) {
 		return $http.post('/api/grid', gameSettings)
 			.then(toData)
@@ -34,8 +30,8 @@ app.factory('BeforeGameFactory', function ($http, $q) {
 			.then(toData);
 	};
 
-	BeforeGameFactory.start = function (gridId, users) {
-		return $http.put(baseUrl + gridId + '/start', organizePlayersForStart(users))
+	BeforeGameFactory.start = function (gridId, selectedRegions) {
+		return $http.put(baseUrl + gridId + '/start', { regions: selectedRegions })
 			.then(toData);
 	};
 

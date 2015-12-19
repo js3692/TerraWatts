@@ -44,7 +44,14 @@ app.controller('LoginCtrl', function ($scope, userDoesExist, AuthService, $state
       }).catch(function () {
         $scope.error = 'Invalid login credentials.';
       });
-
     };
+
+    $scope.signup = function () {
+      angular.element("#login-main")
+        .addClass("fadeOut")
+        .one(AppConstants.animationEndEvent, function () {
+          $state.go('signup');
+        })
+    }
 
 });

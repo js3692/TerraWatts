@@ -411,7 +411,7 @@ var seedCities = function () {
       countryCode: 'de'
     },
     {
-      name: 'Regensberg',
+      name: 'Regensburg',
       region: 6,
       countryCode: 'de'
     },

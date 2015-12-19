@@ -6,7 +6,7 @@ app.config(function ($stateProvider) {
 	})
 });
 
-app.controller('SplashCtrl', function ($scope) {
+app.controller('SplashCtrl', function ($scope, $state, AppConstants) {
 	var imagesHolder = [
 	{
 		imageUrl: 'wind-turbines',
@@ -23,6 +23,14 @@ app.controller('SplashCtrl', function ($scope) {
 
 	$scope.getImageUrl = function() {
 		return $scope.imageInfo.imageUrl + '.jpg';
+	}
+
+	$scope.enter = function () {
+		angular.element("#splash-main")
+      .addClass("zoomOut")
+      .one(AppConstants.animationEndEvent, function () {
+        $state.go('login');
+      })
 	}
 
 });

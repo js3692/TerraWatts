@@ -33,14 +33,20 @@ app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, Firebase
     return false;
   };
 
-  RegionSelectorFactory.draw();
+  $scope.selectedRegions = [];
+  function selector (regionNumber) {
+    console.log(regionNumber);
+    $scope.selectedRegions.push(regionNumber);
+  }
+
+  RegionSelectorFactory.draw(selector);
   
   $scope.$watch('grid.game', function(game){
       if(game) $state.go('game', { id: gridId, key: key });
   });
     
 	$scope.startGame = function() {
-		BeforeGameFactory.start($scope.grid.id, $scope.grid.players);
+		BeforeGameFactory.start($scope.grid.id, $scope.selectedRegions);
 	};
 
   $scope.goHome = function() {

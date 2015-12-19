@@ -175,23 +175,34 @@
     margin-right: 14px;
     height: calc(100% - 38px);
     width: calc(100% - 28px);
+    @mixin mouse-hover {
+      &:hover {
+        opacity: 0.5;
+      }
+    }
     .region-one {
       fill: purple;
+      @include mouse-hover;
     }
     .region-two {
       fill: yellow;
+      @include mouse-hover;
     }
     .region-three {
       fill: brown;
+      @include mouse-hover;
     }
     .region-four {
       fill: blue;
+      @include mouse-hover;
     }
     .region-five {
       fill: red;
+      @include mouse-hover;
     }
     .region-six {
       fill: green;
+      @include mouse-hover;
     }
   }
 

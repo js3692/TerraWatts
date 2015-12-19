@@ -1,4 +1,4 @@
-app.factory('RegionSelectorFactory', function () {
+app.factory('RegionSelectorFactory', function ($q) {
 
 	var uStates = {};
 	var regionOneIds = [8, 16, 30, 31, 41, 53, 56];
@@ -7,7 +7,7 @@ app.factory('RegionSelectorFactory', function () {
 	var regionFourIds = [4, 6, 32, 35, 49];
 	var regionFiveIds = [1, 5, 20, 22, 28, 29, 40, 48];
 
-	uStates.draw = function () {
+	uStates.draw = function (selector) {
 
   	var svg = window.d3.select("#region-selector");
 		var bbox = svg.node().getBoundingClientRect();
@@ -37,16 +37,18 @@ app.factory('RegionSelectorFactory', function () {
 
 			var convert = { 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six' };
 
-			for (var i = 0; i < regions.length; i++) {
-				us.objects.states.geometries = regions[i];
+			regions.forEach(function (elem, index) {
+				us.objects.states.geometries = elem;
 				svg.append("g").append("path")
 	      	.datum(window.topojson.feature(us, us.objects.states))
 	      	.attr("d", path)
-	      	.classed("region-" + convert[i + 1], true);
-			};
+	      	.classed("region-" + convert[index + 1], true)
+	      	.on("click", function () {
+	      		selector(index);
+	      	});
+			});
 
 		});
-
 	}
 
 	return uStates;

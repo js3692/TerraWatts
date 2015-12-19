@@ -31,7 +31,8 @@ var schema = new mongoose.Schema({
     type: [Number]
   },
   randomRegions: {
-    type: Boolean
+    type: Boolean,
+    default: false
   },
   maxPlayers: {
     type: Number,
@@ -166,6 +167,11 @@ schema.methods.makeRandomRegions = function (numPlayers) {
       self.regions = selectedRegions.map(region => region.regionId);
       return self.save();
     });
+};
+
+schema.methods.setSelectedRegions = function (regionsArray) {
+  this.regions = regionsArray;
+  return this.save();
 };
 
 schema.methods.addPlayer = function (newPlayer) {
