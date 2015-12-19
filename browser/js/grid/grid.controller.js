@@ -18,6 +18,21 @@ app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, Firebase
   $scope.key = key;
   $scope.me = theUser;
 
+  $scope.countries = [
+    { name: 'United States', code: 'us' },
+    { name: 'Germany', code: 'de' },
+    { name: 'China', code: 'cn' },
+    { name: 'South Korea', code: 'kr'}
+  ];
+
+  $scope.flag = function (country) {
+    var spanClass;
+    $scope.countries.forEach(function (elem) {
+      if (elem.name === country) spanClass = "flag-icon flag-icon-" + elem.code;
+    });
+    return spanClass;
+  };
+
   $scope.selected = theUser.color;
   $scope.colors = ['purple', 'yellow', 'green', 'blue', 'red', 'black'];
   $scope.changeColor = BeforeGameFactory.changeColor.bind(null, gridId, theUser._id)
@@ -35,8 +50,7 @@ app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, Firebase
 
   $scope.selectedRegions = [];
   function selector (regionNumber) {
-    console.log(regionNumber);
-    $scope.selectedRegions.push(regionNumber);
+    $scope.selectedRegions.push(regionNumber + 1);
   }
 
   RegionSelectorFactory.draw(selector);

@@ -2,8 +2,7 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, AppC
 
   $scope.gameSettings = {};
   $scope.gameSettings.map = 'United States';
-  $scope.gameSettings.numPlayers = 4;
-  $scope.gameSettings.checkedRegions = [];
+  $scope.gameSettings.numPlayers = 2;
   $scope.gameSettings.color = 'purple';
 
   $scope.countries = [
@@ -13,15 +12,6 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, AppC
     { name: 'South Korea', code: 'kr'}
   ];
   $scope.numPlayersChoices = [2, 3, 4, 5, 6];
-  $scope.regions = ['1', '2', '3', '4', '5', '6'];
-  $scope.checked = {
-    '1': false,
-    '2': false,
-    '3': false,
-    '4': false,
-    '5': false,
-    '6': false
-  };
   $scope.colorChoices = ['purple', 'yellow', 'green', 'blue', 'red', 'black'];
   $scope.dropdownColor = {
     purple: "#6600cc",
@@ -52,18 +42,7 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, AppC
     $scope.gameSettings.color = color;
   };
 
-
-  $scope.$watchCollection('checked', function () {
-    $scope.gameSettings.checkedRegions = [];
-    angular.forEach($scope.checked, function (value, key) {
-      if (value) {
-        $scope.gameSettings.checkedRegions.push(key);
-      }
-    });
-  });
-
   $scope.ok = function (gameSettings) {
-    if (gameSettings.checkedRegions.length < 3) gameSettings.makeRandom = true;
     $uibModalInstance.close();
     angular.element("#home")
       .addClass("fadeOutLeftBig")

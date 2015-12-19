@@ -6,18 +6,18 @@ var seedUsers = function () {
 
   var users = [
     {
-      username: 'tester',
-      email: 'testing@fsa.com',
+      username: 'playerOne',
+      email: 'testing1@fsa.com',
       password: 'password'
     },
     {
-      username: 'MrPresident',
-      email: 'obama@gmail.com',
-      password: 'potus'
+      username: 'playerTwo',
+      email: 'testing2@fsa.com',
+      password: 'password'
     },
     {
-      username: 'mikeike',
-      email: 'mike@mike.com',
+      username: 'playerThree',
+      email: 'testing3@fsa.com',
       password: 'password'
     }
   ];

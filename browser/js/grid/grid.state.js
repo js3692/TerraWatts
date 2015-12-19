@@ -5,8 +5,8 @@ app.config(function ($stateProvider) {
 		templateUrl: 'js/grid/grid.html',
 		resolve: {
 			gridId: function ($stateParams) {
-	        	return $stateParams.id;
-	        },
+      	return $stateParams.id;
+      },
 			key: function($stateParams) {
 				return $stateParams.key;  
 			},
