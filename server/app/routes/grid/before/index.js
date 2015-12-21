@@ -73,15 +73,7 @@ router.put('/regions', function (req, res, next) {
       res.sendStatus(200);
     })
     .catch(next);
-// req.body.region = 1, 2, 3, 4, 5, 6
-// req.grid.toggleRegion(req.body.region)
-// Add region._id (found by req.grid.map && regionId) to grid.regions
-// Update firebase's grid.regions array
-// On the front end, $watch for grid.regions and update view based on
-// currently selected regions
-// Throw an error here if user selects regions illegally and don't update fb
-})
-
+});
 
 router.put('/color', function (req, res, next){
   Player.findOne({ user: req.body.userId })

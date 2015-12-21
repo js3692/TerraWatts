@@ -206,10 +206,15 @@ schema.methods.removePlayer = function (userId) {
 };
 
 schema.methods.toggleRegion = function (regionId) {
+  // Throw an error here if user selects regions illegally and don't update fb
+  // 1. Max number of regions for number of players
+  // 2. Only adjacent regions can be selected
+  // 3. When everything is legally set, tell the user with a check mark or somehtikng
+
   var idx = this.regions.indexOf(regionId);
   if(idx > -1) this.regions.splice(idx, 1);
   else if (idx === -1) this.regions.push(regionId);
-  
+
   return this.save();
 };
 
