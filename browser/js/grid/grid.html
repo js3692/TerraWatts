@@ -76,8 +76,8 @@
             <span class="glyphicon glyphicon-cd pull-right"></span>
           </div>
           <svg id="region-selector">
-          <div class="row" id="icon-placeholder" ng-if="randomRegionsSelected">
-            <span class="glyphicon glyphicon-question-sign"></span>
+          <div class="row" id="icon-placeholder" ng-if="players[0].user.username !== me.username || randomRegionsSelected">
+            <span class="glyphicon glyphicon-question-sign" ng-hide="players[0].user.username !== me.username"></span>
           </div>
           <div class="row bottom-icons">
             <span class="glyphicon glyphicon-cd pull-left"></span>

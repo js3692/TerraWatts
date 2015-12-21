@@ -205,6 +205,9 @@
       fill: green;
       @include mouse-hover;
     }
+    .region-selected {
+      fill: grey !important;
+    }
   }
 
   #icon-placeholder {

@@ -125,7 +125,13 @@ schema.post('save', function (grid) {
             .getConnection(deepPopulatedGrid.key)
             .update({
               'availableColors': deepPopulatedGrid.availableColors.slice()
-            })
+            });
+
+          firebaseHelper
+            .getConnection(deepPopulatedGrid.key)
+            .update({
+              'regions': deepPopulatedGrid.regions.slice()
+            });
             
           firebaseHelper
             .getConnection(deepPopulatedGrid.key)
@@ -169,11 +175,6 @@ schema.methods.makeRandomRegions = function (numPlayers) {
     });
 };
 
-schema.methods.setSelectedRegions = function (regionsArray) {
-  this.regions = regionsArray;
-  return this.save();
-};
-
 schema.methods.addPlayer = function (newPlayer) {
 
   if (this.game) throw new Error('The Game is already in play');
@@ -202,6 +203,14 @@ schema.methods.removePlayer = function (userId) {
     .then(function () {
     	return self.save();
     });
+};
+
+schema.methods.toggleRegion = function (regionId) {
+  var idx = this.regions.indexOf(regionId);
+  if(idx > -1) this.regions.splice(idx, 1);
+  else if (idx === -1) this.regions.push(regionId);
+  
+  return this.save();
 };
 
 schema.methods.switchColor = function (player, newColor) {

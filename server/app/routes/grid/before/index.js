@@ -7,7 +7,7 @@ var fbHelper = require('../../../../firebase');
 
 var Game = mongoose.model('Game');
 var Player = mongoose.model('Player');
-var Grid = mongoose.model('Grid');
+var Region = mongoose.model('Region');
 
 // Current URL: 'api/grid/before/:gridId'
 
@@ -41,7 +41,7 @@ router.post('/leave', function (req, res, next) {
 router.put('/start', function(req, res, next) {
   var gridToUse;
 
-  Promise.resolve(req.grid.randomRegions ? req.grid.makeRandomRegions(req.grid.players.length) : req.grid.setSelectedRegions(req.body.regions))
+  Promise.resolve(req.grid.randomRegions ? req.grid.makeRandomRegions(req.grid.players.length) : req.grid)
     .then(function (grid) {
       gridToUse = grid;
       return Game.create({});
@@ -58,8 +58,32 @@ router.put('/start', function(req, res, next) {
     })
     .catch(next);
 });
- 
-router.put('/color', function(req, res, next){
+
+router.get('/regions', function (req, res, next) {
+  Region.find({ map: req.grid.map })
+    .then(function (regions) {
+      res.json(regions);
+    })
+    .catch(next);
+});
+
+router.put('/regions', function (req, res, next) {
+  req.grid.toggleRegion(req.body.regionId)
+    .then(function () {
+      res.sendStatus(200);
+    })
+    .catch(next);
+// req.body.region = 1, 2, 3, 4, 5, 6
+// req.grid.toggleRegion(req.body.region)
+// Add region._id (found by req.grid.map && regionId) to grid.regions
+// Update firebase's grid.regions array
+// On the front end, $watch for grid.regions and update view based on
+// currently selected regions
+// Throw an error here if user selects regions illegally and don't update fb
+})
+
+
+router.put('/color', function (req, res, next){
   Player.findOne({ user: req.body.userId })
     .then(function (foundPlayer) {
       return req.grid.switchColor(foundPlayer, req.body.color);

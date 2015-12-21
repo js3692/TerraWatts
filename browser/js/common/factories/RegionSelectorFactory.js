@@ -44,6 +44,8 @@ app.factory('RegionSelectorFactory', function ($q) {
 	      	.attr("d", path)
 	      	.classed("region-" + convert[index + 1], true)
 	      	.on("click", function () {
+	      		// var self = window.d3.select(this);
+	      		// self.classed("region-selected", !self.classed("region-selected"));
 	      		selector(index);
 	      	});
 			});

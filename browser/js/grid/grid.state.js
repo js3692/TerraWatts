@@ -10,6 +10,9 @@ app.config(function ($stateProvider) {
 			key: function($stateParams) {
 				return $stateParams.key;  
 			},
+			regions: function ($stateParams, BeforeGameFactory) {
+				return BeforeGameFactory.getRegions($stateParams.id);
+			},
 			theUser: function(AuthService) {
 				var user = AuthService.getLoggedInUser();
 				user.color = null;
