@@ -18,7 +18,6 @@ router.post('/', function (req, res, next) {
       randomRegions: req.body.makeRandom
     })
     .then(function (grid) {
-      console.log(grid.toObject(), "??????????")
       grid.key = fbRef.push(grid.toObject()).key();
       fbRef.child(grid.key).update({ "key": grid.key });
       return grid.save();
