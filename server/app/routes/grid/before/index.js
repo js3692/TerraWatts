@@ -59,14 +59,6 @@ router.put('/start', function(req, res, next) {
     .catch(next);
 });
 
-router.get('/regions', function (req, res, next) {
-  Region.find({ map: req.grid.map })
-    .then(function (regions) {
-      res.json(regions);
-    })
-    .catch(next);
-});
-
 router.put('/regions', function (req, res, next) {
   req.grid.toggleRegion(req.body.regionId)
     .then(function () {

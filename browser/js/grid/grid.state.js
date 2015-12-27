@@ -7,13 +7,10 @@ app.config(function ($stateProvider) {
 			gridId: function ($stateParams) {
       	return $stateParams.id;
       },
-			key: function($stateParams) {
+			key: function ($stateParams) {
 				return $stateParams.key;  
 			},
-			regions: function ($stateParams, BeforeGameFactory) {
-				return BeforeGameFactory.getRegions($stateParams.id);
-			},
-			theUser: function(AuthService) {
+			theUser: function (AuthService) {
 				var user = AuthService.getLoggedInUser();
 				user.color = null;
 				return user;

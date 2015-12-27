@@ -39,7 +39,8 @@
     "_": 1,
     "inject": 1,
     "expect": 1,
-    "sinon": 1
+    "sinon": 1,
+    "d3": 1
   },
 
   "rules": {

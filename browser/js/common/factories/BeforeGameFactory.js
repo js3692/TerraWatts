@@ -45,11 +45,6 @@ app.factory('BeforeGameFactory', function ($http, $q) {
 		return $q.resolve(cachedGrid);
 	};
 
-	BeforeGameFactory.getRegions = function (id) {
-		return $http.get(baseUrl + id + '/regions')
-			.then(toData);
-	};
-
 	BeforeGameFactory.toggleRegion = function (id, regionId) {
 		return $http.put(baseUrl + id + '/regions', { regionId: regionId })
 			.then(toData);

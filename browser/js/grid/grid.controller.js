@@ -1,4 +1,4 @@
-app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, FirebaseFactory, RegionSelectorFactory, AppConstants, theUser, gridId, key, regions) {
+app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, FirebaseFactory, RegionSelectorFactory, AppConstants, theUser, gridId, key) {
   $scope.grid = FirebaseFactory.getConnection(key);
 
   var waiting = _.fill(Array(5), {
@@ -12,10 +12,11 @@ app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, Fire
     $scope.randomRegionsSelected = randomRegions;
   });
 
-  console.log(regions);
-
-  function selector (regionNumber) { BeforeGameFactory.toggleRegion(gridId, regionNumber + 1); }
-  RegionSelectorFactory.draw(selector);
+  $scope.grid.$loaded()
+    .then(function (grid) {
+      function selector (regionNumber) { BeforeGameFactory.toggleRegion(gridId, regionNumber + 1); }
+      RegionSelectorFactory.draw(selector, grid.regions);
+    });
 
   var regionClasses = {
     1: "path.region-one",
@@ -25,17 +26,20 @@ app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, Fire
     5: "path.region-five",
     6: "path.region-six",
   }
+
   $scope.$watch('grid.regions', function (selectedRegions) {
     _.difference([1, 2, 3, 4, 5, 6], selectedRegions).forEach(function (regionId) {
-      window.d3.select(regionClasses[regionId]).classed("region-selected", false);
+      d3.select(regionClasses[regionId]).classed("region-selected", false);
     });
     if(selectedRegions === undefined) return;
     else {
       selectedRegions.forEach(function (regionId) {
-        window.d3.select(regionClasses[regionId]).classed("region-selected", true);
+        d3.select(regionClasses[regionId]).classed("region-selected", true);
       });
     }
   });
+
+  $scope.numRegions = [0,3,3,3,4,5,5];
 
   $scope.$watch('grid.players', function (players) {
     if(players !== undefined && players.length) {

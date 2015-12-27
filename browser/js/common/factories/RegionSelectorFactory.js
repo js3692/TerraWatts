@@ -7,7 +7,7 @@ app.factory('RegionSelectorFactory', function ($q) {
 	var regionFourIds = [4, 6, 32, 35, 49];
 	var regionFiveIds = [1, 5, 20, 22, 28, 29, 40, 48];
 
-	uStates.draw = function (selector) {
+	uStates.draw = function (selector, selectedRegions) {
 
   	var svg = window.d3.select("#region-selector");
 		var bbox = svg.node().getBoundingClientRect();
@@ -35,14 +35,29 @@ app.factory('RegionSelectorFactory', function ($q) {
 
 			var regions = [regionOne, regionTwo, regionThree, regionFour, regionFive, regionSix];
 
-			var convert = { 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six' };
+			var convert = {
+				1: { name: 'one', selected: false },
+				2: { name: 'two', selected: false },
+				3: { name: 'three', selected: false },
+				4: { name: 'four', selected: false },
+				5: { name: 'five', selected: false },
+				6: { name: 'six', selected: false }
+			};
+
+			if(selectedRegions) {
+				selectedRegions.forEach(function (regionId) {
+					convert[regionId].selected = true;
+				});
+			}
+
 
 			regions.forEach(function (elem, index) {
 				us.objects.states.geometries = elem;
 				svg.append("g").append("path")
 	      	.datum(window.topojson.feature(us, us.objects.states))
 	      	.attr("d", path)
-	      	.classed("region-" + convert[index + 1], true)
+	      	.classed("region-" + convert[index + 1].name, true)
+	      	.classed("region-selected", convert[index + 1].selected)
 	      	.on("click", function () {
 	      		selector(index);
 	      	});
