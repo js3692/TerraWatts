@@ -42,12 +42,12 @@ app.factory('RegionSelectorFactory', function () {
 				var regions = [regionOne, regionTwo, regionThree, regionFour, regionFive, regionSix];
 
 				var convert = {
-					1: { name: 'one', selected: false },
-					2: { name: 'two', selected: false },
-					3: { name: 'three', selected: false },
-					4: { name: 'four', selected: false },
-					5: { name: 'five', selected: false },
-					6: { name: 'six', selected: false }
+					1: { name: 'one', selected: false, color: 'purple' },
+					2: { name: 'two', selected: false, color: 'yellow' },
+					3: { name: 'three', selected: false, color: 'brown' },
+					4: { name: 'four', selected: false, color: 'blue' },
+					5: { name: 'five', selected: false, color: 'red' },
+					6: { name: 'six', selected: false, color: 'green' }
 				};
 
 				if(selectedRegions) {
@@ -63,17 +63,24 @@ app.factory('RegionSelectorFactory', function () {
 		      	.attr("d", path)
 		      	.classed("region-" + convert[index + 1].name, true)
 		      	.classed("region-selected", convert[index + 1].selected)
+		      	.attr("fill", convert[index + 1].color)
+		      	.on("mouseenter", function () {
+		      		d3.select(this).attr("opacity", 0.5);
+		      	})
+		      	.on("mouseout", function () {
+		      		d3.select(this).attr("opacity", 1);
+		      	})
 		      	.on("click", function () {
 		      		selector(index);
 		      	});
 				});
 			});
   	} else if (selectedMap === "Germany") {
-  		regionOneIds = [6321, 942, 1518, 1520];
-			regionTwoIds = [2334, 2335, 3562, 3312];
-			regionThreeIds = [1515, 1517];
-			regionFourIds = [1519, 2336];
-			regionFiveIds = [2331, 2332];
+  		regionOneIds = [11583, 11559, 11566, 11558, 11565, 11567];
+			regionTwoIds = [11582, 11580, 11557, 11556, 11563];
+			regionThreeIds = [11562, 11569, 11570, 11572, 11568];
+			regionFourIds = [11564, 11549, 11552, 11555, 11584, 11581, 11579, 11577, 11578];
+			regionFiveIds = [11546, 11560, 11561, 11574, 11573, 11576, 11575, 11571];
 
   		projection = d3.geo.mercator()
 	  		.scale(bbox.width * 2.2)
@@ -84,8 +91,6 @@ app.factory('RegionSelectorFactory', function () {
 
 			d3.json("/utils/maps/germany.json",function(error, germany) {
 				if (error) return console.log(error);
-
-				console.log(germany)
 
 				// "states" contain the rest of the states, i.e. continental states
 				var states = germany.objects.states.geometries.slice();
@@ -100,12 +105,12 @@ app.factory('RegionSelectorFactory', function () {
 				var regions = [regionOne, regionTwo, regionThree, regionFour, regionFive, regionSix];
 
 				var convert = {
-					1: { name: 'one', selected: false },
-					2: { name: 'two', selected: false },
-					3: { name: 'three', selected: false },
-					4: { name: 'four', selected: false },
-					5: { name: 'five', selected: false },
-					6: { name: 'six', selected: false }
+					1: { name: 'one', selected: false, color: 'yellowgreen' },
+					2: { name: 'two', selected: false, color: 'sienna' },
+					3: { name: 'three', selected: false, color: 'firebrick' },
+					4: { name: 'four', selected: false, color: 'gold' },
+					5: { name: 'five', selected: false, color: 'royalblue' },
+					6: { name: 'six', selected: false, color: 'blueviolet' }
 				};
 
 				if(selectedRegions) {
@@ -117,29 +122,21 @@ app.factory('RegionSelectorFactory', function () {
 				regions.forEach(function (elem, index) {
 					germany.objects.states.geometries = elem;
 					svg.append("g").append("path")
-		      	// .datum(topojson.feature(us, us.objects.states))
-				  	.data(topojson.feature(germany, germany.objects.states).features)
-		      	// .enter().append("path")
+		      	.datum(topojson.feature(germany, germany.objects.states))
 		      	.attr("d", path)
 		      	.classed("region-" + convert[index + 1].name, true)
 		      	.classed("region-selected", convert[index + 1].selected)
+		      	.attr("fill", convert[index + 1].color)
+		      	.on("mouseenter", function () {
+		      		d3.select(this).attr("opacity", 0.5);
+		      	})
+		      	.on("mouseout", function () {
+		      		d3.select(this).attr("opacity", 1);
+		      	})
 		      	.on("click", function () {
 		      		selector(index);
 		      	});
 				});
-
-						//Group for the map features
-			// var features = svg.append("g")
-			// 	.attr("class", "features");
-
-				// features.selectAll("path")
-			 //  	.data(topojson.feature(germany, germany.objects.states).features)
-			 //  	.enter()
-			 //  	.append("path")
-			 //  	.attr("d", path)
-			  	// .on("click",function () {
-			  	// 	selector(index)
-			  	// });
 
 			});
 
