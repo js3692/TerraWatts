@@ -50,7 +50,7 @@ app.controller('SettingsCtrl', function ($scope, $state, $uibModalInstance, AppC
         if(!gameSettings.makeRandom) gameSettings.makeRandom = false;
         BeforeGameFactory.newGame(gameSettings)
           .then(function (grid) {
-            $state.go('grid', { id: grid._id, key: grid.key, randomRegionsSelected: $scope.gameSettings.makeRandom });
+            $state.go('grid', { id: grid._id, key: grid.key, selectedMap: grid.map });
           });
       });
   };

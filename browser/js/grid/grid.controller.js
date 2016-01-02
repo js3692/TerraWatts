@@ -1,4 +1,4 @@
-app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, FirebaseFactory, RegionSelectorFactory, AppConstants, theUser, gridId, key) {
+app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, FirebaseFactory, RegionSelectorFactory, AppConstants, theUser, gridId, key, selectedMap) {
   $scope.grid = FirebaseFactory.getConnection(key);
 
   var waiting = _.fill(Array(5), {
@@ -8,6 +8,7 @@ app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, Fire
     }
   });
 
+
   $scope.$watch('grid.randomRegions', function (randomRegions) {
     $scope.randomRegionsSelected = randomRegions;
   });
@@ -15,7 +16,11 @@ app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, Fire
   $scope.grid.$loaded()
     .then(function (grid) {
       function selector (regionNumber) { BeforeGameFactory.toggleRegion(gridId, regionNumber + 1); }
-      RegionSelectorFactory.draw(selector, grid.regions);
+      var map = selectedMap || grid.map;
+      return RegionSelectorFactory.draw(selector, grid.regions, map);
+    })
+    .catch(function () {
+      console.error("Error loading map");
     });
 
   var regionClasses = {
@@ -41,6 +46,7 @@ app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, Fire
 
   $scope.numRegions = [0,3,3,3,4,5,5];
 
+  $scope.owner = false;
   $scope.$watch('grid.players', function (players) {
     if(players !== undefined && players.length) {
       var emptySlots = $scope.grid.maxPlayers - players.length;
@@ -100,6 +106,7 @@ app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, Fire
         BeforeGameFactory
           .leaveGame($scope.grid.id)
           .then(function() {
+            FirebaseFactory.getConnection().$destroy();
             $state.go('home');
           });
       });

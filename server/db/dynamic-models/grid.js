@@ -138,7 +138,7 @@ schema.post('save', function (grid) {
           firebaseHelper
             .getConnection(deepPopulatedGrid.key)
             .update({
-                'players': deepPopulatedGrid.players.map(player => player.toObject())
+              'players': deepPopulatedGrid.players.map(player => player.toObject())
             });
 
 
