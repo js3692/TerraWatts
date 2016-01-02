@@ -11,6 +11,8 @@ var Player = mongoose.model('Player');
 var Game = mongoose.model('Game');
 var State = mongoose.model('State');
 
+var regionRules = require('../utils/0_basic_rules/dependsOnNumPlayers.js').numRegions;
+
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 var schema = new mongoose.Schema({
@@ -31,7 +33,8 @@ var schema = new mongoose.Schema({
     type: [Number]
   },
   randomRegions: {
-    type: Boolean
+    type: Boolean,
+    default: false
   },
   maxPlayers: {
     type: Number,
@@ -124,12 +127,18 @@ schema.post('save', function (grid) {
             .getConnection(deepPopulatedGrid.key)
             .update({
               'availableColors': deepPopulatedGrid.availableColors.slice()
-            })
+            });
+
+          firebaseHelper
+            .getConnection(deepPopulatedGrid.key)
+            .update({
+              'regions': deepPopulatedGrid.regions.slice()
+            });
             
           firebaseHelper
             .getConnection(deepPopulatedGrid.key)
             .update({
-                'players': deepPopulatedGrid.players.map(player => player.toObject())
+              'players': deepPopulatedGrid.players.map(player => player.toObject())
             });
 
 
@@ -196,6 +205,63 @@ schema.methods.removePlayer = function (userId) {
     .then(function () {
     	return self.save();
     });
+};
+
+schema.methods.validateRegionForSelection = function (regionId) {
+  return Region.find({ map: this.map, regionId: { $in: this.regions } })
+    .then(function (regionsInPlay) {
+      var adjacent = regionsInPlay.reduce(function (prev, next) { return _.union(prev, next.adjacent); }, []);
+      if(adjacent.indexOf(regionId) === -1) return false;
+      else return true;
+    });
+};
+
+schema.methods.validateRegionForRemoval = function () {
+  if(this.regions && this.regions.length === 1) return Promise.resolve(true);
+  return Region.find({ map: this.map, regionId: { $in: this.regions } })
+    .then(function (regionsInPlay) {
+      var regionIds = regionsInPlay.map(function (elem) { return elem.regionId; });
+      return regionsInPlay.every(function (elem) {
+        return regionIds.some(function (regionId) {
+          return elem.adjacent.indexOf(regionId) > -1;
+        });
+      });
+    });
+}
+
+schema.methods.toggleRegion = function (regionId) {
+
+  var maxNumber = regionRules[this.players.length];
+  if (maxNumber < 3) maxNumber = 3; // If only one person is in the lobby, assume two players
+
+  var idx = this.regions.indexOf(regionId);
+
+  var self = this;
+
+  if (idx > -1) {
+    var temp = this.regions.splice(idx, 1)[0];
+    return this.validateRegionForRemoval()
+      .then(function (validRemoval) {
+        if(!validRemoval) self.regions.push(temp);
+        return self.save();
+      });
+  } else if (idx === -1) {
+    if(this.regions && this.regions.length > 0) {
+      if(self.regions.length === maxNumber) return Promise.resolve();
+      return this.validateRegionForSelection(regionId)
+        .then(function (validSelection) {
+          if(validSelection) self.regions.push(regionId);
+          else {
+            if(temp) self.regions.push(temp);
+          }
+          return self.save();
+        })
+    } else {
+      this.regions.push(regionId);
+      return this.save();
+    }
+  }
+
 };
 
 schema.methods.switchColor = function (player, newColor) {

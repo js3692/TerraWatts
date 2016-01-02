@@ -13,10 +13,6 @@ app.factory('BeforeGameFactory', function ($http, $q) {
 		return grid;
 	}
 
-	function organizePlayersForStart (users) {
-		return users.map(user => { return { user: user, color: user.color }; });
-	}
-
 	BeforeGameFactory.newGame = function (gameSettings) {
 		return $http.post('/api/grid', gameSettings)
 			.then(toData)
@@ -34,8 +30,8 @@ app.factory('BeforeGameFactory', function ($http, $q) {
 			.then(toData);
 	};
 
-	BeforeGameFactory.start = function (gridId, users) {
-		return $http.put(baseUrl + gridId + '/start', organizePlayersForStart(users))
+	BeforeGameFactory.start = function (gridId) {
+		return $http.put(baseUrl + gridId + '/start')
 			.then(toData);
 	};
 
@@ -47,6 +43,11 @@ app.factory('BeforeGameFactory', function ($http, $q) {
 	BeforeGameFactory.getCachedGrid = function (id) {
 		if(id && !cachedGrid) return BeforeGameFactory.fetchOne(id);
 		return $q.resolve(cachedGrid);
+	};
+
+	BeforeGameFactory.toggleRegion = function (id, regionId) {
+		return $http.put(baseUrl + id + '/regions', { regionId: regionId })
+			.then(toData);
 	};
 
 	BeforeGameFactory.changeColor = function (id, userId, color) {

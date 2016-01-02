@@ -7,7 +7,7 @@ var fbHelper = require('../../../../firebase');
 
 var Game = mongoose.model('Game');
 var Player = mongoose.model('Player');
-var Grid = mongoose.model('Grid');
+var Region = mongoose.model('Region');
 
 // Current URL: 'api/grid/before/:gridId'
 
@@ -40,7 +40,7 @@ router.post('/leave', function (req, res, next) {
 
 router.put('/start', function(req, res, next) {
   var gridToUse;
-  
+
   Promise.resolve(req.grid.randomRegions ? req.grid.makeRandomRegions(req.grid.players.length) : req.grid)
     .then(function (grid) {
       gridToUse = grid;
@@ -58,8 +58,16 @@ router.put('/start', function(req, res, next) {
     })
     .catch(next);
 });
- 
-router.put('/color', function(req, res, next){
+
+router.put('/regions', function (req, res, next) {
+  req.grid.toggleRegion(req.body.regionId)
+    .then(function () {
+      res.sendStatus(200);
+    })
+    .catch(next);
+});
+
+router.put('/color', function (req, res, next){
   Player.findOne({ user: req.body.userId })
     .then(function (foundPlayer) {
       return req.grid.switchColor(foundPlayer, req.body.color);

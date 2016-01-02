@@ -1,5 +1,6 @@
-app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, FirebaseFactory, RegionSelectorFactory, AppConstants, theUser, gridId, key) {
+app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, FirebaseFactory, RegionSelectorFactory, AppConstants, theUser, gridId, key, selectedMap) {
   $scope.grid = FirebaseFactory.getConnection(key);
+
   var waiting = _.fill(Array(5), {
     color: '#808080',
     user: {
@@ -7,16 +8,69 @@ app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, Firebase
     }
   });
 
+
+  $scope.$watch('grid.randomRegions', function (randomRegions) {
+    $scope.randomRegionsSelected = randomRegions;
+  });
+
+  $scope.grid.$loaded()
+    .then(function (grid) {
+      function selector (regionNumber) { BeforeGameFactory.toggleRegion(gridId, regionNumber + 1); }
+      var map = selectedMap || grid.map;
+      return RegionSelectorFactory.draw(selector, grid.regions, map);
+    })
+    .catch(function () {
+      console.error("Error loading map");
+    });
+
+  var regionClasses = {
+    1: "path.region-one",
+    2: "path.region-two",
+    3: "path.region-three",
+    4: "path.region-four",
+    5: "path.region-five",
+    6: "path.region-six",
+  }
+
+  $scope.$watch('grid.regions', function (selectedRegions) {
+    _.difference([1, 2, 3, 4, 5, 6], selectedRegions).forEach(function (regionId) {
+      d3.select(regionClasses[regionId]).classed("region-selected", false);
+    });
+    if(selectedRegions === undefined) return;
+    else {
+      selectedRegions.forEach(function (regionId) {
+        d3.select(regionClasses[regionId]).classed("region-selected", true);
+      });
+    }
+  });
+
+  $scope.numRegions = [0,3,3,3,4,5,5];
+
+  $scope.owner = false;
   $scope.$watch('grid.players', function (players) {
     if(players !== undefined && players.length) {
       var emptySlots = $scope.grid.maxPlayers - players.length;
       $scope.players = players.concat(waiting.slice(0, emptySlots));
       $scope.owner = players[0].user.username === theUser.username;
-      
     }
   }, true);
   $scope.key = key;
   $scope.me = theUser;
+
+  $scope.countries = [
+    { name: 'United States', code: 'us' },
+    { name: 'Germany', code: 'de' },
+    { name: 'China', code: 'cn' },
+    { name: 'South Korea', code: 'kr'}
+  ];
+
+  $scope.flag = function (country) {
+    var spanClass;
+    $scope.countries.forEach(function (elem) {
+      if (elem.name === country) spanClass = "flag-icon flag-icon-" + elem.code;
+    });
+    return spanClass;
+  };
 
   $scope.selected = theUser.color;
   $scope.colors = ['purple', 'yellow', 'green', 'blue', 'red', 'black'];
@@ -32,15 +86,13 @@ app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, Firebase
 
     return false;
   };
-
-  RegionSelectorFactory.draw();
   
   $scope.$watch('grid.game', function(game){
-      if(game) $state.go('game', { id: gridId, key: key });
+    if(game) $state.go('game', { id: gridId, key: key });
   });
     
 	$scope.startGame = function() {
-		BeforeGameFactory.start($scope.grid.id, $scope.grid.players);
+		BeforeGameFactory.start($scope.grid.id);
 	};
 
   $scope.goHome = function() {
@@ -54,6 +106,7 @@ app.controller('GridCtrl', function ($scope, $state, BeforeGameFactory, Firebase
         BeforeGameFactory
           .leaveGame($scope.grid.id)
           .then(function() {
+            FirebaseFactory.getConnection().$destroy();
             $state.go('home');
           });
       });

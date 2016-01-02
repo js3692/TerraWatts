@@ -1,13 +1,20 @@
 .settings-modal {
-    color: white;
-	margin-top: 50px;
+  color: white;
+	margin-top: 60px;
 	.modal-body {
-		height: 400px;
+		height: 300px;
+		padding-bottom: 0;
 	}
 	.modal-header {
 		h2 {
 			margin-left: 10px;
 		}
+		border-bottom: none;
+		padding-bottom: 0;
+	}
+	.modal-footer {
+		border-top: none;
+		padding-top: 0;
 	}
   .modal-content {
     background-color: #133020;
@@ -16,6 +23,7 @@
 		position: relative;
 		top: 50%;
 		transform: translateY(-50%);
+		z-index: 1;
 		.row {
 			margin-bottom: 30px;
 		}

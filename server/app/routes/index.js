@@ -4,7 +4,6 @@ module.exports = router;
 
 // Current URL: '/api'
 
-router.use('/members', require('./members'));
 router.use('/user', require('./user'));
 router.use('/grid', require('./grid'));
 router.use('/play', require('./play'));

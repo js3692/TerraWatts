@@ -15,8 +15,7 @@ router.post('/', function (req, res, next) {
       name: req.body.name,
       map: req.body.map,
       maxPlayers: req.body.numPlayers,
-      randomRegions: req.body.makeRandom,
-      regions: req.body.checkedRegions
+      randomRegions: req.body.makeRandom
     })
     .then(function (grid) {
       grid.key = fbRef.push(grid.toObject()).key();
