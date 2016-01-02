@@ -73,7 +73,7 @@
         <div class="row top-row">
           <div class="row top-icons" style="text-align: center;">
             <span class="glyphicon glyphicon-cd pull-left"></span>
-            <span>REMAINING: {{ numRegions[grid.players.length] - grid.regions.length }}</span>
+            <span ng-hide="grid.randomRegions">REMAINING: {{ numRegions[grid.players.length] - grid.regions.length }}</span>
             <span class="glyphicon glyphicon-cd pull-right"></span>
           </div>
           <svg id="region-selector">
