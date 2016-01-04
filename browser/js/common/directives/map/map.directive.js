@@ -62,7 +62,18 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
 
 			// cityWidth based off of 80
 			var cityWidth = zoom.scale()/105 > 120 ? 120 : zoom.scale()/105,
-				cityHeight = cityWidth/2;
+				cityHeight = cityWidth/2,
+				rectDimension = cityWidth/4,
+				cityBoxBuffer = cityWidth/16,
+				cityBoxYOffset = cityWidth*(3/16),
+				textYOffset = cityWidth/8,
+				textFontSize = cityWidth/8,
+				leftTowerWidth = rectDimension*0.25,
+				leftTowerHeight = rectDimension*0.5,
+				midTowerWidth = rectDimension*0.3,
+				midTowerHeight = rectDimension*0.8,
+				rightTowerWidth = rectDimension*0.25,
+				rightTowerHeight = rectDimension*0.65;
 
 
 			var mapRendered = false;
