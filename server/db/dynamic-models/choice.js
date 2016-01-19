@@ -29,7 +29,6 @@ schema.methods.initialize = function() {
 }
 
 schema.methods.continue = function(update, game) {
-    console.log(this.player, update.player, 'this.player, update.player')
     var self = this;
 	if(this.player.equals(update.player._id)) {
 		var index = update.choice.index;
