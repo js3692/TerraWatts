@@ -25,7 +25,7 @@ app.controller('HomeCtrl', function ($scope, $state, $uibModal, AuthService, Ses
   $scope.me = Session.user.username;
 
   $scope.status = function (grid) {
-    if (grid.game == null) { 
+    if (grid.game == null) {
       if(!grid.players.length) throw new Error('Not able to load game info');
       if(grid.players.length < grid.maxPlayers) return "Waiting";
       else return "Full"
@@ -36,7 +36,7 @@ app.controller('HomeCtrl', function ($scope, $state, $uibModal, AuthService, Ses
     if(!grid.players.length) throw new Error('Not able to load game info');
     else {
       return grid.players.some(function (player) {
-        if(player.user.id === Session.user.id) return true;
+        return player.user.id === Session.user.id;
       });
     }
   };
@@ -92,5 +92,5 @@ app.controller('HomeCtrl', function ($scope, $state, $uibModal, AuthService, Ses
   }
 
   $scope.newGame = openGameSettings;
-                                         
+
 });
