@@ -99,7 +99,7 @@ schema.methods.continue = function(update, game) {
 	var self = this;
 
   if(this.phase !== 'plant' && update.data !== 'pass') {
-		
+
 		return this.transaction(update, game);
 
 	} else {
@@ -111,7 +111,7 @@ schema.methods.continue = function(update, game) {
 			return this.go(game)
 
 		} else {
-			
+
 			// start an auction
 
 			this.auction = new Auction({
@@ -121,7 +121,7 @@ schema.methods.continue = function(update, game) {
 				plantState: self
 			});
 
-			
+
 			return this.auction.initialize(game)
 				.then(function () {
 					return self.save();
@@ -139,7 +139,7 @@ schema.methods.end = function (game) {
 		if(game.step === 2.5) {
 			game.discardedPlants.push(game.plantMarket.shift());
 			game.step = 3;
-		}		
+		}
 	} // end of 'plant'
 	if (this.phase === 'bureaucracy') {
 		endTurn(game, this);
@@ -152,15 +152,15 @@ schema.methods.end = function (game) {
 
 schema.methods.transaction = function(update, game) {
   var self = this;
-	return Player.findById(update.player._id || update.player).populate('user cities')
+	return Player.findById(update.player._id || update.player).populate('user cities plants')
 		.then(function (player) {
-			
+
 			self.remainingPlayers = self.removePlayer(player);
 
 			if (self.phase === 'plant') {
 				self.auction = null;
 				player.money -= update.data.bid;
-				
+
 				var plantIndex;
 
 				game.plantMarket.forEach(function (plant,i) {
