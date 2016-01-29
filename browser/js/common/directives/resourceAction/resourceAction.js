@@ -47,7 +47,7 @@ app.directive('resourceAction', function (PlayGameFactory, ResourceFactory){
                 if(resourceType === 'oil' && hybridCapacity > 0) {
                     var extraCapacity = hybridCapacity - (PlayGameFactory.getWishlist()['coal'] - plantCapacityMinusBoughtResources('coal'));
                 }
-                return maxWithoutHybrids + (extraCapacity || 0);
+                return Math.min((maxWithoutHybrids + (extraCapacity || 0)), PlayGameFactory.getResourceMarket().resourceType);
             };
 
             scope.buyResources = function(wishlist){
