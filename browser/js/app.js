@@ -1,6 +1,6 @@
 'use strict';
 
-window.app = angular.module('Grid', ['authPreBuilt', 'ui.router', 'ui.bootstrap', 'ngAnimate', 'firebase', 'ngSanitize']);
+window.app = angular.module('Grid', ['authPreBuilt', 'ui.router', 'ui.bootstrap', 'ngAnimate', 'firebase', 'ngSanitize', 'angularSpinner']);
 
 app.config(function ($urlRouterProvider, $locationProvider) {
     // This turns off hashbang urls (/#about) and changes it to something normal (/about)
