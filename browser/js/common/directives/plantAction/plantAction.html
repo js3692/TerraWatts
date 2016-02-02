@@ -8,7 +8,7 @@
                 <plant rank="{{auctionPlant ? auctionPlant.rank : getPlantToBidOn().rank}}">
                 </plant>
                 <bid ng-show="shouldSeeBidButtons()"
-                     start="{{ auction ? auction.bid + 1 : getPlantToBidOn().rank}}" 
+                     start="{{ auction ? auction.bid + 1 : getPlantToBidOn().rank}}"
                      ng-model="$parent.bid">
                 </bid>
             </div>
@@ -45,7 +45,7 @@
                         {{player.user.username}}
                     </td>
                     <td>
-                        <span ng-show="player._id === auction.highestBidder"> Highest bid: ${{ auction.bid }}</span>
+                        <span ng-show="player._id === auction.highestBidder"> Bid: ${{ auction.bid }}</span>
                     </td>
                 </tr>
             </table>
