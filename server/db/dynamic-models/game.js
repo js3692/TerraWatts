@@ -35,11 +35,11 @@ var schema = new mongoose.Schema({
   },
   resourceMarket: {
     type: Object,
-    default: { coal: 3, oil: 18, trash: 6, nuke: 2 }
+    default: { coal: 24, oil: 18, trash: 6, nuke: 2 }
   },
   resourceBank: {
     type: Object,
-    default: { coal: 21, oil: 6, trash: 18, nuke: 10 }
+    default: { coal: 0, oil: 6, trash: 18, nuke: 10 }
   },
   restockRates: {
     type: Object
