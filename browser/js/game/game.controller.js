@@ -1,4 +1,4 @@
-app.controller('GameCtrl', function($scope, FirebaseFactory, PlayGameFactory, CityCartFactory, theUser, gridId, key){
+app.controller('GameCtrl', function($scope, PlayGameFactory, CityCartFactory, key){
     $scope.key = key;
     $scope.grid = PlayGameFactory.getGrid();
     $scope.cityCart = CityCartFactory.getCart;
@@ -7,4 +7,4 @@ app.controller('GameCtrl', function($scope, FirebaseFactory, PlayGameFactory, Ci
         if(PlayGameFactory.getAuction()) return false;
         return Boolean(PlayGameFactory.getWaitingOnPlayer());
     }
-}); 
+});

@@ -87,15 +87,19 @@ var fieldsToPopulate = [
     'state.activePlayer',
     'state.activePlayer.user',
     'state.auction.activePlayer',
-    'state.auction.activePlayer.user',  
-    'state.auction.remainingPlayers', 
-    'state.auction.remainingPlayers.user', 
+    'state.auction.activePlayer.user',
+    'state.auction.remainingPlayers',
+    'state.auction.remainingPlayers.user',
     'state.auction.plant',
     'state.auction.choice',
     'state.auction.choice.player',
     'state.auction.choice.player.user'
-    
+
   ];
+
+schema.statics.getTourGrid = function() {
+  return this.findOne({name: 'tour'}).deepPopulate(fieldsToPopulate.join(' '));
+}
 
 schema.plugin(deepPopulate, {
   whitelist: fieldsToPopulate,
@@ -114,12 +118,12 @@ schema.set('toObject', { virtuals: true });
 schema.set('toJSON', { virtuals: true });
 
 schema.post('save', function (grid) {
-  if(grid.players.length > 0) {
+  if(grid.players.length > 0 && grid.name !== 'tour') {
     grid.constructor
       .populate(grid, 'game state players')
       .then(function (populatedGrid){
         populatedGrid.deepPopulate(fieldsToPopulate, function(err, deepPopulatedGrid) {
-         
+
           if(err) throw err;
           // This is mainly for '/join' and '/leave' of players
           // console.log(deepPopulatedGrid.availableColors);
@@ -134,7 +138,7 @@ schema.post('save', function (grid) {
             .update({
               'regions': deepPopulatedGrid.regions.slice()
             });
-            
+
           firebaseHelper
             .getConnection(deepPopulatedGrid.key)
             .update({
@@ -157,16 +161,10 @@ schema.post('save', function (grid) {
               });
           }
 
-          // firebaseHelper.disconnect(deepPopulatedGrid.key);
-
         })
       })
   }
 });
-
-//schema.methods.saveHistory = function () {
-//  this.history.push(this.game.toObject());
-//};
 
 schema.methods.makeRandomRegions = function (numPlayers) {
   var self = this;
@@ -283,8 +281,8 @@ schema.methods.switchColor = function (player, newColor) {
 
 schema.methods.createGame = function () {
   var self = this;
-
-  return Game.initialize(this.map, this.players, this.regions)
+  var game = new Game();
+  return game.initialize(this.map, this.players, this.regions)
     .then(function (newGame) {
       self.game = newGame;
       return self.save();
@@ -320,7 +318,7 @@ schema.methods.continue = function (update) {
       return this.state.auction.choice.continue(update, this.game)
         .then(function () {
           return self.save();
-        })      
+        })
     } else {
       return this.state.auction.continue(update, this.game)
         .then(function () {

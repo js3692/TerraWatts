@@ -10,6 +10,13 @@ var Player = mongoose.model('Player');
 
 // Current URL: 'api/grid'
 
+router.get('/tour', function(req, res, next) {
+  Grid.getTourGrid()
+  .then(function(grid) {
+    res.json(grid);
+  });
+})
+
 router.post('/', function (req, res, next) {
 	Grid.create({
       name: req.body.name,

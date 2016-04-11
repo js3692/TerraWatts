@@ -2,10 +2,10 @@ app.factory('FirebaseFactory', function($firebaseObject){
     var baseUrl = "https://amber-torch-6713.firebaseio.com/",
         baseConnection = $firebaseObject(new Firebase(baseUrl)),
         localConnection;
-    
+
     return {
         getBase: function(){
-            return baseConnection;  
+            return baseConnection;
         },
         setConnection: function(key){
             localConnection = $firebaseObject(new Firebase(baseUrl + key));
@@ -26,7 +26,7 @@ app.factory('FirebaseFactory', function($firebaseObject){
             return allGrids;
         },
         getChat: function(key){
-            return new Firebase(baseUrl + key + '/chat');
+            if(key) return new Firebase(baseUrl + key + '/chat');
         }
     };
-}); 
+});

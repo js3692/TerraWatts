@@ -8,6 +8,7 @@ var seedPlants = require('./plant');
 var seedCities = require('./city');
 var seedConnections = require('./connection');
 var seedRegions = require('./region');
+var seedTour = require('./tour');
 
 connectToDb.then(function (db) {
     return db.db.dropDatabase();
@@ -34,9 +35,13 @@ connectToDb.then(function (db) {
 })
 .then(function () {
   console.log(chalk.grey('Connections created'));
+  return seedTour();
+}).then(function() {
+  console.log(chalk.grey('Tour created'));
   console.log(chalk.blue('Seed successful!'));
   process.kill(0);
-}).catch(function (err) {
+})
+.catch(function (err) {
   console.error(err);
   process.kill(1);
 });
