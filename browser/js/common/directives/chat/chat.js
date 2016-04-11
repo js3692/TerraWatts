@@ -28,7 +28,7 @@ app.directive('chat', function(FirebaseFactory, PlayGameFactory, $timeout){
                 $timeout(() => {
                     this.emit('child_added', {
                         user: 'TerraLord',
-                        message: tourMessages[this.count%messages.length]
+                        message: tourMessages[this.count%tourMessages.length]
                     });
                     this.count++;
                 }, 1000)

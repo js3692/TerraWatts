@@ -24,7 +24,7 @@ app.controller('TourCtrl', function($scope, $rootScope, $timeout, grid, PlayGame
         return $scope.grid.players[0].user;
     }
 
-    $scope.tour = TourFactory.getTour($rootScope);
+    $scope.tour = TourFactory.getTour($rootScope, $scope);
     function startTour() {
         $scope.tour.init(true);
         $scope.tour.start(true);
