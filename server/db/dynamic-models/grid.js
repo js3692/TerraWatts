@@ -60,13 +60,9 @@ var schema = new mongoose.Schema({
       default: null
   },
   // Below are HISTORICAL data relevant to this game environment
-  complete: {
-      type: Boolean,
-      default: false
-  },
   history: {
       type: [Object]
-  },
+  }
 });
 
 var fieldsToPopulate = [
@@ -87,14 +83,14 @@ var fieldsToPopulate = [
     'state.activePlayer',
     'state.activePlayer.user',
     'state.auction.activePlayer',
-    'state.auction.activePlayer.user',  
-    'state.auction.remainingPlayers', 
-    'state.auction.remainingPlayers.user', 
+    'state.auction.activePlayer.user',
+    'state.auction.remainingPlayers',
+    'state.auction.remainingPlayers.user',
     'state.auction.plant',
     'state.auction.choice',
     'state.auction.choice.player',
     'state.auction.choice.player.user'
-    
+
   ];
 
 schema.plugin(deepPopulate, {
@@ -119,7 +115,7 @@ schema.post('save', function (grid) {
       .populate(grid, 'game state players')
       .then(function (populatedGrid){
         populatedGrid.deepPopulate(fieldsToPopulate, function(err, deepPopulatedGrid) {
-         
+
           if(err) throw err;
           // This is mainly for '/join' and '/leave' of players
           // console.log(deepPopulatedGrid.availableColors);
@@ -134,7 +130,7 @@ schema.post('save', function (grid) {
             .update({
               'regions': deepPopulatedGrid.regions.slice()
             });
-            
+
           firebaseHelper
             .getConnection(deepPopulatedGrid.key)
             .update({
@@ -320,7 +316,7 @@ schema.methods.continue = function (update) {
       return this.state.auction.choice.continue(update, this.game)
         .then(function () {
           return self.save();
-        })      
+        })
     } else {
       return this.state.auction.continue(update, this.game)
         .then(function () {

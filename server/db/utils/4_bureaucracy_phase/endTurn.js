@@ -10,12 +10,14 @@ module.exports = function endTurn(game, state) {
 	// check end game condition
 	if (game.maxCities >= endGame[game.turnOrder.length]) {
 		// sort the players by win condition
-		var winningOrder = game.turnOrder.sort(function(player1, player2) {
+		game.turnOrder.sort(function(player1, player2) {
 			if (player1.numPowered > player2.numPowered) return -1;
 			else if (player1.numPowered < player2.numPowered) return 1;
 			else if (player1.money > player2.money) return -1;
 			else return 1;
 		})
+    game.complete = true;
+    return;
 		// return gameOver(winningOrder)
 	}
 	// start step 2 if necessary

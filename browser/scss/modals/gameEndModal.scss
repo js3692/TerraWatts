@@ -1,0 +1,24 @@
+.modal-content {
+  background-color: $main-background;
+}
+
+#gameEndModal{
+  background-color: $main-background;
+  text-align: center;
+  color: white;
+
+  player {
+    div.panel {
+      width: 40%;
+    }
+  }
+
+  .btn {
+    margin: 1rem 0;
+    background-color: $main-background;
+    border: 1px solid white;
+    color: white;
+  }
+
+
+}
