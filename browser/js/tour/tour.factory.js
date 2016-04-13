@@ -162,7 +162,7 @@ app.factory('TourFactory', function($http, $timeout, $state) {
                 },
                 placement: 'left'
             }, {
-                element: '.resource-menu-tab',
+                element: 'command-center',
                 title: 'Buy Resources!',
                 content: 'You\'re up first for resources. Since you only have a coal plant, you can only buy coal. Your plant only needs two coal, but you can hold up to four. Make sure to buy enough!',
                 onShown: function() {
@@ -230,7 +230,7 @@ app.factory('TourFactory', function($http, $timeout, $state) {
             }, {
                 element: '#playerPanel',
                 title: 'Your opponents buy cities',
-                content: 'Time for your evil opponents to choose their starting positions. Looks like hatesPuppies only bought one city even though they can power two. Maybe they should take some time out of their busy schedule hating puppies to bone up on some terrastrategy.',
+                content: 'Time for your evil opponents to choose their starting positions. Looks like hatesPuppies only bought one city even though they can power two. Maybe he should take some time out of his busy schedule hating puppies to bone up on some terrastrategy.',
                 onShown: function() {
                     disablePrev();
                     function getUnoccupiedCity() {
@@ -283,7 +283,7 @@ app.factory('TourFactory', function($http, $timeout, $state) {
             }, {
                 element: 'command-center',
                 title: 'That\'s it!',
-                content: 'The first turn is over! Congratulations, you are well on your way to learn the ins and outs of Terrawatts. Make an account and start a real game with some friends and/or strangers. Thanks for sticking with the tour!'
+                content: 'The first turn is over! This whole process gets repeated until someone has 17 cities, at which point whoever can power the most wins! Congratulations, you are well on your way to learn the ins and outs of Terrawatts. Make an account and start a real game with some friends and/or strangers. Thanks for sticking with the tour!'
             }
         ],
         onEnd: function() {

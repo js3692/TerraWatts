@@ -1,4 +1,4 @@
-app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal) {
+app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal, $q) {
   var baseUrl = '/api/play/continue/',
     chooseUrl = '/api/play/choose/',
     user,
@@ -58,6 +58,10 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal) {
     if (gridKey) grid = FirebaseFactory.getConnection(gridKey);
     return grid;
   };
+
+  PGFactory.setGrid = function(g) {
+    grid = g;
+  }
 
   PGFactory.getGame = function () {
     if (grid && grid.game) return grid.game;
@@ -214,6 +218,10 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal) {
     var game = PGFactory.getGame();
     if (game) return game.complete;
   };
+
+  PGFactory.getRestock = function(resource) {
+    if(grid && grid.game) return grid.game.restockRates[resource];
+  }
 
   PGFactory.openGameEndModal = function(gameIsComplete) {
     if(gameIsComplete) {
