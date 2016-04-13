@@ -1,4 +1,4 @@
-app.directive('chat', function(FirebaseFactory, PlayGameFactory, $timeout){
+app.directive('chat', function(FirebaseFactory, PlayGameFactory, $timeout, $state){
     return {
         restrict: 'E',
         templateUrl: 'js/common/directives/chat/chat.html',
@@ -17,8 +17,8 @@ app.directive('chat', function(FirebaseFactory, PlayGameFactory, $timeout){
 
             var tourMessages = [
                 'Hey, beautiful',
-                'Play the real game!',
-                'The creators of this game are very nice.',
+                'I am an omniscient terrabeing.',
+                'The makers of this game created me in their image.',
                 'You should consider hiring them...'
             ];
 
@@ -51,7 +51,7 @@ app.directive('chat', function(FirebaseFactory, PlayGameFactory, $timeout){
             }
 
             scope.chatBox = document.getElementById('chat-window');
-            var chatRef = FirebaseFactory.getChat(scope.key) || new TourChat();
+            var chatRef = $state.is('tour') ? new TourChat() : FirebaseFactory.getChat(scope.key);
 
             scope.addToChat = function(){
 
