@@ -60,13 +60,9 @@ var schema = new mongoose.Schema({
       default: null
   },
   // Below are HISTORICAL data relevant to this game environment
-  complete: {
-      type: Boolean,
-      default: false
-  },
   history: {
       type: [Object]
-  },
+  }
 });
 
 var fieldsToPopulate = [

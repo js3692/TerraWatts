@@ -1,0 +1,10 @@
+<div id="gameEndModal">
+    <h1>Game Over</h1>
+    <h3 ng-if="iWon">Congratulations, you won!</h3>
+    <h3 ng-if="!iWon">Sorry, you lost.</h3>
+    <player ng-repeat="player in players" player="player"></player>
+    <button class="btn btn-default"
+            ui-sref="home">
+        Back to lobby
+    </button>
+</div>
