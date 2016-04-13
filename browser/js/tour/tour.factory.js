@@ -1,5 +1,6 @@
 app.factory('TourFactory', function($http, $timeout, $state) {
     var TourFactory = {};
+    var tour;
 
     TourFactory.initGrid = function() {
         return $http.get('/api/grid/tour')
@@ -22,7 +23,7 @@ app.factory('TourFactory', function($http, $timeout, $state) {
             $('.btn[data-role=prev]').prop('disabled', true);
         }
 
-        return new Tour({
+        tour = new Tour({
             name: 'terratour',
             keyboard: false,
             steps: [{
@@ -283,13 +284,24 @@ app.factory('TourFactory', function($http, $timeout, $state) {
             }, {
                 element: 'command-center',
                 title: 'That\'s it!',
-                content: 'The first turn is over! This whole process gets repeated until someone has 17 cities, at which point whoever can power the most wins! Congratulations, you are well on your way to learn the ins and outs of Terrawatts. Make an account and start a real game with some friends and/or strangers. Thanks for sticking with the tour!'
+                content: 'The first turn is over! This whole process gets repeated until someone has 17 cities, at which point whoever can power the most wins! Congratulations, you are well on your way to learn the ins and outs of Terrawatts. There are many intricacies yet to discover. Make an account and start a real game with some friends and/or strangers. Thanks for sticking with the tour!'
+            }],
+            onEnd: function() {
+                $state.go('login');
             }
-        ],
-        onEnd: function() {
-            $state.go('login');
+        });
+        return tour;
+    }
+
+    TourFactory.isTour = function() {
+        return !!tour;
+    }
+
+    TourFactory.end = function() {
+        if (tour) {
+            tour.end();
+            tour = null;
         }
-    });
     }
 
     return TourFactory;
