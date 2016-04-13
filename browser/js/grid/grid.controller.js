@@ -1,4 +1,4 @@
-app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, FirebaseFactory, RegionSelectorFactory, AppConstants, theUser, gridId, key, selectedMap) {
+app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, FirebaseFactory, RegionSelectorFactory, AppConstants, theUser, gridId, key, selectedMap, CityCartFactory) {
   $scope.grid = FirebaseFactory.getConnection(key);
 
   var waiting = _.fill(Array(5), {
@@ -86,13 +86,14 @@ app.controller('GridCtrl', function ($scope, $state, $q, BeforeGameFactory, Fire
 
     return false;
   };
-  
+
   $scope.$watch('grid.game', function(game){
     if(game) $state.go('game', { id: gridId, key: key });
   });
-    
+
 	$scope.startGame = function() {
-		BeforeGameFactory.start($scope.grid.id);
+		CityCartFactory.clearPopulatedCities();
+    BeforeGameFactory.start($scope.grid.id);
 	};
 
   $scope.goHome = function() {

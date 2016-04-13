@@ -1,4 +1,4 @@
-app.directive('cityAction', function(PlayGameFactory, CityCartFactory){
+app.directive('cityAction', function(PlayGameFactory, CityCartFactory, $state, $rootScope){
     return {
         restrict: 'E',
         templateUrl: 'js/common/directives/cityAction/cityAction.html',
@@ -7,24 +7,28 @@ app.directive('cityAction', function(PlayGameFactory, CityCartFactory){
             scope.getCart = CityCartFactory.getCart;
             scope.shouldAllowCityBuying = PlayGameFactory.iAmActivePlayer;
             scope.getCartPrice = CityCartFactory.getCartPrice.bind(null, scope.getCart());
-            
+
             scope.notEnoughMoney = function(){
                 return scope.getCartPrice() > PlayGameFactory.getMe().money;
             }
-            
+
             scope.buyCities = function(){
-                var update = {
-                    phase: 'city',
-                    player: PlayGameFactory.getMe(),
-                    data: {
-                        citiesToAdd: CityCartFactory.getCart()
-                    }
-                };
-                
+                if($state.is('tour')) {
+                    $rootScope.$broadcast('cityBuy', scope.getCart(), scope.getCartPrice());
+                } else {
+                    var update = {
+                        phase: 'city',
+                        player: PlayGameFactory.getMe(),
+                        data: {
+                            citiesToAdd: CityCartFactory.getCart()
+                        }
+                    };
+                }
+
                 PlayGameFactory.continue(update)
                     .then(CityCartFactory.clearCart);
             };
-            
+
             scope.pass = function(){
                 var update = {
                     phase: 'city',
@@ -34,7 +38,7 @@ app.directive('cityAction', function(PlayGameFactory, CityCartFactory){
                     }
                 };
                 PlayGameFactory.continue(update)
-                    .then(CityCartFactory.clearCart);                
+                    .then(CityCartFactory.clearCart);
             }
         }
     }

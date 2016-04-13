@@ -1,4 +1,4 @@
-app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
+app.factory('PlayGameFactory', function ($http, FirebaseFactory, $q) {
     var baseUrl = '/api/play/continue/',
         chooseUrl = '/api/play/choose/',
         user,
@@ -24,7 +24,7 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory) {
     var PGFactory = {};
 
     PGFactory.continue = function(update){
-        if(grid.name === 'tour') return;
+        if(grid.name === 'tour') return $q.resolve({});
         return $http.post(baseUrl + gridId, update)
             .then(toData);
     };

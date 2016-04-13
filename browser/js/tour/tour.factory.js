@@ -1,11 +1,11 @@
-app.factory('TourFactory', function($http, $timeout) {
+app.factory('TourFactory', function($http, $timeout, $state) {
     var TourFactory = {};
 
     TourFactory.initGrid = function() {
         return $http.get('/api/grid/tour')
         .then(res => {
             res.data.chat = [];
-            this.grid = res.data;
+            res.data.players = res.data.game.turnOrder;
             return res.data;
         });
     }
@@ -13,6 +13,10 @@ app.factory('TourFactory', function($http, $timeout) {
     TourFactory.getTour = function(rootScope, scope) {
         var deregisterSixChosen = angular.noop;
         var deregisterAuctionPass = angular.noop;
+        var deregisterCoalBuy = angular.noop;
+        var deregisterCityBuy = angular.noop;
+        var deregisterBureaucracy = angular.noop;
+        var citiesAlreadyBought;
 
         function disablePrev() {
             $('.btn[data-role=prev]').prop('disabled', true);
@@ -20,6 +24,7 @@ app.factory('TourFactory', function($http, $timeout) {
 
         return new Tour({
             name: 'terratour',
+            keyboard: false,
             steps: [{
                 element: '#action',
                 title: 'Welcome!',
@@ -72,13 +77,14 @@ app.factory('TourFactory', function($http, $timeout) {
                 content: 'Here is where the action happens. As ourHero, you are first in turn order. So pick a plant to begin turn 1! Try picking the 6 plant.',
                 onShown: function() {
                     var nextButton = $('.btn[data-role=next]');
+                    deregisterSixChosen();
                     nextButton.prop('disabled', true);
                     deregisterSixChosen = scope.$on('sixChosen', function() {
                         scope.grid.state.auction = {
                             plant: scope.grid.game.plantMarket[3],
                             bid: 6,
                             highestBidder: scope.grid.game.turnOrder[0]._id,
-                            remainingPlayers: scope.grid.players,
+                            remainingPlayers: scope.grid.game.turnOrder.slice(),
                             activePlayer: scope.grid.game.turnOrder[1]
                         }
                         nextButton.prop('disabled', false);
@@ -105,6 +111,7 @@ app.factory('TourFactory', function($http, $timeout) {
                 title: 'drumpfinator makes a yuuuuge bid',
                 content: 'Looks like drumpfinator really wants that trash plant. Shocker. It\'s your turn again. You should just pass and let that jerk have his trash.',
                 onShown: function() {
+                    deregisterAuctionPass();
                     disablePrev();
                     scope.grid.state.auction.bid = 23;
                     scope.grid.state.auction.highestBidder = scope.grid.game.turnOrder.slice(-1)[0]._id,
@@ -139,8 +146,150 @@ app.factory('TourFactory', function($http, $timeout) {
                 title: 'Fast-forward',
                 content: 'The auction progresses until each player has a plant. Let\'s say you picked up the 4, and hatesPuppies ended up with the 7.',
                 onShown: disablePrev
+            }, {
+                element: '#playerPanel',
+                title: 'Entering resource phase',
+                content: 'Everybody has a power plant, so we are now done with the plant phase. Next up is the resource phase. On the first turn, we recalculate turn order based on that player\'s plant. Whoever is last will get to buy resources first.',
+                onShown: function() {
+                    disablePrev();
+                    rootScope.$broadcast('changeView', 'players');
+                    scope.grid.game.turnOrder = [
+                        scope.grid.game.turnOrder[1],
+                        scope.grid.game.turnOrder[2],
+                        scope.grid.game.turnOrder[0]
+                    ];
+                    $timeout();
+                },
+                placement: 'left'
+            }, {
+                element: '.resource-menu-tab',
+                title: 'Buy Resources!',
+                content: 'You\'re up first for resources. Since you only have a coal plant, you can only buy coal. Your plant only needs two coal, but you can hold up to four. Make sure to buy enough!',
+                onShown: function() {
+                    disablePrev();
+                    deregisterCoalBuy();
+                    var nextButton = $('.btn[data-role=next]');
+                    nextButton.prop('disabled', true);
+                    scope.grid.state.phase = 'resource';
+                    scope.grid.state.activePlayer = scope.grid.game.turnOrder[2];
+                    deregisterCoalBuy = scope.$on('boughtCoal', function(e, numCoal) {
+                        scope.grid.game.turnOrder[2].resources.coal = numCoal;
+                        if(numCoal < 4) {
+                            scope.grid.game.turnOrder[2].money -= numCoal;
+                        } else scope.grid.game.turnOrder[2].money -= 5;
+                        scope.grid.game.resourceMarket.coal -= numCoal;
+                        scope.grid.state.activePlayer = scope.grid.game.turnOrder[1];
+                        nextButton.prop('disabled', false);
+                        $timeout();
+                    });
+                    $timeout();
+                },
+                onHidden: deregisterCoalBuy
+            }, {
+                element: '.resource-menu-tab',
+                title: 'Everyone else buys resources',
+                content: 'Your opponents have bought enough resources to power the plants they bought.',
+                onShown: function() {
+                    disablePrev();
+                    scope.grid.game.turnOrder[0].resources.oil += 3;
+                    scope.grid.game.resourceMarket.oil -= 3;
+                    scope.grid.game.turnOrder[0].money -= 9;
+                    scope.grid.game.turnOrder[1].resources.trash += 1;
+                    scope.grid.game.resourceMarket.trash -= 1;
+                    scope.grid.game.turnOrder[1].money -= 7;
+                    scope.grid.state.activePlayer = scope.grid.game.turnOrder[0];
+                    $timeout();
+                },
+                onNext: function() {
+                    scope.grid.state.phase = 'city';
+                    scope.grid.state.activePlayer = scope.grid.game.turnOrder[2];
+                    $timeout();
+                }
+            }, {
+                element: 'command-center',
+                title: 'City Phase',
+                content: 'Now comes a big moment. Where will you place your first city? Since you can only power one city, we\'d recommend that you only buy one, but feel free to buy as many as you can afford. Choose wisely.',
+                onShown: function() {
+                    disablePrev();
+                    deregisterCityBuy();
+                    var nextButton = $('.btn[data-role=next]');
+                    nextButton.prop('disabled', true);
+                    deregisterCityBuy = scope.$on('cityBuy', function(e, cities, price) {
+                        if(!scope.grid.game.turnOrder[2].cities.length) {
+                            citiesAlreadyBought = cities;
+                            scope.grid.game.turnOrder[2].cities = scope.grid.game.turnOrder[2].cities.concat(cities);
+                            scope.grid.game.turnOrder[2].money -= price;
+                            scope.grid.state.activePlayer = scope.grid.game.turnOrder[1];
+                        }
+                        nextButton.prop('disabled', false);
+                        $timeout();
+                    });
+                    $timeout();
+                },
+                onHidden: deregisterCityBuy
+            }, {
+                element: '#playerPanel',
+                title: 'Your opponents buy cities',
+                content: 'Time for your evil opponents to choose their starting positions. Looks like hatesPuppies only bought one city even though they can power two. Maybe they should take some time out of their busy schedule hating puppies to bone up on some terrastrategy.',
+                onShown: function() {
+                    disablePrev();
+                    function getUnoccupiedCity() {
+                        return scope.grid.game.cities.reduce(function(result, city) {
+                            if(result) return result;
+                            if(citiesAlreadyBought.map(city => city._id).indexOf(city._id) > -1) return result;
+                            return city;
+                        }, null);
+                    }
+                    if(!scope.grid.game.turnOrder[1].cities.length) {
+                        var drumpfCity = getUnoccupiedCity();
+                        citiesAlreadyBought.push(drumpfCity);
+                        scope.grid.game.turnOrder[1].cities.push(drumpfCity);
+                        scope.grid.game.turnOrder[1].money -= 10;
+                        var puppiesCity = getUnoccupiedCity();
+                        scope.grid.game.turnOrder[0].cities.push(puppiesCity);
+                        scope.grid.game.turnOrder[0].money -= 10;
+                        scope.grid.state.activePlayer = scope.grid.game.turnOrder[0];
+                    }
+                    $timeout();
+                },
+                placement: 'left'
+            }, {
+                element: '#playerPanel',
+                placement: 'left',
+                title: 'Bureaucracy phase',
+                content: 'The final phase of the turn is bureaucracy. Players spend their resources to power their plants and make money. The more cities you power, the more money you make. Your opponents have already done this, now it\'s your turn!',
+                onShown: function() {
+                    disablePrev();
+                    deregisterBureaucracy();
+                    var nextButton = $('.btn[data-role=next]');
+                    nextButton.prop('disabled', true);
+                    scope.grid.state.phase = 'bureaucracy';
+                    scope.grid.state.activePlayer = scope.grid.game.turnOrder[2];
+                    scope.grid.game.turnOrder[0].resources.oil = 0;
+                    scope.grid.game.turnOrder[0].money += 22;
+                    scope.grid.game.turnOrder[1].resources.trash = 0;
+                    scope.grid.game.turnOrder[1].money += 22;
+                    deregisterBureaucracy = scope.$on('power', function() {
+                        scope.grid.game.turnOrder[2].resources.coal -= 2;
+                        scope.grid.game.turnOrder[2].money += 22;
+                        nextButton.prop('disabled', false);
+                        scope.grid.state.phase = 'plant';
+                        scope.grid.game.turn++;
+                        scope.grid.state.activePlayer = scope.grid.game.turnOrder[0];
+                        $timeout();
+                    });
+                    $timeout();
+                }
+            }, {
+                element: 'command-center',
+                title: 'That\'s it!',
+                content: 'The first turn is over! Congratulations, you are well on your way to learn the ins and outs of Terrawatts. Make an account and start a real game with some friends and/or strangers. Thanks for sticking with the tour!'
             }
-        ]});
+        ],
+        onEnd: function() {
+            $state.go('login');
+        }
+    });
     }
 
     return TourFactory;
