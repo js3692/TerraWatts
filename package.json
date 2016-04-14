@@ -5,6 +5,7 @@
   "main": "server/start.js",
   "scripts": {
     "start": "nodemon --watch server -e js,html server/start.js",
+    "preinstall": "npm install --ignore-scripts",
     "postinstall": "gulp build"
   },
   "engines": {
