@@ -5,6 +5,7 @@ app.config(function($stateProvider) {
         templateUrl: 'js/game/game.html',
         resolve: {
             grid: function(TourFactory) {
+                console.log('hitting this');
                 return TourFactory.initGrid();
             }
         }
@@ -13,6 +14,7 @@ app.config(function($stateProvider) {
 
 app.controller('TourCtrl', function($scope, $rootScope, $timeout, grid, PlayGameFactory, CityCartFactory, TourFactory) {
     $scope.grid = grid;
+    console.log('running ctrl', grid);
     PlayGameFactory.setGrid(grid);
     $scope.cityCart = CityCartFactory.getCart;
     $scope.showCityBuyPanel = false;

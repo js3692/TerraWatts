@@ -40,6 +40,15 @@ app.directive('cityAction', function(PlayGameFactory, CityCartFactory, $state, $
                 PlayGameFactory.continue(update)
                     .then(CityCartFactory.clearCart);
             }
+
+            scope.displayCities = function() {
+                var cart = scope.getCart();
+                var names = cart.map(city => city.name);
+                if (names.length <= 4) return names;
+                var names = names.slice(0,4);
+                names.push(`+ ${cart.length - 4} more`);
+                return names;
+            }
         }
     }
 });

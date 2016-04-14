@@ -35,7 +35,7 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
                 .projection(projection);
 
             var distancePath = d3.geo.path()
-                .pointRadius(zoom.scale()/1200)
+                .pointRadius(zoom.scale()/1000)
                 .projection(projection);
 
             var svg = d3.select(".map").append("svg")
@@ -234,7 +234,7 @@ app.directive('gameMap', function($parse, MapFactory, PlayGameFactory, CityCartF
                 renderOnCentroid();
 
                 distancePath
-                    .pointRadius(zoom.scale()/1200 > 10 ? 10 : zoom.scale()/1200);
+                    .pointRadius(zoom.scale()/1000 > 10 ? 10 : zoom.scale()/1000);
 
                 var image = raster
                     .attr("transform", "scale(" + tiles.scale + ")translate(" + tiles.translate + ")")

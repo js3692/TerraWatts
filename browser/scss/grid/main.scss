@@ -26,11 +26,17 @@
     color: white;
   }
 
-  .top-icons, .bottom-icons {
+  .top-icons {
     display: block;
     margin: 0;
     height: 15px;
   }
+  .bottom-icons {
+    display: block;
+    margin-top: -18px;
+    height: 15px;
+  }
+
 
   .header {
     margin-top: 15px;
@@ -89,9 +95,6 @@
     padding: 5px;
     position: relative;
 
-    .bottom-icons {
-      margin-top: 18px;
-    }
     span.glyphicon-cd {
       color: #d8d8d8;
     }
@@ -149,7 +152,7 @@
       }
     }
   }
-  
+
   .right-column {
     .top-row, .bottom-row {
       background-color: #133020;
@@ -162,12 +165,12 @@
       }
     }
     .top-row {
-      height: 50%;
+      height: 60%;
       margin-bottom: 5px;
       position: relative;
     }
     .bottom-row {
-      height: calc(50% - 5px);
+      height: calc(40% - 5px);
     }
   }
 
@@ -177,8 +180,12 @@
     height: calc(100% - 38px);
     width: calc(100% - 28px);
     .region-selected {
-      fill: grey !important;
+      opacity: 1 !important;
     }
+  }
+
+  .bottom-icons.bottom {
+    margin-top: 0;
   }
 
   #icon-placeholder {
@@ -186,7 +193,7 @@
     height: calc(100% - 48px);
     text-align: center;
     position: absolute;
-    top: 50%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
     span {
@@ -205,7 +212,7 @@
       margin-right: 14px;
       height: calc(100% - 67px);
       color: white;
-      overflow-y: scroll; 
+      overflow-y: scroll;
     }
     form {
       width: calc(100% - 58px);
