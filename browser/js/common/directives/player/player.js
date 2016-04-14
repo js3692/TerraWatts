@@ -3,7 +3,7 @@ app.directive('player', function (PlayGameFactory) {
     restrict: "E",
     templateUrl: 'js/common/directives/player/player.html',
     scope: {
-      player: '='
+      player: '=',
     },
     link: function (scope) {
       scope.isActive = function () {

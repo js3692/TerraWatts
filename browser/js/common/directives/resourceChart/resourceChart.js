@@ -112,7 +112,11 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                 });
 
             svg.selectAll('.text')
-                .data(['coal', 'oil', 'trash', 'uranium']).enter()
+                .data(['coal +' + PlayGameFactory.getRestock('coal'),
+                       'oil +' + PlayGameFactory.getRestock('oil'),
+                       'trash +' + PlayGameFactory.getRestock('trash'),
+                       'uranium +' + PlayGameFactory.getRestock('nuke')
+                    ]).enter()
                 .append('text')
                 .attr('class', 'text')
                 .attr('x', 5)
@@ -158,11 +162,11 @@ app.directive('resourceBars', function($parse, PlayGameFactory) {
                         if(key !== 'nuke') resources.push({ value: resourceMarket[key], type: key, color: scope.resourceColors[key] });
                     }
                     resources.push({ value: resourceMarket['nuke'], type: 'nuke', color: scope.resourceColors['nuke']});
-                    
+
                     resources.forEach(function(resource) {
                         var resourceVal = resource.value;
                         var resourceType = resource.type;
-                        
+
                         d3.select('#' + resource.type)
                             .transition().duration(2000).ease('elastic')
                             .attr('width', function(resource) {

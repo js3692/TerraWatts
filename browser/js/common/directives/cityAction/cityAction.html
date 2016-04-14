@@ -1,15 +1,15 @@
 <div class="city-action-container">
     <div class="row" ng-show="shouldAllowCityBuying()">
         <div class="col-lg-6">
-            Total: ${{ getCartPrice() }}
-            <div ng-show="notEnoughMoney()">
-                Not enough money.
-            </div>
+            <p ng-repeat="name in displayCities()">{{ name }}</p>
         </div>
         <div class="col-lg-6">
             <div class="btn-group">
-                <button class="btn pick" ng-disabled="getCart().length === 0 || notEnoughMoney()" ng-click="buyCities()">Buy</button>
+                <button class="btn pick" ng-disabled="getCart().length === 0 || notEnoughMoney()" ng-click="buyCities()">Buy for ${{ getCartPrice() }}</button>
                 <button class="btn pass" ng-click="pass()">Pass</button>
+            </div>
+            <div ng-show="notEnoughMoney()">
+                Not enough money.
             </div>
         </div>
     </div>

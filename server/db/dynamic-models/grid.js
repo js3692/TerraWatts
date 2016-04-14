@@ -93,6 +93,10 @@ var fieldsToPopulate = [
 
   ];
 
+schema.statics.getTourGrid = function() {
+  return this.findOne({name: 'tour'}).deepPopulate(fieldsToPopulate.join(' '));
+}
+
 schema.plugin(deepPopulate, {
   whitelist: fieldsToPopulate,
   populate: {
@@ -110,7 +114,7 @@ schema.set('toObject', { virtuals: true });
 schema.set('toJSON', { virtuals: true });
 
 schema.post('save', function (grid) {
-  if(grid.players.length > 0) {
+  if(grid.players.length > 0 && grid.name !== 'tour') {
     grid.constructor
       .populate(grid, 'game state players')
       .then(function (populatedGrid){
@@ -153,16 +157,10 @@ schema.post('save', function (grid) {
               });
           }
 
-          // firebaseHelper.disconnect(deepPopulatedGrid.key);
-
         })
       })
   }
 });
-
-//schema.methods.saveHistory = function () {
-//  this.history.push(this.game.toObject());
-//};
 
 schema.methods.makeRandomRegions = function (numPlayers) {
   var self = this;
@@ -279,8 +277,8 @@ schema.methods.switchColor = function (player, newColor) {
 
 schema.methods.createGame = function () {
   var self = this;
-
-  return Game.initialize(this.map, this.players, this.regions)
+  var game = new Game();
+  return game.initialize(this.map, this.players, this.regions)
     .then(function (newGame) {
       self.game = newGame;
       return self.save();

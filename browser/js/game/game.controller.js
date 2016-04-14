@@ -10,5 +10,4 @@ app.controller('GameCtrl', function($scope, FirebaseFactory, PlayGameFactory, Ci
   };
 
   $scope.$watch(PlayGameFactory.gameIsComplete, PlayGameFactory.openGameEndModal);
-
 });

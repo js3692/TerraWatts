@@ -1,18 +1,19 @@
 <div class="menu-panel-body
-            panel 
+            panel
             panel-default
             plant-slider"
      ng-switch on="plantsOrResources">
     <plant plant-to-action
            index="{{$index}}"
            ng-style="{ opacity: firstFourOrStepThreeOpacity($index) }"
-           ng-class="{ plantHover : firstFourOrStepThreeTruthyAndNotAuction($index)}"   
-           ng-repeat="plant in getPlantMarket()" 
+           ng-class="{ plantHover : firstFourOrStepThreeTruthyAndNotAuction($index)}"
+           id="plant{{plant.rank}}"
+           ng-repeat="plant in getPlantMarket()"
            plant="plant"
            rank="{{plant.rank}}"
            ng-switch-when="plant">
     </plant>
-    <resource-bars resource-market="getResourceMarket()" 
+    <resource-bars resource-market="getResourceMarket()"
           resource-colors="resourceColors"
           resource-wishlist="getResourceWishlist()"
           ng-click="buyResources()"

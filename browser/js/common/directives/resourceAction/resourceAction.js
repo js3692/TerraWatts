@@ -1,4 +1,4 @@
-app.directive('resourceAction', function (PlayGameFactory, ResourceFactory){
+app.directive('resourceAction', function (PlayGameFactory, ResourceFactory, $rootScope, $state){
     return {
         restrict: 'E',
         templateUrl: 'js/common/directives/resourceAction/resourceAction.html',
@@ -50,14 +50,19 @@ app.directive('resourceAction', function (PlayGameFactory, ResourceFactory){
                 return Math.min((maxWithoutHybrids + (extraCapacity || 0)), PlayGameFactory.getResourceMarket()[resourceType]);
             };
 
-            scope.buyResources = function(wishlist){
-                var update = {
-                    phase: 'resource',
-                    player: PlayGameFactory.getMe(),
-                    data: {
-                        wishlist: PlayGameFactory.getWishlist()
-                    }
-                };
+            scope.buyResources = function(){
+                if($state.is('tour')) {
+                    var coal = PlayGameFactory.getWishlist().coal;
+                    if(coal >= 2) $rootScope.$broadcast('boughtCoal', coal);
+                } else {
+                    var update = {
+                        phase: 'resource',
+                        player: PlayGameFactory.getMe(),
+                        data: {
+                            wishlist: PlayGameFactory.getWishlist()
+                        }
+                    };
+                }
                 PlayGameFactory.continue(update)
                     .then(PlayGameFactory.clearWishlist);
             };

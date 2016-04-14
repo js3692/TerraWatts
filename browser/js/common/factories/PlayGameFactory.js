@@ -1,4 +1,4 @@
-app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal) {
+app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal, $q) {
   var baseUrl = '/api/play/continue/',
     chooseUrl = '/api/play/choose/',
     user,
@@ -25,6 +25,7 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal) {
   var PGFactory = {};
 
   PGFactory.continue = function (update) {
+    if(grid.name === 'tour') return $q.resolve({});
     return $http.post(baseUrl + gridId, update)
       .then(toData);
   };
@@ -58,12 +59,17 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal) {
     return grid;
   };
 
+  PGFactory.setGrid = function(g) {
+    grid = g;
+  }
+
   PGFactory.getGame = function () {
     if (grid && grid.game) return grid.game;
   }
 
   PGFactory.getMe = function () {
     if (grid && grid.players) {
+      if(grid.name === 'tour') return me = grid.players[0];
       var players = grid.players;
       for (var i = 0, len = players.length; i < len; i++) {
         if (players[i].user._id === user._id) return me = players[i];
@@ -158,7 +164,6 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal) {
     return wishlist;
   }
 
-
   PGFactory.getResourcesToUseForHybrids = function () {
     return resourcesForHybrids;
   }
@@ -195,8 +200,16 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal) {
     return PGFactory.getMe().resources;
   }
 
-  PGFactory.getStep = function () {
-    return +PGFactory.getGame().step;
+  PGFactory.getDeckSize = function() {
+    if(grid && grid.game) return grid.game.plantDeck.length;
+  }
+
+  PGFactory.getStepThreePlants = function() {
+    if(grid && grid.game) return grid.game.stepThreePlants;
+  }
+
+  PGFactory.getDiscardedPlants = function() {
+    if(grid && grid.game) return grid.game.discardedPlants;
   }
 
   PGFactory.getTurn = function () {
@@ -214,7 +227,11 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal) {
     if (game) return game.complete;
   };
 
-  PGFactory.openGameEndModal = function(gameIsComplete){
+  PGFactory.getRestock = function(resource) {
+    if(grid && grid.game) return grid.game.restockRates[resource];
+  }
+
+  PGFactory.openGameEndModal = function(gameIsComplete) {
     if(gameIsComplete) {
       $uibModal.open({
         animation: true,
@@ -230,9 +247,8 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal) {
         }
       });
     }
-  };
+  }
 
   return PGFactory;
-
 
 });

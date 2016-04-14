@@ -3,7 +3,7 @@
      ng-class="{ 'active-player': isActive() }">
   <div class="panel-body">
       <div class="player-top-row">
-        <div class="player-text username">{{ player.user.username }} 
+        <div class="player-text username">{{ player.user.username }}
             <div class=glyphicon-container>
                 <div class="glyphicon glyphicon-usd"></div>
                 <div class="player-text">{{ player.money }}</div>
@@ -13,17 +13,6 @@
                 <div class="player-text">{{ player.cities ? player.cities.length : 0 }}</div>
             </div>
         </div>
-<!--
-          <div class="player-box glyphicon pull-left">
-              <div class="below-username player-box glyphicon glyphicon-home pull-right"
-                   ng-style="{ color: player.color }">
-                  <div class="player-text">{{ player.cities ? player.cities.length : 0 }}</div>
-              </div>
-              <div class="below-username player-box glyphicon glyphicon-piggy-bank pull-right">
-                   <div class="player-text">{{ player.money }}</div>
-              </div>
-          </div>
--->
           <plant rank="{{plant.rank}}" ng-repeat="plant in player.plants"></plant>
           <div class="pull-right resource-box">
               <div class="row">

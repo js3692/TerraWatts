@@ -84,7 +84,7 @@ app.factory('MapFactory', function ($http) {
 			cityBoxBuffer = cityWidth/16,
 			cityBoxYOffset = cityWidth*(3/16),
 			textYOffset = cityWidth/8,
-			textFontSize = cityWidth/8,
+			textFontSize = cityWidth/10,
 			leftTowerWidth = rectDimension*0.25,
 			leftTowerHeight = rectDimension*0.5,
 			midTowerWidth = rectDimension*0.3,
@@ -152,7 +152,8 @@ app.factory('MapFactory', function ($http) {
 					.attr("text-anchor", "middle")
 					.attr("font-family", "orbitron")
 					.attr("font-size", textFontSize)
-					.attr('word-spacing', '-.31em')
+					// .attr('word-spacing', '-.31em')
+                    .attr('letter-spacing', '0.03em')
 					.attr("fill", "white")
 					.attr('x', cityWidth/2)
 					.attr('y', textYOffset);

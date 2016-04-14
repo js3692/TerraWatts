@@ -30,7 +30,7 @@
                 <div class="row top-icons">
                   <span class="glyphicon glyphicon-cd pull-left"></span>
                   <span class="glyphicon glyphicon-cd pull-right"></span>
-                </div> 
+                </div>
                 <div class="row player-info">
                   <div class="col-xs-3">
                     <div ng-style="{ background: player.color }" class="color-square"><span class="glyphicon glyphicon-flash"></span></div>
@@ -62,7 +62,7 @@
           </div>
         </div>
 
-        <div class="row bottom-icons">
+        <div class="row bottom-icons bottom">
           <span class="glyphicon glyphicon-cd pull-left"></span>
           <span class="glyphicon glyphicon-cd pull-right"></span>
         </div>
@@ -73,6 +73,8 @@
         <div class="row top-row">
           <div class="row top-icons" style="text-align: center;">
             <span class="glyphicon glyphicon-cd pull-left"></span>
+            <span ng-hide="grid.randomRegions">CHOOSE YOUR REGIONS</span>
+            <br />
             <span ng-hide="grid.randomRegions">REMAINING: {{ numRegions[grid.players.length] - grid.regions.length }}</span>
             <span class="glyphicon glyphicon-cd pull-right"></span>
           </div>
@@ -91,7 +93,7 @@
             <span class="glyphicon glyphicon-cd pull-right"></span>
           </div>
           <chat key="key" me="me.username"></chat>
-          <div class="row bottom-icons">
+          <div class="row bottom-icons bottom">
             <span class="glyphicon glyphicon-cd pull-left"></span>
             <span class="glyphicon glyphicon-cd pull-right"></span>
           </div>

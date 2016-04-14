@@ -2,7 +2,7 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
 	var cityCart = [],
         populatedCities = [],
         CCFactory = {};
-    
+
     CCFactory.toggle = function(city){
         if(this.isValidCityClick(city)) {
             for(var i = 0; i < cityCart.length; i++){
@@ -14,7 +14,7 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
             }
             cityCart.push(city);
             $rootScope.$digest();
-        }     
+        }
     };
 
     CCFactory.isValidCityClick = function(city) {
@@ -30,15 +30,15 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
         var openSlots = populatedCity.players.length < PlayGameFactory.getGame().step;
         return !alreadyInCity && openSlots;
     }
-    
+
     CCFactory.clearCart = function(){
         cityCart = [];
     };
-    
+
     CCFactory.getCart = function(){
         return cityCart;
     };
-    
+
     CCFactory.getCartPrice = function(citiesToAdd){
         var game = PlayGameFactory.getGame();
         var player = PlayGameFactory.getMe();
@@ -46,6 +46,7 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
     }
 
     CCFactory.getPopulatedCities = function(players) {
+        populatedCities = [];
         players.forEach(function(player) {
             if(player.cities) {
                 var currPlayer = { name: player.user.username, id: player._id, color: player.color }
@@ -73,9 +74,13 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
         });
         return populatedCities;
     }
-    
+
+    CCFactory.clearPopulatedCities = function() {
+        populatedCities = [];
+    }
+
     //city price algorithm -- needs dij and num residents.
-    
+
     function totalCost(game, citiesToAdd, player) {
         var network = player.cities || [];
         var connectionCost = dij(citiesToAdd, network, game.cities, game.connections);
@@ -85,9 +90,9 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
         }, 0);
         return connectionCost + citiesCost;
     }
-    
+
     //num residents
-    
+
     function numResidents (city, players) {
         return players.reduce(function (prev, player) {
             var isResident = 0;
@@ -95,13 +100,13 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
             player.cities.forEach(function (c) {
                 if (c === city.id) isResident = 1;
             });
-            
+
             return prev + isResident;
         }, 0)
     }
-    
+
     //dij
-    
+
     function dij(citiesToAdd, network, cities, connections) {
         var networkCopy = network.slice();
         var citiesToAddCopy = citiesToAdd.slice();
@@ -164,7 +169,7 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
                 return city._id !== node.city._id;
             })[0];
         })
-        
+
         return data.filter(function (node) {
             return containsCity(neighboringCities, node.city) && !node.visited;
         })
@@ -200,6 +205,6 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
         }
     }
 
-    
+
 	return CCFactory;
 })
