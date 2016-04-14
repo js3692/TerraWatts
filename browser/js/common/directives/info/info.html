@@ -1,0 +1,15 @@
+<div class="info-panel">
+    <h5>Restock Rates:</h5>
+    <table class="restockTable">
+        <tr ng-repeat="resource in resources">
+            <td><img class="restockImg" ng-src='/{{resource}}.png'></td>
+            <td ng-repeat="num in [1,2,3]" ng-class="{currentStep: num === getStep()}">{{restockRates[num][resource]}}</td>
+        </tr>
+    </table>
+    <hr>
+    <h5>Step Two starts at {{stepTwo}} cities</h5>
+    <hr>
+    <h5>The game ends at {{endGame}} cities</h5>
+    <hr>
+    <h5>The deck has {{getDeckSize()}} plants left</h5>
+</div>

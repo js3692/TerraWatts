@@ -55,7 +55,7 @@ player-panel {
         border-radius: 0 0 0 5px;
         border-width: 0;
     }
-    .glyphicon-user {
+    .glyphicon-user, .glyphicon-info-sign {
         font-size: 20px;
         margin-left: 5px;
         margin-top: 37px;
@@ -68,7 +68,7 @@ player-panel {
 
     chat {
         #chat-window {
-            height: 455px;
+            height: 500px;
             overflow-y: scroll;
         }
         form, .chat-input {
@@ -78,5 +78,27 @@ player-panel {
             margin: 0 auto;
             background-color: $main-background;
         }
+    }
+
+    .info-panel {
+        padding: 30px;
+    }
+
+    .restockTable {
+        background-color: #ddd;
+        margin: auto;
+        color: #333;
+        padding: 20px;
+        border: 1px solid black;
+        border-radius: 6px;
+        td {
+            padding: 7px 10px;
+        }
+    }
+    .restockImg {
+        width: 20px;
+    }
+    .currentStep {
+        background-color: #64ce33;
     }
 }

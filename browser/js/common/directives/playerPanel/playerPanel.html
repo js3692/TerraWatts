@@ -7,6 +7,9 @@
     <div ng-show="view === 'chat'">
         <chat></chat>
     </div>
+    <div ng-show="view === 'info'">
+        <info></info>
+    </div>
 </div>
 <div id="playerPanel" class="right-slider tab-container">
     <div class="menu-tab triangle-tab" ng-click="open(); toggleArrows()">
@@ -19,7 +22,13 @@
     </div>
     <div ng-click="view='chat'"
          class="menu-tab chat-tab"
+         id="chat-tab"
          ng-class="{'active-tab' : view === 'chat'}">
         <span class="glyphicon glyphicon-comment"></span>
+    </div>
+    <div ng-click="view='info'"
+         class="menu-tab chat-tab"
+         ng-class="{'active-tab' : view === 'info'}">
+        <span class="glyphicon glyphicon-info-sign"></span>
     </div>
 </div>

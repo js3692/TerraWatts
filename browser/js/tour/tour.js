@@ -33,6 +33,6 @@ app.controller('TourCtrl', function($scope, $rootScope, $timeout, grid, PlayGame
         $scope.tour.goTo(0);
     }
 
-    $timeout(startTour)
+    $timeout(startTour);
 
 });

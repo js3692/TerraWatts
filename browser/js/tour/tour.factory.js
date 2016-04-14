@@ -23,33 +23,43 @@ app.factory('TourFactory', function($http, $timeout, $state) {
             $('.btn[data-role=prev]').prop('disabled', true);
         }
 
+        function disableEnd() {
+            $('.btn[data-role=end]').hide();
+        }
+
         tour = new Tour({
             name: 'terratour',
             keyboard: false,
             steps: [{
                 element: '#action',
                 title: 'Welcome!',
-                content: 'Welcome to the TerraTour! Err... uhh... Tourawatts? Either way, we will be showing you the different elements of our game, and taking you through a typical turn 1.'
+                content: 'Welcome to the TerraTour! Err... uhh... Tourawatts? Either way, we will be showing you the different elements of our game, and taking you through a typical turn 1.',
+                onShown: disableEnd
             }, {
                 element: 'plant-and-resource-panel',
                 title: 'Plant Market',
-                content: 'First up is the power plant market. This shows you what power plants are available, as well as which ones are coming up next.'
+                content: 'First up is the power plant market. This shows you what power plants are available, as well as which ones are coming up next.',
+                onShown: disableEnd
             }, {
                 element: '#plant3',
                 title: 'The 3 Plant',
-                content: 'Each plant has a minimum cost in the upper left corner, a resource cost, and a number of cities. For example, this plant costs a minimum of $3, and uses 2 oil to power 1 city.'
+                content: 'Each plant has a minimum cost in the upper left corner, a resource cost, and a number of cities. For example, this plant costs a minimum of $3, and uses 2 oil to power 1 city.',
+                onShown: disableEnd
             }, {
                 element: '.resource-menu-tab',
                 title: 'Switch Tabs',
-                content: 'Click this button to switch to the resource view.'
+                content: 'Click this button to switch to the resource view.',
+                onShown: disableEnd
             }, {
                 element: '.resource-menu-tab',
                 title: 'Resource Market',
                 content: 'This bar graph shows you the current cost of all resources. As players buy up resources, they will get more expensive. At the end of each turn, some resources will be replenished, according to the number on the bar.',
                 onShown: function() {
+                    disableEnd();
                     rootScope.$broadcast('changePhase', 'resource');
                 },
                 onHidden: function() {
+                    disableEnd();
                     rootScope.$broadcast('changePhase', 'plant');
                 }
             }, {
@@ -57,12 +67,14 @@ app.factory('TourFactory', function($http, $timeout, $state) {
                 title: 'Player Panel',
                 content: 'Over here is our player panel, where you can see details about each player, such as how much cities and resources they have.',
                 placement: 'left',
+                onShown: disableEnd
             }, {
-                element: '.chat-tab',
+                element: '#chat-tab',
                 title: 'Chat',
                 content: 'Click here to see the chat/game log. It is currently empty :( Say hi!',
                 placement: 'left',
                 onShown: function() {
+                    disableEnd();
                     rootScope.$broadcast('changeView', 'chat');
                 },
                 onHidden: function() {
@@ -71,14 +83,16 @@ app.factory('TourFactory', function($http, $timeout, $state) {
             }, {
                 element: '#maptour',
                 title: 'The Map',
-                content: 'Finally we get to our zoomable and scrollable map. Your first city costs $10. Every city after that costs $10 plus the cheapest connection cost to your network.'
+                content: 'Finally we get to our zoomable and scrollable map. Your first city costs $10. Every city after that costs $10 plus the cheapest connection cost to your network.',
+                onShown: disableEnd
             }, {
                 element: 'command-center',
                 title: 'Let\'s start!',
-                content: 'Here is where the action happens. As ourHero, you are first in turn order. So pick a plant to begin turn 1! Try picking the 6 plant.',
+                content: 'Here is where the action happens. As ourHero, you are first in turn order. So pick a plant to begin turn 1! Try picking the 6 plant. Go ahead, give it a click!',
                 onShown: function() {
-                    var nextButton = $('.btn[data-role=next]');
                     deregisterSixChosen();
+                    disableEnd();
+                    var nextButton = $('.btn[data-role=next]');
                     nextButton.prop('disabled', true);
                     deregisterSixChosen = scope.$on('sixChosen', function() {
                         scope.grid.state.auction = {
@@ -97,13 +111,17 @@ app.factory('TourFactory', function($http, $timeout, $state) {
                 element: 'command-center',
                 title: 'The Auction',
                 content: 'You\'ve entered a bidding war against your opponents, for the coveted 6 plant. Let\'s see how much they want it.',
-                onShown: disablePrev
+                onShown: function() {
+                    disableEnd();
+                    disablePrev();
+                }
             }, {
                 element: 'command-center',
                 title: 'hatesPuppies passes',
                 content: 'hatesPuppies has passed, meaning they will not be getting the 6 plant.',
                 onShown: function() {
                     disablePrev();
+                    disableEnd();
                     scope.grid.state.auction.remainingPlayers.splice(1,1);
                     $timeout();
                 }
@@ -114,6 +132,7 @@ app.factory('TourFactory', function($http, $timeout, $state) {
                 onShown: function() {
                     deregisterAuctionPass();
                     disablePrev();
+                    disableEnd();
                     scope.grid.state.auction.bid = 23;
                     scope.grid.state.auction.highestBidder = scope.grid.game.turnOrder.slice(-1)[0]._id,
                     scope.grid.state.auction.activePlayer = scope.grid.game.turnOrder[0];
@@ -146,13 +165,17 @@ app.factory('TourFactory', function($http, $timeout, $state) {
                 element: 'command-center',
                 title: 'Fast-forward',
                 content: 'The auction progresses until each player has a plant. Let\'s say you picked up the 4, and hatesPuppies ended up with the 7.',
-                onShown: disablePrev
+                onShown: function() {
+                    disablePrev();
+                    disableEnd();
+                }
             }, {
                 element: '#playerPanel',
                 title: 'Entering resource phase',
                 content: 'Everybody has a power plant, so we are now done with the plant phase. Next up is the resource phase. On the first turn, we recalculate turn order based on that player\'s plant. Whoever is last will get to buy resources first.',
                 onShown: function() {
                     disablePrev();
+                    disableEnd();
                     rootScope.$broadcast('changeView', 'players');
                     scope.grid.game.turnOrder = [
                         scope.grid.game.turnOrder[1],
@@ -168,6 +191,7 @@ app.factory('TourFactory', function($http, $timeout, $state) {
                 content: 'You\'re up first for resources. Since you only have a coal plant, you can only buy coal. Your plant only needs two coal, but you can hold up to four. Make sure to buy enough!',
                 onShown: function() {
                     disablePrev();
+                    disableEnd();
                     deregisterCoalBuy();
                     var nextButton = $('.btn[data-role=next]');
                     nextButton.prop('disabled', true);
@@ -192,6 +216,7 @@ app.factory('TourFactory', function($http, $timeout, $state) {
                 content: 'Your opponents have bought enough resources to power the plants they bought.',
                 onShown: function() {
                     disablePrev();
+                    disableEnd();
                     scope.grid.game.turnOrder[0].resources.oil += 3;
                     scope.grid.game.resourceMarket.oil -= 3;
                     scope.grid.game.turnOrder[0].money -= 9;
@@ -212,6 +237,7 @@ app.factory('TourFactory', function($http, $timeout, $state) {
                 content: 'Now comes a big moment. Where will you place your first city? Since you can only power one city, we\'d recommend that you only buy one, but feel free to buy as many as you can afford. Choose wisely.',
                 onShown: function() {
                     disablePrev();
+                    disableEnd();
                     deregisterCityBuy();
                     var nextButton = $('.btn[data-role=next]');
                     nextButton.prop('disabled', true);
@@ -234,6 +260,7 @@ app.factory('TourFactory', function($http, $timeout, $state) {
                 content: 'Time for your evil opponents to choose their starting positions. Looks like hatesPuppies only bought one city even though they can power two. Maybe he should take some time out of his busy schedule hating puppies to bone up on some terrastrategy.',
                 onShown: function() {
                     disablePrev();
+                    disableEnd();
                     function getUnoccupiedCity() {
                         return scope.grid.game.cities.reduce(function(result, city) {
                             if(result) return result;
@@ -261,6 +288,7 @@ app.factory('TourFactory', function($http, $timeout, $state) {
                 content: 'The final phase of the turn is bureaucracy. Players spend their resources to power their plants and make money. The more cities you power, the more money you make. Your opponents have already done this, now it\'s your turn!',
                 onShown: function() {
                     disablePrev();
+                    disableEnd();
                     deregisterBureaucracy();
                     var nextButton = $('.btn[data-role=next]');
                     nextButton.prop('disabled', true);

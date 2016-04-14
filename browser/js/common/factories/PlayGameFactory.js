@@ -200,8 +200,16 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal, $q) 
     return PGFactory.getMe().resources;
   }
 
-  PGFactory.getStep = function () {
-    return +PGFactory.getGame().step;
+  PGFactory.getDeckSize = function() {
+    if(grid && grid.game) return grid.game.plantDeck.length;
+  }
+
+  PGFactory.getStepThreePlants = function() {
+    if(grid && grid.game) return grid.game.stepThreePlants;
+  }
+
+  PGFactory.getDiscardedPlants = function() {
+    if(grid && grid.game) return grid.game.discardedPlants;
   }
 
   PGFactory.getTurn = function () {
