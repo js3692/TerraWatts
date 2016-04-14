@@ -280,7 +280,8 @@ app.factory('TourFactory', function($http, $timeout, $state) {
                         $timeout();
                     });
                     $timeout();
-                }
+                },
+                onHidden: deregisterBureaucracy
             }, {
                 element: 'command-center',
                 title: 'That\'s it!',
