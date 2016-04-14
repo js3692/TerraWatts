@@ -46,6 +46,7 @@ app.factory('CityCartFactory', function($rootScope, PlayGameFactory) {
     }
 
     CCFactory.getPopulatedCities = function(players) {
+        populatedCities = [];
         players.forEach(function(player) {
             if(player.cities) {
                 var currPlayer = { name: player.user.username, id: player._id, color: player.color }
