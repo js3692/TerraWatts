@@ -201,7 +201,9 @@ app.factory('PlayGameFactory', function ($http, FirebaseFactory, $uibModal, $q) 
   }
 
   PGFactory.getDeckSize = function() {
-    if(grid && grid.game) return grid.game.plantDeck.length;
+    if(grid && grid.game) {
+      return grid.game.plantDeck ? grid.game.plantDeck.length : 0;
+    }
   }
 
   PGFactory.getStepThreePlants = function() {
