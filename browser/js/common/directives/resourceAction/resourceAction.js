@@ -15,7 +15,11 @@ app.directive('resourceAction', function (PlayGameFactory, ResourceFactory, $roo
                             resourceList.push('oil');
                         } else if(plant.resourceType !== 'green') resourceList.push(plant.resourceType);
                         return resourceList;
-                    }, []), resource => resource);
+                    }, []), resource => resource)
+                .sort(function(r1, r2) {
+                    var order = ['coal', 'oil', 'trash', 'uranium'];
+                    return order.indexOf(r1) - order.indexOf(r2);
+                });
             }
 
             function plantCapacityMinusBoughtResources(resourceType){
